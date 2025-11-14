@@ -88,8 +88,26 @@ def set_model_mode(model: Module, mode: Optional[bool]) -> Generator[Any, Any, N
 
     """
     if hasattr(onnx, "select_model_mode_for_export"):
-        # In PyTorch 1.6+, set_training is changed to select_model_mode_for_export
-        return onnx.select_model_mode_for_export(model, mode)
+        # In newer PyTorch versions select_model_mode_for_export expects a
+        # torch.onnx.TrainingMode enum rather than a bool. Convert common
+        # bool/None inputs to the corresponding enum values so callers that
+        # pass True/False/None continue to work.
+        try:
+            from torch.onnx import TrainingMode
+
+            if mode is None:
+                tm = TrainingMode.PRESERVE
+            elif bool(mode) is True:
+                tm = TrainingMode.TRAINING
+            else:
+                tm = TrainingMode.EVAL
+
+            return onnx.select_model_mode_for_export(model, tm)
+        except Exception:
+            # Fallback: if anything goes wrong, attempt to call the selector
+            # directly with the original mode (will raise same error as before
+            # if incompatible). This keeps behavior predictable.
+            return onnx.select_model_mode_for_export(model, mode)
     else:
         return onnx.set_training(model, mode)
 

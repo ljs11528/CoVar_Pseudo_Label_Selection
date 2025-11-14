@@ -3,7 +3,7 @@ dataset: pascal
 data_root: /workspace/coredata/CSL/data/Pascal
 nclass: 21
 crop_size: 518
-alpha: 8.0   # semi-supervised training
+alpha: 2.0   # semi-supervised training
 
 # arguments for training
 epochs: 60

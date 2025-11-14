@@ -4,7 +4,11 @@ import numpy as np
 from torch.nn import functional as F
 from kornia.geometry import transform as T
 from kornia import enhance as E
-from kornia.augmentation import functional as KF
+# NOTE: older/newer Kornia versions differ in module layout. We prefer using
+# kornia.enhance (imported as E above) which provides functional helpers
+# such as `equalize`, `sharpness`, and `posterize`. Avoid importing
+# `kornia.augmentation.functional` which may not exist in the installed
+# Kornia release.
 
 # for type hint
 from typing import Any, Optional, List, Tuple, Callable
@@ -51,7 +55,9 @@ def invert(x: Tensor, _: Any) -> Tensor:
 
 
 def equalize(x: Tensor, _: Any) -> Tensor:
-    return KF.apply_equalize(x, params=dict(batch_prob=torch.tensor([1.0] * len(x), dtype=x.dtype, device=x.device)))
+    # Use kornia.enhance.equalize which operates on a tensor and returns
+    # an equalized image per-sample.
+    return E.equalize(x)
 
 
 def flip(x: Tensor, _: Any) -> Tensor:
@@ -76,7 +82,8 @@ def contrast(x: Tensor, v: float) -> Tensor:
 
 
 def sharpness(x: Tensor, v: float) -> Tensor:
-    return KF.apply_sharpness(x, params=dict(sharpness_factor=v))
+    # Use kornia.enhance.sharpness: signature (input, factor)
+    return E.sharpness(x, v)
 
 
 def identity(x: Tensor, _: Any) -> Tensor:

@@ -77,17 +77,32 @@ class UnsupervisedLoss:
         self.confidence_threshold = confidence_threshold
         self.reduction = reduction
 
-    def __call__(self, logits: Tensor, probs: Tensor, targets: Tensor) -> Tensor:
+    def __call__(self,
+                 logits: Tensor,
+                 probs: Tensor,
+                 targets: Tensor,
+                 reduction: str = None) -> Tensor:
+        """
+        支持外部传入 reduction 参数 (如 'none'/'mean'/'sum')
+        """
+        # 如果外部传入 reduction，则覆盖默认设置
+        reduction = reduction or self.reduction
+
+        # 使用 logits 或 probs 作为输入
         loss_input = probs if self.loss_use_prob else logits
+
+        # 始终先以 'none' 模式计算逐样本 loss
         loss = self.loss_fn(loss_input, targets, dim=1, reduction="none")
 
+        # 如果启用阈值掩码
         if self.loss_thresholded:
             targets_mask = (targets.max(dim=1).values > self.confidence_threshold)
 
             if len(loss.shape) > 1:
-                # mse_loss returns a matrix, need to reshape mask
+                # mse_loss 返回矩阵，需要 reshape 掩码
                 targets_mask = targets_mask.view(-1, 1)
 
             loss *= targets_mask.float()
 
-        return reduce_tensor(loss, reduction=self.reduction)
+        # 根据 reduction 模式进行聚合
+        return reduce_tensor(loss, reduction=reduction)

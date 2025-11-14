@@ -3,7 +3,7 @@ crop_size: &crop_size 321
 name: &name pascal
 
 epochs: 80
-batch_size: 8
+batch_size: 16
 gpu_num: 1
 accumulate_grad_batches: 1
 
@@ -19,7 +19,7 @@ train:
   eval_mode: original
   nclass: *nclass
   crop_size: *crop_size
-  lr: 0.001
+  lr: 0.003
   lr_multi: 10.0
   alpha: 8   #  origin 8
   criterion:

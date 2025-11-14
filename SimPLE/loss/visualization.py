@@ -1,6 +1,7 @@
 import torch
 import numpy as np
-from kornia.utils import confusion_matrix
+# confusion_matrix moved to kornia.metrics in recent Kornia versions
+from kornia.metrics.confusion_matrix import confusion_matrix
 import plotly.figure_factory as ff
 import wandb
 

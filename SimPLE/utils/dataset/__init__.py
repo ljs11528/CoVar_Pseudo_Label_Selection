@@ -35,8 +35,18 @@ def _get_world_size() -> int:
 
 
 def _get_dataset_transforms(args: Namespace) -> Dict[str, Callable]:
-    if args.data_dims is None and args.dataset == "domainnet-real":
-        dims = (3, 224, 224)
+    # If the user didn't supply data_dims, provide sensible defaults for
+    # datasets that commonly expect a fixed image size. This ensures the
+    # transforms include a resize/crop so all images collate to the same
+    # tensor shape (avoids RuntimeError: stack expects each tensor to be equal size).
+    if args.data_dims is None:
+        if args.dataset == "domainnet-real":
+            dims = (3, 224, 224)
+        elif args.dataset == "miniimagenet":
+            # Mini-ImageNet commonly uses 84x84 images
+            dims = (3, 84, 84)
+        else:
+            dims = None
     else:
         dims = args.data_dims
 

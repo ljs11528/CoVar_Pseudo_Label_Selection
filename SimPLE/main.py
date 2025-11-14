@@ -1,5 +1,19 @@
 import torch
 
+# Compatibility shim: some versions of kornia (and other libs) call the
+# legacy `torch.solve(b, A)` which was removed in recent PyTorch versions in
+# favor of `torch.linalg.solve(A, B)`. Provide a small compatibility wrapper
+# so older libraries keep working. It returns a tuple (solution, lu) where lu
+# is None (older code sometimes expected LU factorization as second return).
+if not hasattr(torch, 'solve'):
+    def _torch_solve(b, a):
+        # old signature: X, LU = torch.solve(b, A) solves A X = b
+        # new torch.linalg.solve expects (A, b)
+        X = torch.linalg.solve(a, b)
+        return X, None
+
+    torch.solve = _torch_solve
+
 from utils import get_args, timing, set_random_seed, get_device, get_dataset
 from models import get_augmenter
 from simple_estimator import SimPLEEstimator

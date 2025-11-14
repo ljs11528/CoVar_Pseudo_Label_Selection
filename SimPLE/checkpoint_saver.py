@@ -1,5 +1,7 @@
 import torch
 import numpy as np
+import os
+import tempfile
 
 from pathlib import Path
 import re
@@ -140,14 +142,48 @@ class CheckpointSaver:
                         checkpoint_path: Union[str, Path],
                         is_logger_save: bool = False) -> Path:
         checkpoint_path = str(checkpoint_path)
-        torch.save(checkpoint, checkpoint_path)
+        # Save atomically: write to a temp file then rename. Wrap in try/except so a full disk
+        # won't crash the training loop; instead, we log the error and skip saving.
+        tmp_dir = os.path.dirname(checkpoint_path) or '.'
+        try:
+            fd, tmp_name = tempfile.mkstemp(prefix=".ckpt_tmp_", dir=tmp_dir)
+            os.close(fd)
+            try:
+                torch.save(checkpoint, tmp_name)
+                # atomic replace
+                os.replace(tmp_name, checkpoint_path)
+            finally:
+                # ensure no leftover temp file
+                if os.path.exists(tmp_name):
+                    try:
+                        os.remove(tmp_name)
+                    except Exception:
+                        pass
 
-        print(f"Checkpoint saved to \"{checkpoint_path}\"", flush=True)
+            print(f"Checkpoint saved to \"{checkpoint_path}\"", flush=True)
 
-        if is_logger_save:
-            self.logger.save(checkpoint_path)
+            if is_logger_save:
+                try:
+                    self.logger.save(checkpoint_path)
+                except Exception as e:
+                    print(f"Logger save failed: {e}", flush=True)
 
-        return Path(checkpoint_path)
+            return Path(checkpoint_path)
+        except Exception as e:
+            # Likely disk full or IO error. Log and continue without raising to avoid crashing training.
+            try:
+                print(f"Warning: failed to save checkpoint to {checkpoint_path}: {e}", flush=True)
+                # also try a direct save without atomic step as a last resort
+                try:
+                    torch.save(checkpoint, checkpoint_path)
+                    print(f"Checkpoint saved (fallback) to \"{checkpoint_path}\"", flush=True)
+                    return Path(checkpoint_path)
+                except Exception:
+                    pass
+            except Exception:
+                pass
+
+            return None
 
     def save_best_checkpoint(self,
                              checkpoint: Optional[Dict[str, any]] = None,
@@ -284,14 +320,4 @@ class CheckpointSaver:
             # do nothing if the model do not save latest checkpoints or if all checkpoints are kept
             return
 
-        checkpoint_paths = find_all_files(checkpoint_dir=self.log_dir,
-                                          search_pattern=self.latest_checkpoint_pattern)
-
-        # sort by recency (largest step first)
-        checkpoint_paths.sort(key=lambda x: int(re.search(self.latest_checkpoint_pattern, x.name).group(1)),
-                              reverse=True)
-
-        # remove old checkpoints
-        for checkpoint_path in checkpoint_paths[self.num_latest_checkpoints_kept:]:
-            print(f"Removing old checkpoint \"{checkpoint_path}\"", flush=True)
-            checkpoint_path.unlink()
+        chec

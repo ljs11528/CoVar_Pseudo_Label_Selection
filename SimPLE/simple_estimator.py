@@ -2,6 +2,11 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 import numpy as np
+import os
+import matplotlib
+# Use Agg backend so plotting works in headless envs
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 import random
 from functools import partial
@@ -35,6 +40,12 @@ class SimPLEEstimator:
                  in_channels: int,
                  device: Optional[torch.device] = None):
         self.exp_args = exp_args
+
+        # Ensure num_classes is available on exp_args for downstream components that
+        # expect to read it (e.g., compute_csl_weight). The CLI/datamodule provides
+        # the canonical num_classes, but some code accesses it from exp_args.
+        if not hasattr(self.exp_args, 'num_classes'):
+            self.exp_args.num_classes = num_classes
 
         # augmenter
         self.augmenter = augmenter
@@ -100,6 +111,27 @@ class SimPLEEstimator:
 
         # stats
         self._global_step: int = 0
+
+        # pseudo-label statistics for plotting
+        # per-epoch totals (appended at epoch end)
+        self.pseudo_total_per_epoch = []
+        self.pseudo_selected_per_epoch = []
+
+        # temporary counters for current epoch
+        self._pseudo_epoch = None
+        self._epoch_selected_count_current = 0
+        self._epoch_total_count_current = 0
+
+        # scatter selection: pick a random epoch and a random batch index in that epoch
+        num_epochs_cfg = getattr(self.exp_args, 'num_epochs', 1)
+        try:
+            self._scatter_epoch = random.randrange(max(1, int(num_epochs_cfg)))
+        except Exception:
+            self._scatter_epoch = 0
+        # pick random batch index within epoch
+        self._scatter_target_batch_idx = random.randrange(max(1, int(self.num_step_per_epoch))) if hasattr(self.exp_args, 'num_step_per_epoch') else 0
+        self._scatter_collected = False
+        self._scatter_points = None
 
         # move to device
         self.to(self.device)
@@ -251,7 +283,8 @@ class SimPLEEstimator:
             x_targets=outputs["x_targets"],
             u_logits=outputs["u_logits"],
             u_targets=outputs["u_targets"],
-            u_true_targets=outputs["u_true_targets"])
+            u_true_targets=outputs["u_true_targets"],
+            batch_idx=batch_idx)
 
         # save additional logging info and plots
         extra_log_info = self.visualize_loss(
@@ -341,7 +374,8 @@ class SimPLEEstimator:
                            x_targets: Tensor,
                            u_logits: Tensor,
                            u_targets: Tensor,
-                           u_true_targets: Tensor) -> Tuple[Tensor, LossInfoType]:
+                           u_true_targets: Tensor,
+                           batch_idx: int) -> Tuple[Tensor, LossInfoType]:
         """
 
         Args:
@@ -373,7 +407,8 @@ class SimPLEEstimator:
             weighted_loss_u, loss_u_log = self.compute_unsupervised_loss(logits=u_logits,
                                                                          probs=u_probs,
                                                                          targets=u_targets,
-                                                                         ramp_up_value=ramp_up_value)
+                                                                         ramp_up_value=ramp_up_value,
+                                                                         batch_idx=batch_idx)
             loss += weighted_loss_u
 
             log_info.update(loss_u_log)
@@ -405,14 +440,71 @@ class SimPLEEstimator:
     #         weighted_loss_u=weighted_loss.detach().clone(),
     #     )
     
-    def compute_unsupervised_loss(self, logits: Tensor, probs: Tensor, targets: Tensor, ramp_up_value: float) \
-        -> Tuple[Tensor, Dict[str, Tensor]]:
+    def compute_unsupervised_loss(self, logits: Tensor, probs: Tensor, targets: Tensor, ramp_up_value: float,
+                                  batch_idx: int) -> Tuple[Tensor, Dict[str, Tensor]]:
+        """
+        Compute unsupervised loss and collect pseudo-label statistics for plotting.
+        """
+        current_epoch = self.epoch
+
+        # initialize epoch counters if first time seeing this epoch
+        if (self._pseudo_epoch is None) or (self._pseudo_epoch != current_epoch):
+            self._pseudo_epoch = current_epoch
+            self._epoch_selected_count_current = 0
+            self._epoch_total_count_current = 0
+
+        batch_total = probs.size(0)
+
         if self.use_csl:
-            per_sample_loss = self.unsupervised_loss(logits, probs, targets, reduction='none')  # shape [batch]
-            weight = self.compute_csl_weight(probs, num_classes=self.exp_args.num_classes)
+            # Step 1: 计算逐样本的无监督损失
+            per_sample_loss = self.unsupervised_loss(logits, probs, targets, reduction='none')  # shape [B] or [B, C]
+
+            # Step 2: 计算样本级权重（shape [B]）并获取样本级统计量
+            weight, stats = self.compute_csl_weight(probs, num_classes=self.exp_args.num_classes)
+            max_confidence, scaled_residual_variance = stats
+
+            # Step 3: 统一维度，使两者可相乘
+            if per_sample_loss.ndim > 1:
+                # 对每个样本取平均，得到 [B]
+                per_sample_loss = per_sample_loss.mean(dim=1)
+
+            # Step 4: 样本级加权平均损失
             weighted_loss = (per_sample_loss * weight).mean()
+
+            # Count selected pseudo labels according to unsupervised loss thresholding
+            try:
+                confidence_threshold = float(self.unsupervised_loss.confidence_threshold)
+            except Exception:
+                confidence_threshold = 0.0
+
+            selected_mask = (targets.max(dim=1).values > confidence_threshold)
+            selected_count = int(selected_mask.sum().item())
+
+            # accumulate for epoch
+            self._epoch_selected_count_current += selected_count
+            self._epoch_total_count_current += int(batch_total)
+
+            # maybe collect scatter for randomly chosen epoch/batch
+            if (not self._scatter_collected) and (current_epoch == self._scatter_epoch):
+                # we chose a random batch within epoch at init; capture when batch_idx matches
+                if batch_idx == self._scatter_target_batch_idx:
+                    # save numpy arrays for plotting later (move to cpu first)
+                    self._scatter_points = (
+                        scaled_residual_variance.detach().cpu().numpy(),
+                        max_confidence.detach().cpu().numpy())
+                    self._scatter_collected = True
+
         else:
             weighted_loss = self.unsupervised_loss(logits, probs, targets)
+            # count selected based on targets
+            try:
+                confidence_threshold = float(self.unsupervised_loss.confidence_threshold)
+            except Exception:
+                confidence_threshold = 0.0
+            selected_mask = (targets.max(dim=1).values > confidence_threshold)
+            selected_count = int(selected_mask.sum().item())
+            self._epoch_selected_count_current += selected_count
+            self._epoch_total_count_current += int(batch_total)
 
         final_loss = ramp_up_value * self.lambda_u * weighted_loss
 
@@ -422,13 +514,14 @@ class SimPLEEstimator:
         )
 
     @torch.no_grad()
-    def compute_csl_weight(self, probs: Tensor, num_classes: int, epsilon=1e-8, alpha=2.0) -> Tensor:
+    def compute_csl_weight(self, probs: Tensor, num_classes: int, epsilon=1e-8, alpha=2.0):
         """
         Compute CSL-based weights for image classification task.
         Args:
             probs: Tensor, shape [batch, num_classes], softmax probabilities
         Returns:
             weight: Tensor, shape [batch]
+            (max_confidence, scaled_residual_variance): two Tensors with shape [batch]
         """
         batch_size = probs.size(0)
 
@@ -468,9 +561,7 @@ class SimPLEEstimator:
         # Step 8: confident mask (positive z-score -> weight=1)
         confident_mask = (conf_z > 0) | (res_z > 0)
         weight = torch.where(confident_mask, torch.ones_like(weight), weight)
-
-        return weight
-    
+        return weight, (max_confidence, scaled_residual_variance)
     @torch.no_grad()
     def _batch_class_stats(self, features: Tensor, num_clusters: int = 2):
         """
@@ -491,7 +582,8 @@ class SimPLEEstimator:
                 vars.append(torch.ones(2, device=features.device))
             else:
                 means.append(points.mean(dim=0))
-                vars.append(points.var(dim=0, unbiased=True))
+                # use unbiased=False to avoid dof warnings when points.size(0) <= 1
+                vars.append(points.var(dim=0, unbiased=False))
         means = torch.stack(means)
         vars = torch.stack(vars)
 
@@ -503,11 +595,31 @@ class SimPLEEstimator:
     @torch.no_grad()
     def _compute_eigenvectors_with_svd(self, X: Tensor, num_clusters: int):
         # X: [batch, 2]
-        U, S, Vt = torch.linalg.svd(X.T, full_matrices=False)
-        eigvals = S ** 2
-        idx = torch.argsort(-eigvals)
-        eigvecs = Vt.T[:, idx[:num_clusters]]
-        return eigvecs
+        try:
+            U, S, Vt = torch.linalg.svd(X.T, full_matrices=False)
+            eigvals = S ** 2
+            idx = torch.argsort(-eigvals)
+            eigvecs = Vt.T[:, idx[:num_clusters]]
+            return eigvecs
+        except Exception as e:
+            # Fallback: use NumPy SVD on CPU which can be more robust for ill-conditioned small matrices
+            try:
+                X_cpu = X.detach().cpu().numpy()
+                # NumPy expects shape (n_rows, n_cols); we want SVD of X.T as above
+                U_np, S_np, Vt_np = np.linalg.svd(X_cpu.T, full_matrices=False)
+                eigvals = S_np ** 2
+                idx = np.argsort(-eigvals)[:num_clusters]
+                eigvecs_np = Vt_np.T[:, idx]
+                eigvecs = torch.from_numpy(eigvecs_np).to(X.device)
+                return eigvecs
+            except Exception:
+                # As a last resort return identity-like vectors
+                device = X.device
+                dtype = X.dtype
+                fallback = torch.zeros((X.size(1), num_clusters), device=device, dtype=dtype)
+                for i in range(min(num_clusters, X.size(1))):
+                    fallback[i, i] = 1.0
+                return fallback
 
 
     def compute_pair_loss(self,
@@ -531,7 +643,61 @@ class SimPLEEstimator:
                                   return_plot_info=self.return_plot_info)
 
     def training_epoch_end(self, *args, **kwargs) -> None:
-        pass
+        # called at the end of each training epoch
+        # append per-epoch pseudo-label stats
+        total = getattr(self, '_epoch_total_count_current', 0)
+        selected = getattr(self, '_epoch_selected_count_current', 0)
+
+        # append only if we have seen any pseudo labels in this epoch
+        if total is not None:
+            self.pseudo_total_per_epoch.append(int(total))
+            self.pseudo_selected_per_epoch.append(int(selected))
+
+        # Plotting: only save once per epoch end and only on main process
+        log_dir = getattr(self.exp_args, 'log_dir', None)
+        if log_dir is None:
+            return
+
+        try:
+            os.makedirs(log_dir, exist_ok=True)
+        except Exception:
+            pass
+
+        # Line plot: epoch vs selected/total ratio
+        try:
+            epochs = list(range(1, len(self.pseudo_total_per_epoch) + 1))
+            ratios = []
+            for t, s in zip(self.pseudo_total_per_epoch, self.pseudo_selected_per_epoch):
+                ratios.append(float(s) / float(t) if t > 0 else 0.0)
+
+            plt.figure()
+            plt.plot(epochs, ratios, marker='o')
+            plt.xlabel('Epoch')
+            plt.ylabel('Selected pseudo / Total pseudo')
+            plt.title('Per-epoch selected pseudo-label ratio')
+            plt.grid(True)
+            line_path = os.path.join(log_dir, 'pseudo_label_ratio.png')
+            plt.savefig(line_path)
+            plt.close()
+        except Exception:
+            # don't crash training for plotting errors
+            pass
+
+        # Scatter plot: for the randomly chosen epoch/batch, if collected, save scatter
+        if getattr(self, '_scatter_collected', False) and (self._scatter_points is not None):
+            try:
+                x_vals, y_vals = self._scatter_points
+                plt.figure()
+                plt.scatter(x_vals, y_vals, s=8, alpha=0.7)
+                plt.xlabel('residual_variance (scaled)')
+                plt.ylabel('max_confidence')
+                plt.title(f'Pseudo labels scatter epoch {self._scatter_epoch} batch {self._scatter_target_batch_idx}')
+                plt.grid(True)
+                scatter_path = os.path.join(log_dir, f'pseudo_scatter_epoch{self._scatter_epoch}_batch{self._scatter_target_batch_idx}.png')
+                plt.savefig(scatter_path)
+                plt.close()
+            except Exception:
+                pass
 
     def get_checkpoint(self) -> Dict[str, Any]:
         checkpoint = dict(
