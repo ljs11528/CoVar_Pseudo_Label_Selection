@@ -42,7 +42,14 @@ def get_max_confidence_and_residual_variance(predictions, valid_mask, num_classe
     return max_confidence, scaled_residual_variance
 
 @torch.no_grad()
-def batch_class_stats(max_conf, res_var, num_classes):
+def batch_class_stats(
+    max_conf,
+    res_var,
+    num_classes,
+    select_mode: str = 'linear',
+    lam: float = 1.0,
+    eps: float = 1e-8,
+):
     means = []
     vars = []
     for index in range(max_conf.shape[0]):
@@ -57,9 +64,22 @@ def batch_class_stats(max_conf, res_var, num_classes):
             continue
         class_assignments = _class_assignment(valid_features, 2)
         class_centers = _compute_class_centers(valid_features, class_assignments, 2)
-        max_mean_idx = torch.argmax(class_centers[0][:, 0])  
-        selected_mean = class_centers[0][max_mean_idx] 
-        selected_var = class_centers[1][max_mean_idx] 
+        # class_centers[0]: means for each cluster with shape [2, 2] (conf, resvar)
+        mu = class_centers[0]
+        # Build a 2D reliability score to pick the "reliable" cluster
+        if select_mode == 'neglog':
+            # Higher is better: high confidence and low residual variance
+            score = mu[:, 0] + lam * (-torch.log(mu[:, 1] + eps))
+        elif select_mode == 'linear':
+            # Higher is better: high confidence and low residual variance
+            score = mu[:, 0] - lam * mu[:, 1]
+        else:
+            # Fallback to previous behavior: pick cluster with larger mean confidence
+            score = mu[:, 0]
+
+        max_mean_idx = torch.argmax(score)
+        selected_mean = class_centers[0][max_mean_idx]
+        selected_var = class_centers[1][max_mean_idx]
         means.append(selected_mean)
         vars.append(selected_var)
     return torch.stack(means), torch.stack(vars)

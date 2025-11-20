@@ -33,9 +33,37 @@ def main():
     trainset_l = SemiDataset(**{**cfg['dataset'], 'mode': 'train_l', 'id_path': args.labeled_id_path, 'nsample': len(trainset_u.ids)})
     valset = SemiDataset(cfg['dataset']['name'], cfg['dataset']['root'], 'val', args.val_id_path)
 
-    trainloader_l = DataLoader(trainset_l, batch_size=cfg['batch_size'], num_workers=1, pin_memory=True, shuffle=True, drop_last=True)
-    trainloader_u = DataLoader(trainset_u, batch_size=cfg['batch_size'], num_workers=1, pin_memory=True, shuffle=True, drop_last=True)
-    valloader =  DataLoader(valset, batch_size=1, num_workers=1, pin_memory=True, drop_last=False)
+    # Reduce worker count to avoid /dev/shm bus errors inside small-shm containers
+    num_workers = int(os.environ.get('NUM_WORKERS', '4'))
+    pin_memory = os.environ.get('PIN_MEMORY', '1').lower() in ('1', 'true', 'yes')
+    persistent_workers = num_workers > 0
+
+    trainloader_l = DataLoader(
+        trainset_l,
+        batch_size=cfg['batch_size'],
+        num_workers=num_workers,
+        pin_memory=pin_memory,
+        shuffle=True,
+        drop_last=True,
+        persistent_workers=persistent_workers,
+    )
+    trainloader_u = DataLoader(
+        trainset_u,
+        batch_size=cfg['batch_size'],
+        num_workers=num_workers,
+        pin_memory=pin_memory,
+        shuffle=True,
+        drop_last=True,
+        persistent_workers=persistent_workers,
+    )
+    valloader = DataLoader(
+        valset,
+        batch_size=1,
+        num_workers=num_workers,
+        pin_memory=pin_memory,
+        drop_last=False,
+        persistent_workers=persistent_workers,
+    )
 
     train_loaders = {
         'labeled': trainloader_l,

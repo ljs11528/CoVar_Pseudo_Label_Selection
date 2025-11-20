@@ -15,6 +15,9 @@ from util.classes import CLASSES
 
 class SemiModule(SupervisedModule):   
     def __init__(self, batch_iters, alpha, nclass, **kwargs):
+        # Extract clustering selection configs (do not forward to super)
+        self.select_mode = kwargs.pop('select_mode', 'neglog')
+        self.select_lam = kwargs.pop('select_lam', 0.5)
         super(SemiModule, self).__init__(nclass=nclass, **kwargs)
         self.batch_iters = batch_iters
         self.avg_log_interval = batch_iters // 8
@@ -54,7 +57,7 @@ class SemiModule(SupervisedModule):
         self._epochs = []
         self._fractions = []
         # per-epoch reservoir sampling buffers (store up to _epoch_sample_size points per epoch)
-        self._epoch_sample_size = 4000
+        self._epoch_sample_size = 100000
         self._epoch_seen_count = 0
         self._epoch_rcv_buf = []
         self._epoch_mc_buf = []
@@ -742,7 +745,13 @@ class SemiModule(SupervisedModule):
         max_confidence, scaled_residual_variance = get_max_confidence_and_residual_variance(
             pred, valid_mask, num_classes, epsilon
         )
-        means, vars = batch_class_stats(max_confidence, scaled_residual_variance, num_classes)
+        means, vars = batch_class_stats(
+            max_confidence,
+            scaled_residual_variance,
+            num_classes,
+            select_mode=getattr(self, 'select_mode', 'neglog'),
+            lam=getattr(self, 'select_lam', 0.18),
+        )
         conf_mean = means[:, 0].view(-1, 1, 1)  
         res_mean = means[:, 1].view(-1, 1, 1)  
         conf_var = vars[:, 0].view(-1, 1, 1)  
