@@ -1,6 +1,6 @@
-# CoVar: Semi-Supervised Semantic Segmentation with Reliable Pseudo-Label Selection
+# CoVar: A Confidence–Variance Theory for Pseudo-Label Selection in Semi-Supervised Learning 
 
-This repository contains the implementation of **CoVar**, a method for semi-supervised semantic segmentation with reliable pseudo-label selection.  
+This repository contains the implementation of **CoVar**, a Confidence–Variance Theory for Pseudo-Label Selection in Semi-Supervised Learning.  
 CoVar models covariate consistency and prediction uncertainty to assess the reliability of pseudo-labels and selectively use them during training, improving robustness and accuracy under limited annotations.
 
 ## Repository Structure
