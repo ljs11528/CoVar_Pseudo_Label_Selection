@@ -750,7 +750,7 @@ class SemiModule(SupervisedModule):
             scaled_residual_variance,
             num_classes,
             select_mode=getattr(self, 'select_mode', 'neglog'),
-            lam=getattr(self, 'select_lam', 0.18),
+            lam=getattr(self, 'select_lam', 0.25),
         )
         conf_mean = means[:, 0].view(-1, 1, 1)  
         res_mean = means[:, 1].view(-1, 1, 1)  
