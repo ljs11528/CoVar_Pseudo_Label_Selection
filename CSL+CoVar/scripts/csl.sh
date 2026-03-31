@@ -1,5 +1,5 @@
 now=$(date +"%Y%m%d_%H%M%S")
-export CUDA_VISIBLE_DEVICES=3
+export CUDA_VISIBLE_DEVICES=0
 
 # modify these augments if you want to try other datasets or splits
 # dataset: ['pascal', 'cityscapes']

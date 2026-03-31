@@ -1,0 +1,5 @@
+[INFO] Total params: 59.5M
+
+[INFO] ===========> Epoch: 0, LR: 0.00100, Previous best val_mIOU: 0.00
+[INFO] Iters: 0,total_loss: 2.890,loss_x: 3.121,loss_u_s: 2.669,loss_u_m: 2.664,loss_u_fp: 2.651,mask_ratio: 0.865
+[INFO] Iters: 22,total_loss: 0.787,loss_x: 1.003,loss_u_s: 0.514,loss_u_m: 0.509,loss_u_fp: 0.633,mask_ratio: 0.591

@@ -18,6 +18,11 @@ def main():
     parser.add_argument('--unlabeled_id_path', type=str, required=True)
     parser.add_argument('--val_id_path', type=str, required=True)
     parser.add_argument('--save_path', type=str, required=True)
+    parser.add_argument('--enable_visual_artifacts', action='store_true', help='Enable pseudo-label diagnostics sampling and artifact export during training')
+    parser.add_argument('--threshold_strategy', type=str, default='dynamic', choices=['dynamic', 'fixed'],
+                        help='Pseudo-label threshold strategy: dynamic (max_confidence + residual variance) or fixed (max_confidence only)')
+    parser.add_argument('--fixed_threshold', type=float, default=0.95,
+                        help='Fixed confidence threshold used when --threshold_strategy fixed')
     args = parser.parse_args()
     cfg = yaml.load(open(args.config, "r"), Loader=yaml.Loader)
 
@@ -79,7 +84,10 @@ def main():
         'save_path': args.save_path, 
         'batch_iters': batch_iters, 
         'total_iters':total_iters,
-        'nclass': cfg['nclass'] 
+        'nclass': cfg['nclass'],
+        'enable_visual_artifacts': args.enable_visual_artifacts,
+        'threshold_strategy': args.threshold_strategy,
+        'fixed_threshold': args.fixed_threshold,
         })
     trainer = pl.Trainer(
         max_epochs=cfg['epochs'],     

@@ -1,0 +1,14 @@
+alpha: 8
+batch_iters: 182
+criterion:
+  kwargs:
+    ignore_index: 255
+  name: CELoss
+crop_size: 321
+eval_mode: original
+lr: 0.001
+lr_multi: 10.0
+name: pascal
+nclass: 21
+save_path: exp/pascal/CSL/smoke_test_visual_flag_off/1_4
+total_iters: 14560
