@@ -9,3 +9,86 @@
 
 [INFO] ===========> Epoch: 0, LR: 0.00100, Previous best val_mIOU: 0.00
 [INFO] Iters: 0,total_loss: 2.904,loss_x: 3.151,loss_u_s: 2.651,loss_u_m: 2.676,loss_u_fp: 2.651,mask_ratio: 0.856
+[INFO] Total params: 59.5M
+
+[INFO] ===========> Epoch: 0, LR: 0.00100, Previous best val_mIOU: 0.00
+[INFO] Total params: 59.5M
+
+[INFO] ===========> Epoch: 0, LR: 0.00100, Previous best val_mIOU: 0.00
+[INFO] Iters: 0,total_loss: 2.904,loss_x: 3.151,loss_u_s: 2.651,loss_u_m: 2.676,loss_u_fp: 2.651,mask_ratio: 0.856
+[INFO] Total params: 59.5M
+
+[INFO] ===========> Epoch: 0, LR: 0.00100, Previous best val_mIOU: 0.00
+[INFO] Iters: 0,total_loss: 2.904,loss_x: 3.151,loss_u_s: 2.651,loss_u_m: 2.676,loss_u_fp: 2.651,mask_ratio: 0.856
+[INFO] Iters: 124,total_loss: 0.706,loss_x: 1.225,loss_u_s: 0.206,loss_u_m: 0.208,loss_u_fp: 0.165,mask_ratio: 0.532
+[INFO] Iters: 248,total_loss: 0.403,loss_x: 0.713,loss_u_s: 0.140,loss_u_m: 0.135,loss_u_fp: 0.047,mask_ratio: 0.534
+[INFO] Iters: 372,total_loss: 0.354,loss_x: 0.617,loss_u_s: 0.140,loss_u_m: 0.134,loss_u_fp: 0.046,mask_ratio: 0.532
+[INFO] Iters: 496,total_loss: 0.300,loss_x: 0.521,loss_u_s: 0.123,loss_u_m: 0.122,loss_u_fp: 0.036,mask_ratio: 0.538
+[INFO] Iters: 620,total_loss: 0.303,loss_x: 0.519,loss_u_s: 0.143,loss_u_m: 0.129,loss_u_fp: 0.036,mask_ratio: 0.541
+[INFO] Iters: 744,total_loss: 0.290,loss_x: 0.502,loss_u_s: 0.118,loss_u_m: 0.125,loss_u_fp: 0.035,mask_ratio: 0.535
+[INFO] Iters: 868,total_loss: 0.292,loss_x: 0.508,loss_u_s: 0.126,loss_u_m: 0.119,loss_u_fp: 0.031,mask_ratio: 0.538
+[INFO] ***** Evaluation ***** >>>> Class [0 background] IoU: 90.64
+[INFO] ***** Evaluation ***** >>>> Class [1 aeroplane] IoU: 74.67
+[INFO] ***** Evaluation ***** >>>> Class [2 bicycle] IoU: 35.32
+[INFO] ***** Evaluation ***** >>>> Class [3 bird] IoU: 79.50
+[INFO] ***** Evaluation ***** >>>> Class [4 boat] IoU: 62.07
+[INFO] ***** Evaluation ***** >>>> Class [5 bottle] IoU: 66.49
+[INFO] ***** Evaluation ***** >>>> Class [6 bus] IoU: 88.12
+[INFO] ***** Evaluation ***** >>>> Class [7 car] IoU: 79.09
+[INFO] ***** Evaluation ***** >>>> Class [8 cat] IoU: 84.85
+[INFO] ***** Evaluation ***** >>>> Class [9 chair] IoU: 29.25
+[INFO] ***** Evaluation ***** >>>> Class [10 cow] IoU: 57.97
+[INFO] ***** Evaluation ***** >>>> Class [11 dining table] IoU: 60.20
+[INFO] ***** Evaluation ***** >>>> Class [12 dog] IoU: 71.72
+[INFO] ***** Evaluation ***** >>>> Class [13 horse] IoU: 71.42
+[INFO] ***** Evaluation ***** >>>> Class [14 motorbike] IoU: 70.17
+[INFO] ***** Evaluation ***** >>>> Class [15 person] IoU: 75.76
+[INFO] ***** Evaluation ***** >>>> Class [16 potted plant] IoU: 38.64
+[INFO] ***** Evaluation ***** >>>> Class [17 sheep] IoU: 67.80
+[INFO] ***** Evaluation ***** >>>> Class [18 sofa] IoU: 41.72
+[INFO] ***** Evaluation ***** >>>> Class [19 train] IoU: 76.93
+[INFO] ***** Evaluation ***** >>>> Class [20 tv/monitor] IoU: 67.69
+[INFO] ***** Evaluation ***** original >>>> MeanIoU: 66.19
+
+[INFO] Pseudo-label epoch summary | epoch=0, generated_epoch=759934856, selected_epoch=409030049, epoch_rate=0.538244, generated_cum=759934856, selected_cum=409030049, cum_rate=0.538244
+[INFO] ===========> Epoch: 1, LR: 0.00099, Previous best val_mIOU: 66.19
+[INFO] Iters: 992,total_loss: 0.249,loss_x: 0.417,loss_u_s: 0.125,loss_u_m: 0.135,loss_u_fp: 0.033,mask_ratio: 0.554
+[INFO] Iters: 1116,total_loss: 0.251,loss_x: 0.422,loss_u_s: 0.123,loss_u_m: 0.137,loss_u_fp: 0.029,mask_ratio: 0.560
+[INFO] Iters: 1240,total_loss: 0.242,loss_x: 0.405,loss_u_s: 0.135,loss_u_m: 0.123,loss_u_fp: 0.028,mask_ratio: 0.563
+[INFO] Iters: 1364,total_loss: 0.236,loss_x: 0.394,loss_u_s: 0.131,loss_u_m: 0.121,loss_u_fp: 0.030,mask_ratio: 0.575
+[INFO] Iters: 1488,total_loss: 0.220,loss_x: 0.369,loss_u_s: 0.118,loss_u_m: 0.118,loss_u_fp: 0.026,mask_ratio: 0.578
+[INFO] Iters: 1612,total_loss: 0.226,loss_x: 0.376,loss_u_s: 0.121,loss_u_m: 0.133,loss_u_fp: 0.024,mask_ratio: 0.569
+[INFO] Iters: 1736,total_loss: 0.212,loss_x: 0.352,loss_u_s: 0.119,loss_u_m: 0.114,loss_u_fp: 0.026,mask_ratio: 0.577
+[INFO] Iters: 1860,total_loss: 0.194,loss_x: 0.315,loss_u_s: 0.131,loss_u_m: 0.118,loss_u_fp: 0.024,mask_ratio: 0.583
+[INFO] ***** Evaluation ***** >>>> Class [0 background] IoU: 92.10
+[INFO] ***** Evaluation ***** >>>> Class [1 aeroplane] IoU: 82.74
+[INFO] ***** Evaluation ***** >>>> Class [2 bicycle] IoU: 41.14
+[INFO] ***** Evaluation ***** >>>> Class [3 bird] IoU: 81.50
+[INFO] ***** Evaluation ***** >>>> Class [4 boat] IoU: 65.53
+[INFO] ***** Evaluation ***** >>>> Class [5 bottle] IoU: 63.17
+[INFO] ***** Evaluation ***** >>>> Class [6 bus] IoU: 79.97
+[INFO] ***** Evaluation ***** >>>> Class [7 car] IoU: 79.76
+[INFO] ***** Evaluation ***** >>>> Class [8 cat] IoU: 88.05
+[INFO] ***** Evaluation ***** >>>> Class [9 chair] IoU: 28.78
+[INFO] ***** Evaluation ***** >>>> Class [10 cow] IoU: 77.85
+[INFO] ***** Evaluation ***** >>>> Class [11 dining table] IoU: 60.01
+[INFO] ***** Evaluation ***** >>>> Class [12 dog] IoU: 82.38
+[INFO] ***** Evaluation ***** >>>> Class [13 horse] IoU: 84.26
+[INFO] ***** Evaluation ***** >>>> Class [14 motorbike] IoU: 77.24
+[INFO] ***** Evaluation ***** >>>> Class [15 person] IoU: 79.80
+[INFO] ***** Evaluation ***** >>>> Class [16 potted plant] IoU: 35.42
+[INFO] ***** Evaluation ***** >>>> Class [17 sheep] IoU: 74.84
+[INFO] ***** Evaluation ***** >>>> Class [18 sofa] IoU: 44.83
+[INFO] ***** Evaluation ***** >>>> Class [19 train] IoU: 64.78
+[INFO] ***** Evaluation ***** >>>> Class [20 tv/monitor] IoU: 68.63
+[INFO] ***** Evaluation ***** original >>>> MeanIoU: 69.18
+
+[INFO] Pseudo-label epoch summary | epoch=1, generated_epoch=760939930, selected_epoch=435573051, epoch_rate=0.572415, generated_cum=1520874786, selected_cum=844603100, cum_rate=0.555340
+[INFO] ===========> Epoch: 2, LR: 0.00098, Previous best val_mIOU: 69.18
+[INFO] Iters: 1984,total_loss: 0.196,loss_x: 0.325,loss_u_s: 0.113,loss_u_m: 0.112,loss_u_fp: 0.023,mask_ratio: 0.578
+[INFO] Iters: 2108,total_loss: 0.185,loss_x: 0.305,loss_u_s: 0.111,loss_u_m: 0.106,loss_u_fp: 0.020,mask_ratio: 0.600
+[INFO] Iters: 2232,total_loss: 0.189,loss_x: 0.311,loss_u_s: 0.119,loss_u_m: 0.110,loss_u_fp: 0.021,mask_ratio: 0.587
+[INFO] Iters: 2356,total_loss: 0.202,loss_x: 0.330,loss_u_s: 0.124,loss_u_m: 0.129,loss_u_fp: 0.020,mask_ratio: 0.587
+[INFO] Iters: 2480,total_loss: 0.180,loss_x: 0.290,loss_u_s: 0.110,loss_u_m: 0.123,loss_u_fp: 0.022,mask_ratio: 0.591
+[INFO] Iters: 2604,total_loss: 0.189,loss_x: 0.306,loss_u_s: 0.130,loss_u_m: 0.116,loss_u_fp: 0.021,mask_ratio: 0.581
+[INFO] Iters: 2728,total_loss: 0.184,loss_x: 0.299,loss_u_s: 0.110,loss_u_m: 0.117,loss_u_fp: 0.026,mask_ratio: 0.587
