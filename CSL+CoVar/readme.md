@@ -85,6 +85,14 @@ During training, each epoch now also writes an intermediate cumulative summary t
 
 These per-epoch trend records are also saved under `per_epoch_cumulative` in `pseudo_label_metrics_summary.json`.
 
+Per-class pseudo-label metrics are also exported for plotting:
+
+```bash
+save_path/pseudo_label_metrics_per_class.txt
+```
+
+Columns: `class_idx`, `class_name`, `generated_total`, `selected_total`, `selection_rate`, `val_pseudo_accuracy`.
+
 ### Supervised Baseline
 
 ```bash

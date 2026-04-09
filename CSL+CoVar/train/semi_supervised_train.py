@@ -36,7 +36,11 @@ class SemiModule(SupervisedModule):
             self.loss_u_fp_recorder,
             self.mask_ratio_recorder,
         ]
-        self.pseudo_metrics = PseudoLabelMetricsTracker(save_path=self.save_path)
+        self.pseudo_metrics = PseudoLabelMetricsTracker(
+            save_path=self.save_path,
+            num_classes=self.num_classes,
+            dataset_name=self.dataset,
+        )
         self.visual_artifacts = None
         if self.enable_visual_artifacts:
             self.visual_artifacts = PseudoLabelArtifactsCollector(
@@ -109,7 +113,11 @@ class SemiModule(SupervisedModule):
         self.loss_u_m_recorder(loss_u_m.item())
         self.loss_u_fp_recorder(loss_u_fp.item())
         self.mask_ratio_recorder(mask_ratio)
-        self.pseudo_metrics.update_batch(ignore_mask=ignore_mask, confidence_mask=conf_mask)
+        self.pseudo_metrics.update_batch(
+            ignore_mask=ignore_mask,
+            confidence_mask=conf_mask,
+            pseudo_mask=mask_u_w,
+        )
 
         if self.visual_artifacts is not None:
             self.visual_artifacts.update_batch(
