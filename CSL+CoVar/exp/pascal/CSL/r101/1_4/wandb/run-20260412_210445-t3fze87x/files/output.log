@@ -1,0 +1,116 @@
+Seed set to 42
+[pid 421134] RANK=None LOCAL_RANK=None WORLD_SIZE=None
+Using bfloat16 Automatic Mixed Precision (AMP)
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+💡 Tip: For seamless cloud logging and experiment tracking, try installing [litlogger](https://pypi.org/project/litlogger/) to enable LitLogger, which logs metrics and artifacts automatically to the Lightning Experiments platform.
+💡 Tip: For seamless cloud uploads and versioning, try installing [litmodels](https://pypi.org/project/litmodels/) to enable LitModelCheckpoint, which syncs automatically with the Lightning model registry.
+The following callbacks returned in `LightningModule.configure_callbacks` will override existing callbacks passed to Trainer: ModelCheckpoint
+You are using a CUDA device ('NVIDIA A800-SXM4-80GB') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+Initializing distributed: GLOBAL_RANK: 0, MEMBER: 1/1
+----------------------------------------------------------------------------------------------------
+distributed_backend=nccl
+All distributed processes registered. Starting with 1 processes
+----------------------------------------------------------------------------------------------------
+
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/utilities/model_summary/model_summary.py:242: Precision bf16-mixed is not supported by the model summary.  Estimated model size in MB will not be accurate. Using 32 bits instead.
+
+  | Name        | Type             | Params | Mode  | FLOPs
+-----------------------------------------------------------------
+0 | model       | ModelBuilder     | 59.5 M | train | 0
+1 | criterion_l | CrossEntropyLoss | 0      | train | 0
+2 | criterion_u | CrossEntropyLoss | 0      | train | 0
+-----------------------------------------------------------------
+59.5 M    Trainable params
+0         Non-trainable params
+59.5 M    Total params
+237.872   Total estimated model params size (MB)
+335       Modules in train mode
+0         Modules in eval mode
+0         Total Flops
+Epoch 0:   0%|          | 0/496 [00:00<?, ?it/s]                           
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/data/zxf_test/user1/kd/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/CSL.py", line 121, in <module>
+[rank0]:     main()
+[rank0]:   File "/data/zxf_test/user1/kd/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/CSL.py", line 115, in main
+[rank0]:     trainer.fit(train_module, train_dataloaders=train_loaders, val_dataloaders=valloader, ckpt_path=checkpoint_path)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 584, in fit
+[rank0]:     call._call_and_handle_interrupt(
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 48, in _call_and_handle_interrupt
+[rank0]:     return trainer.strategy.launcher.launch(trainer_fn, *args, trainer=trainer, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/strategies/launchers/subprocess_script.py", line 105, in launch
+[rank0]:     return function(*args, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 630, in _fit_impl
+[rank0]:     self._run(model, ckpt_path=ckpt_path, weights_only=weights_only)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1079, in _run
+[rank0]:     results = self._run_stage()
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1123, in _run_stage
+[rank0]:     self.fit_loop.run()
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/loops/fit_loop.py", line 217, in run
+[rank0]:     self.advance()
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/loops/fit_loop.py", line 465, in advance
+[rank0]:     self.epoch_loop.run(self._data_fetcher)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/loops/training_epoch_loop.py", line 153, in run
+[rank0]:     self.advance(data_fetcher)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/loops/training_epoch_loop.py", line 352, in advance
+[rank0]:     batch_output = self.automatic_optimization.run(trainer.optimizers[0], batch_idx, kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/loops/optimization/automatic.py", line 192, in run
+[rank0]:     self._optimizer_step(batch_idx, closure)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/loops/optimization/automatic.py", line 270, in _optimizer_step
+[rank0]:     call._call_lightning_module_hook(
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 177, in _call_lightning_module_hook
+[rank0]:     output = fn(*args, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/core/module.py", line 1368, in optimizer_step
+[rank0]:     optimizer.step(closure=optimizer_closure)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/core/optimizer.py", line 154, in step
+[rank0]:     step_output = self._strategy.optimizer_step(self._optimizer, closure, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/strategies/ddp.py", line 274, in optimizer_step
+[rank0]:     optimizer_output = super().optimizer_step(optimizer, closure, model, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/strategies/strategy.py", line 239, in optimizer_step
+[rank0]:     return self.precision_plugin.optimizer_step(optimizer, model=model, closure=closure, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/plugins/precision/amp.py", line 76, in optimizer_step
+[rank0]:     return super().optimizer_step(optimizer, model=model, closure=closure, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/plugins/precision/precision.py", line 123, in optimizer_step
+[rank0]:     return optimizer.step(closure=closure, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/torch/optim/lr_scheduler.py", line 140, in wrapper
+[rank0]:     return func.__get__(opt, opt.__class__)(*args, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/torch/optim/optimizer.py", line 493, in wrapper
+[rank0]:     out = func(*args, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/torch/optim/optimizer.py", line 91, in _use_grad
+[rank0]:     ret = func(self, *args, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/torch/optim/sgd.py", line 114, in step
+[rank0]:     loss = closure()
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/plugins/precision/precision.py", line 109, in _wrap_closure
+[rank0]:     closure_result = closure()
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/loops/optimization/automatic.py", line 146, in __call__
+[rank0]:     self._result = self.closure(*args, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+[rank0]:     return func(*args, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/loops/optimization/automatic.py", line 131, in closure
+[rank0]:     step_output = self._step_fn()
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/loops/optimization/automatic.py", line 319, in _training_step
+[rank0]:     training_step_output = call._call_strategy_hook(trainer, "training_step", *kwargs.values())
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 329, in _call_strategy_hook
+[rank0]:     output = fn(*args, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/strategies/strategy.py", line 390, in training_step
+[rank0]:     return self._forward_redirection(self.model, self.lightning_module, "training_step", *args, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/strategies/strategy.py", line 641, in __call__
+[rank0]:     wrapper_output = wrapper_module(*args, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/torch/nn/parallel/distributed.py", line 1643, in forward
+[rank0]:     else self._run_ddp_forward(*inputs, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/torch/nn/parallel/distributed.py", line 1459, in _run_ddp_forward
+[rank0]:     return self.module(*inputs, **kwargs)  # type: ignore[index]
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/strategies/strategy.py", line 634, in wrapped_forward
+[rank0]:     out = method(*_args, **_kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/train/semi_supervised_train.py", line 112, in training_step
+[rank0]:     self.pseudo_metrics.update_batch(ignore_mask=ignore_mask, confidence_mask=conf_mask)
+[rank0]: AttributeError: 'PseudoLabelMetricsTracker' object has no attribute 'update_batch'

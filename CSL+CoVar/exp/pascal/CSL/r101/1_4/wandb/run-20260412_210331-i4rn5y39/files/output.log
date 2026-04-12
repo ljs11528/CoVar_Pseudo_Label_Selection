@@ -1,0 +1,10 @@
+Seed set to 42
+[pid 419319] RANK=None LOCAL_RANK=None WORLD_SIZE=None
+Traceback (most recent call last):
+  File "/data/zxf_test/user1/kd/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/CSL.py", line 121, in <module>
+    main()
+  File "/data/zxf_test/user1/kd/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/CSL.py", line 85, in main
+    train_module = SemiModule(**{
+  File "/data/zxf_test/user1/kd/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/train/semi_supervised_train.py", line 39, in __init__
+    self.pseudo_metrics = PseudoLabelMetricsTracker(save_path=self.save_path)
+TypeError: PseudoLabelMetricsTracker.__init__() missing 1 required positional argument: 'num_classes'

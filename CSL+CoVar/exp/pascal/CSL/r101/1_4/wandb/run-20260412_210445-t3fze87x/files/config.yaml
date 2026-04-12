@@ -1,0 +1,157 @@
+_wandb:
+    value:
+        cli_version: 0.25.1
+        e:
+            elskw98wxph4d69rltj0nbnw9prxicbv:
+                args:
+                    - --config=configs/pascal.yaml
+                    - --labeled_id_path
+                    - splits/pascal/1_4/labeled.txt
+                    - --unlabeled_id_path
+                    - splits/pascal/1_4/unlabeled.txt
+                    - --val_id_path
+                    - splits/pascal/val.txt
+                    - --save_path
+                    - exp/pascal/CSL/r101/1_4
+                    - --threshold_strategy
+                    - fixed
+                    - --fixed_threshold
+                    - "0.99"
+                codePath: CSL+CoVar/CSL.py
+                codePathLocal: CSL.py
+                cpu_count: 64
+                cpu_count_logical: 128
+                cudaVersion: "12.4"
+                disk:
+                    /:
+                        total: "412706643968"
+                        used: "99300061184"
+                email: 598003084@qq.com
+                executable: /data/zxf_test/user1/kd/pytorch_a800_env/bin/python
+                git:
+                    commit: b31c5669dac781495bc563fbbfe8bd50d825fa23
+                    remote: https://github.com/ljs11528/CoVar_Pseudo_Label_Selection.git
+                gpu: NVIDIA A800-SXM4-80GB
+                gpu_count: 1
+                gpu_nvidia:
+                    - architecture: Ampere
+                      cudaCores: 6912
+                      memoryTotal: "85899345920"
+                      name: NVIDIA A800-SXM4-80GB
+                      uuid: GPU-2952c301-d28f-5b3f-8499-2ed89b12fb4d
+                host: aiproteochallenge-user09-84dbdfb4dd-b5vmj
+                memory:
+                    total: "1081282736128"
+                os: Linux-5.14.0-503.14.1.el9_5.x86_64-x86_64-with-glibc2.35
+                program: /data/zxf_test/user1/kd/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/CSL.py
+                python: CPython 3.10.13
+                root: exp/pascal/CSL/r101/1_4
+                startedAt: "2026-04-12T13:04:45.834032Z"
+                writerId: elskw98wxph4d69rltj0nbnw9prxicbv
+        m:
+            - "1": trainer/global_step
+              "6":
+                - 3
+              "7": []
+            - "2": '*'
+              "5": 1
+              "6":
+                - 1
+              "7": []
+        python_version: 3.10.13
+        t:
+            "1":
+                - 1
+                - 9
+                - 41
+                - 103
+            "2":
+                - 1
+                - 9
+                - 41
+                - 103
+            "3":
+                - 1
+                - 7
+                - 66
+            "4": 3.10.13
+            "5": 0.25.1
+            "12": 0.25.1
+            "13": linux-x86_64
+accumulate_grad_batches:
+    value: 1
+alpha:
+    value: 8
+batch_iters:
+    value: 496
+batch_size:
+    value: 16
+criterion:
+    value:
+        kwargs:
+            ignore_index: 255
+        name: CELoss
+crop_size:
+    value: 321
+dataset:
+    value:
+        block_size: 32
+        cover_radio: 0.7
+        crop_size: 321
+        name: pascal
+        root: ./data/Pascal
+epochs:
+    value: 80
+eval_mode:
+    value: original
+gpu_num:
+    value: 1
+lr:
+    value: 0.001
+lr_multi:
+    value: 10
+model:
+    value:
+        backbone:
+            kwargs:
+                pretrained: true
+                replace_stride_with_dilation:
+                    - false
+                    - true
+                    - true
+            type: model.backbone.resnet.resnet101
+        decoder:
+            kwargs:
+                dilations:
+                    - 12
+                    - 24
+                    - 36
+                nclass: 21
+            type: model.semseg.deeplabv3plus.DeepLabV3Plus
+name:
+    value: pascal
+nclass:
+    value: 21
+save_path:
+    value: exp/pascal/CSL/r101/1_4
+test:
+    value:
+        ckpt: ./exp/pascal/CSL/r101/1_4/checkpoints/epoch=66-val_mIOU=78.84.ckpt
+        device: cuda
+        eval_mode: original
+        val_id_path: ./splits/pascal/val.txt
+total_iters:
+    value: 39680
+train:
+    value:
+        alpha: 8
+        criterion:
+            kwargs:
+                ignore_index: 255
+            name: CELoss
+        crop_size: 321
+        eval_mode: original
+        lr: 0.001
+        lr_multi: 10
+        name: pascal
+        nclass: 21

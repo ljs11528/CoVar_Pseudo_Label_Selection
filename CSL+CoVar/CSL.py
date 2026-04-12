@@ -30,7 +30,7 @@ def main():
 
     # 使用WandbLogger替换TensorBoardLogger
     logger = WandbLogger(project="CSL-CoVar", save_dir=args.save_path)
-    wandb.config.update(cfg)
+    logger.experiment.config.update(cfg)
 
     pl.seed_everything(42, workers=True)
 

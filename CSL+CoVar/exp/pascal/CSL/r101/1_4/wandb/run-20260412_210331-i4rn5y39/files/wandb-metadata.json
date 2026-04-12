@@ -1,0 +1,55 @@
+{
+  "os": "Linux-5.14.0-503.14.1.el9_5.x86_64-x86_64-with-glibc2.35",
+  "python": "CPython 3.10.13",
+  "startedAt": "2026-04-12T13:03:31.712883Z",
+  "args": [
+    "--config=configs/pascal.yaml",
+    "--labeled_id_path",
+    "splits/pascal/1_4/labeled.txt",
+    "--unlabeled_id_path",
+    "splits/pascal/1_4/unlabeled.txt",
+    "--val_id_path",
+    "splits/pascal/val.txt",
+    "--save_path",
+    "exp/pascal/CSL/r101/1_4",
+    "--threshold_strategy",
+    "fixed",
+    "--fixed_threshold",
+    "0.99"
+  ],
+  "program": "/data/zxf_test/user1/kd/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/CSL.py",
+  "codePath": "CSL+CoVar/CSL.py",
+  "codePathLocal": "CSL.py",
+  "git": {
+    "remote": "https://github.com/ljs11528/CoVar_Pseudo_Label_Selection.git",
+    "commit": "b31c5669dac781495bc563fbbfe8bd50d825fa23"
+  },
+  "email": "598003084@qq.com",
+  "root": "exp/pascal/CSL/r101/1_4",
+  "host": "aiproteochallenge-user09-84dbdfb4dd-b5vmj",
+  "executable": "/data/zxf_test/user1/kd/pytorch_a800_env/bin/python",
+  "cpu_count": 64,
+  "cpu_count_logical": 128,
+  "gpu": "NVIDIA A800-SXM4-80GB",
+  "gpu_count": 1,
+  "disk": {
+    "/": {
+      "total": "412706643968",
+      "used": "99300040704"
+    }
+  },
+  "memory": {
+    "total": "1081282736128"
+  },
+  "gpu_nvidia": [
+    {
+      "name": "NVIDIA A800-SXM4-80GB",
+      "memoryTotal": "85899345920",
+      "cudaCores": 6912,
+      "architecture": "Ampere",
+      "uuid": "GPU-2952c301-d28f-5b3f-8499-2ed89b12fb4d"
+    }
+  ],
+  "cudaVersion": "12.4",
+  "writerId": "ju7m0tnsc9cyrctgi1rp5d43ctz8iuqi"
+}

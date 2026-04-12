@@ -1,0 +1,18 @@
+{"time":"2026-04-12T21:04:46.056405707+08:00","level":"INFO","msg":"wandb-core"}
+{"time":"2026-04-12T21:04:46.057252961+08:00","level":"INFO","msg":"stream: starting","core version":"0.25.1"}
+{"time":"2026-04-12T21:04:46.60913966+08:00","level":"INFO","msg":"stream: created new stream","id":"t3fze87x"}
+{"time":"2026-04-12T21:04:46.609196088+08:00","level":"INFO","msg":"handler: started"}
+{"time":"2026-04-12T21:04:46.609287646+08:00","level":"INFO","msg":"stream: started"}
+{"time":"2026-04-12T21:04:46.609313824+08:00","level":"INFO","msg":"sender: started"}
+{"time":"2026-04-12T21:04:46.609309452+08:00","level":"INFO","msg":"writer: started","stream_id":"t3fze87x"}
+{"time":"2026-04-12T21:04:47.497499004+08:00","level":"INFO","msg":"filestream: sending request","total_files":1,"console_offset":0,"console_lines":1}
+{"time":"2026-04-12T21:04:48.10820895+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-04-12T21:05:02.498221761+08:00","level":"INFO","msg":"filestream: sending request","total_files":2,"events_offset":0,"events_lines":2,"console_offset":1,"console_lines":31,"uploaded_len":2}
+{"time":"2026-04-12T21:05:02.902728118+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-04-12T21:05:03.167005613+08:00","level":"INFO","msg":"stream: closing"}
+{"time":"2026-04-12T21:05:04.18413999+08:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2026-04-12T21:05:04.184999708+08:00","level":"INFO","msg":"filestream: sending request","total_files":2,"console_offset":32,"console_lines":84,"uploaded_len":3,"complete":true,"exit_code":1}
+{"time":"2026-04-12T21:05:04.681221353+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-04-12T21:05:04.681343197+08:00","level":"INFO","msg":"handler: closed"}
+{"time":"2026-04-12T21:05:04.681406296+08:00","level":"INFO","msg":"sender: closed"}
+{"time":"2026-04-12T21:05:04.681762093+08:00","level":"INFO","msg":"stream: closed"}
