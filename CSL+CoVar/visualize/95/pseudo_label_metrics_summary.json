@@ -1,0 +1,898 @@
+{
+  "generated_pseudo_labels_total": 60940899382,
+  "selected_pseudo_labels_total": 48715584357,
+  "pseudo_label_selection_rate": 0.7993906366828093,
+  "pseudo_label_accuracy_on_val": 0.9512985500891948,
+  "per_epoch_cumulative": [
+    {
+      "epoch": 0,
+      "generated_pseudo_labels_epoch": 759934856,
+      "selected_pseudo_labels_epoch": 338328558,
+      "selection_rate_epoch": 0.4452073165597763,
+      "generated_pseudo_labels_cumulative": 759934856,
+      "selected_pseudo_labels_cumulative": 338328558,
+      "selection_rate_cumulative": 0.4452073165597763
+    },
+    {
+      "epoch": 1,
+      "generated_pseudo_labels_epoch": 760939930,
+      "selected_pseudo_labels_epoch": 428910797,
+      "selection_rate_epoch": 0.5636592063186906,
+      "generated_pseudo_labels_cumulative": 1520874786,
+      "selected_pseudo_labels_cumulative": 767239355,
+      "selection_rate_cumulative": 0.5044724010566902
+    },
+    {
+      "epoch": 2,
+      "generated_pseudo_labels_epoch": 762250658,
+      "selected_pseudo_labels_epoch": 469290449,
+      "selection_rate_epoch": 0.6156642097644474,
+      "generated_pseudo_labels_cumulative": 2283125444,
+      "selected_pseudo_labels_cumulative": 1236529804,
+      "selection_rate_cumulative": 0.54159520986881
+    },
+    {
+      "epoch": 3,
+      "generated_pseudo_labels_epoch": 762768041,
+      "selected_pseudo_labels_epoch": 492925306,
+      "selection_rate_epoch": 0.6462322482124024,
+      "generated_pseudo_labels_cumulative": 3045893485,
+      "selected_pseudo_labels_cumulative": 1729455110,
+      "selection_rate_cumulative": 0.5677989458649766
+    },
+    {
+      "epoch": 4,
+      "generated_pseudo_labels_epoch": 762113213,
+      "selected_pseudo_labels_epoch": 505054610,
+      "selection_rate_epoch": 0.6627028653812357,
+      "generated_pseudo_labels_cumulative": 3808006698,
+      "selected_pseudo_labels_cumulative": 2234509720,
+      "selection_rate_cumulative": 0.5867924867814925
+    },
+    {
+      "epoch": 5,
+      "generated_pseudo_labels_epoch": 763604459,
+      "selected_pseudo_labels_epoch": 519419117,
+      "selection_rate_epoch": 0.6802201203489829,
+      "generated_pseudo_labels_cumulative": 4571611157,
+      "selected_pseudo_labels_cumulative": 2753928837,
+      "selection_rate_cumulative": 0.60239787296503
+    },
+    {
+      "epoch": 6,
+      "generated_pseudo_labels_epoch": 761091947,
+      "selected_pseudo_labels_epoch": 531742084,
+      "selection_rate_epoch": 0.6986568260194718,
+      "generated_pseudo_labels_cumulative": 5332703104,
+      "selected_pseudo_labels_cumulative": 3285670921,
+      "selection_rate_cumulative": 0.6161361052587863
+    },
+    {
+      "epoch": 7,
+      "generated_pseudo_labels_epoch": 763238583,
+      "selected_pseudo_labels_epoch": 541077637,
+      "selection_rate_epoch": 0.7089233288930835,
+      "generated_pseudo_labels_cumulative": 6095941687,
+      "selected_pseudo_labels_cumulative": 3826748558,
+      "selection_rate_cumulative": 0.6277534718156499
+    },
+    {
+      "epoch": 8,
+      "generated_pseudo_labels_epoch": 762102880,
+      "selected_pseudo_labels_epoch": 543147633,
+      "selection_rate_epoch": 0.7126959459856653,
+      "generated_pseudo_labels_cumulative": 6858044567,
+      "selected_pseudo_labels_cumulative": 4369896191,
+      "selection_rate_cumulative": 0.6371927374207161
+    },
+    {
+      "epoch": 9,
+      "generated_pseudo_labels_epoch": 761969591,
+      "selected_pseudo_labels_epoch": 550236661,
+      "selection_rate_epoch": 0.7221241733254418,
+      "generated_pseudo_labels_cumulative": 7620014158,
+      "selected_pseudo_labels_cumulative": 4920132852,
+      "selection_rate_cumulative": 0.6456855262971547
+    },
+    {
+      "epoch": 10,
+      "generated_pseudo_labels_epoch": 762662532,
+      "selected_pseudo_labels_epoch": 556869392,
+      "selection_rate_epoch": 0.7301648745476853,
+      "generated_pseudo_labels_cumulative": 8382676690,
+      "selected_pseudo_labels_cumulative": 5477002244,
+      "selection_rate_cumulative": 0.6533715239827531
+    },
+    {
+      "epoch": 11,
+      "generated_pseudo_labels_epoch": 761607175,
+      "selected_pseudo_labels_epoch": 559046061,
+      "selection_rate_epoch": 0.7340346563830625,
+      "generated_pseudo_labels_cumulative": 9144283865,
+      "selected_pseudo_labels_cumulative": 6036048305,
+      "selection_rate_cumulative": 0.6600897778450582
+    },
+    {
+      "epoch": 12,
+      "generated_pseudo_labels_epoch": 760265324,
+      "selected_pseudo_labels_epoch": 569340896,
+      "selection_rate_epoch": 0.748871319034406,
+      "generated_pseudo_labels_cumulative": 9904549189,
+      "selected_pseudo_labels_cumulative": 6605389201,
+      "selection_rate_cumulative": 0.666904578386662
+    },
+    {
+      "epoch": 13,
+      "generated_pseudo_labels_epoch": 760586179,
+      "selected_pseudo_labels_epoch": 572020950,
+      "selection_rate_epoch": 0.7520790750524537,
+      "generated_pseudo_labels_cumulative": 10665135368,
+      "selected_pseudo_labels_cumulative": 7177410151,
+      "selection_rate_cumulative": 0.6729788139900523
+    },
+    {
+      "epoch": 14,
+      "generated_pseudo_labels_epoch": 763058689,
+      "selected_pseudo_labels_epoch": 573163341,
+      "selection_rate_epoch": 0.751139262631475,
+      "generated_pseudo_labels_cumulative": 11428194057,
+      "selected_pseudo_labels_cumulative": 7750573492,
+      "selection_rate_cumulative": 0.6781975746423922
+    },
+    {
+      "epoch": 15,
+      "generated_pseudo_labels_epoch": 762278614,
+      "selected_pseudo_labels_epoch": 582295619,
+      "selection_rate_epoch": 0.7638881746195755,
+      "generated_pseudo_labels_cumulative": 12190472671,
+      "selected_pseudo_labels_cumulative": 8332869111,
+      "selection_rate_cumulative": 0.6835558666091037
+    },
+    {
+      "epoch": 16,
+      "generated_pseudo_labels_epoch": 763666208,
+      "selected_pseudo_labels_epoch": 586833260,
+      "selection_rate_epoch": 0.7684420940097431,
+      "generated_pseudo_labels_cumulative": 12954138879,
+      "selected_pseudo_labels_cumulative": 8919702371,
+      "selection_rate_cumulative": 0.6885600389432107
+    },
+    {
+      "epoch": 17,
+      "generated_pseudo_labels_epoch": 764181244,
+      "selected_pseudo_labels_epoch": 585535460,
+      "selection_rate_epoch": 0.7662258981064445,
+      "generated_pseudo_labels_cumulative": 13718320123,
+      "selected_pseudo_labels_cumulative": 9505237831,
+      "selection_rate_cumulative": 0.6928864282051278
+    },
+    {
+      "epoch": 18,
+      "generated_pseudo_labels_epoch": 761572164,
+      "selected_pseudo_labels_epoch": 589899653,
+      "selection_rate_epoch": 0.7745814262717722,
+      "generated_pseudo_labels_cumulative": 14479892287,
+      "selected_pseudo_labels_cumulative": 10095137484,
+      "selection_rate_cumulative": 0.697183189205308
+    },
+    {
+      "epoch": 19,
+      "generated_pseudo_labels_epoch": 760634054,
+      "selected_pseudo_labels_epoch": 592560127,
+      "selection_rate_epoch": 0.7790344435459631,
+      "generated_pseudo_labels_cumulative": 15240526341,
+      "selected_pseudo_labels_cumulative": 10687697611,
+      "selection_rate_cumulative": 0.7012682745902286
+    },
+    {
+      "epoch": 20,
+      "generated_pseudo_labels_epoch": 762384848,
+      "selected_pseudo_labels_epoch": 595837975,
+      "selection_rate_epoch": 0.7815448805981516,
+      "generated_pseudo_labels_cumulative": 16002911189,
+      "selected_pseudo_labels_cumulative": 11283535586,
+      "selection_rate_cumulative": 0.7050926829960801
+    },
+    {
+      "epoch": 21,
+      "generated_pseudo_labels_epoch": 761099797,
+      "selected_pseudo_labels_epoch": 596731763,
+      "selection_rate_epoch": 0.7840387888055106,
+      "generated_pseudo_labels_cumulative": 16764010986,
+      "selected_pseudo_labels_cumulative": 11880267349,
+      "selection_rate_cumulative": 0.7086769007083971
+    },
+    {
+      "epoch": 22,
+      "generated_pseudo_labels_epoch": 763240484,
+      "selected_pseudo_labels_epoch": 606011455,
+      "selection_rate_epoch": 0.793998048719858,
+      "generated_pseudo_labels_cumulative": 17527251470,
+      "selected_pseudo_labels_cumulative": 12486278804,
+      "selection_rate_cumulative": 0.712392289536769
+    },
+    {
+      "epoch": 23,
+      "generated_pseudo_labels_epoch": 758899608,
+      "selected_pseudo_labels_epoch": 599940910,
+      "selection_rate_epoch": 0.7905405453839687,
+      "generated_pseudo_labels_cumulative": 18286151078,
+      "selected_pseudo_labels_cumulative": 13086219714,
+      "selection_rate_cumulative": 0.7156355461671747
+    },
+    {
+      "epoch": 24,
+      "generated_pseudo_labels_epoch": 762320621,
+      "selected_pseudo_labels_epoch": 606109611,
+      "selection_rate_epoch": 0.7950848951257741,
+      "generated_pseudo_labels_cumulative": 19048471699,
+      "selected_pseudo_labels_cumulative": 13692329325,
+      "selection_rate_cumulative": 0.7188151123808434
+    },
+    {
+      "epoch": 25,
+      "generated_pseudo_labels_epoch": 761177760,
+      "selected_pseudo_labels_epoch": 605493872,
+      "selection_rate_epoch": 0.7954697362676493,
+      "generated_pseudo_labels_cumulative": 19809649459,
+      "selected_pseudo_labels_cumulative": 14297823197,
+      "selection_rate_cumulative": 0.721760535268036
+    },
+    {
+      "epoch": 26,
+      "generated_pseudo_labels_epoch": 758637323,
+      "selected_pseudo_labels_epoch": 604250412,
+      "selection_rate_epoch": 0.7964944429711376,
+      "generated_pseudo_labels_cumulative": 20568286782,
+      "selected_pseudo_labels_cumulative": 14902073609,
+      "selection_rate_cumulative": 0.7245170084871292
+    },
+    {
+      "epoch": 27,
+      "generated_pseudo_labels_epoch": 763885654,
+      "selected_pseudo_labels_epoch": 609635584,
+      "selection_rate_epoch": 0.7980717805180826,
+      "generated_pseudo_labels_cumulative": 21332172436,
+      "selected_pseudo_labels_cumulative": 15511709193,
+      "selection_rate_cumulative": 0.7271509378399064
+    },
+    {
+      "epoch": 28,
+      "generated_pseudo_labels_epoch": 763712227,
+      "selected_pseudo_labels_epoch": 614449006,
+      "selection_rate_epoch": 0.8045556746075246,
+      "generated_pseudo_labels_cumulative": 22095884663,
+      "selected_pseudo_labels_cumulative": 16126158199,
+      "selection_rate_cumulative": 0.729826320373747
+    },
+    {
+      "epoch": 29,
+      "generated_pseudo_labels_epoch": 764018618,
+      "selected_pseudo_labels_epoch": 617369688,
+      "selection_rate_epoch": 0.8080558162523731,
+      "generated_pseudo_labels_cumulative": 22859903281,
+      "selected_pseudo_labels_cumulative": 16743527887,
+      "selection_rate_cumulative": 0.7324408892366739
+    },
+    {
+      "epoch": 30,
+      "generated_pseudo_labels_epoch": 760920618,
+      "selected_pseudo_labels_epoch": 615541077,
+      "selection_rate_epoch": 0.8089425656750965,
+      "generated_pseudo_labels_cumulative": 23620823899,
+      "selected_pseudo_labels_cumulative": 17359068964,
+      "selection_rate_cumulative": 0.734905312288235
+    },
+    {
+      "epoch": 31,
+      "generated_pseudo_labels_epoch": 762542858,
+      "selected_pseudo_labels_epoch": 622209268,
+      "selection_rate_epoch": 0.815966291562854,
+      "generated_pseudo_labels_cumulative": 24383366757,
+      "selected_pseudo_labels_cumulative": 17981278232,
+      "selection_rate_cumulative": 0.7374403383748439
+    },
+    {
+      "epoch": 32,
+      "generated_pseudo_labels_epoch": 762076882,
+      "selected_pseudo_labels_epoch": 616485975,
+      "selection_rate_epoch": 0.8089550930636943,
+      "generated_pseudo_labels_cumulative": 25145443639,
+      "selected_pseudo_labels_cumulative": 18597764207,
+      "selection_rate_cumulative": 0.7396077187580536
+    },
+    {
+      "epoch": 33,
+      "generated_pseudo_labels_epoch": 763902681,
+      "selected_pseudo_labels_epoch": 618890209,
+      "selection_rate_epoch": 0.8101689186243346,
+      "generated_pseudo_labels_cumulative": 25909346320,
+      "selected_pseudo_labels_cumulative": 19216654416,
+      "selection_rate_cumulative": 0.7416881220645168
+    },
+    {
+      "epoch": 34,
+      "generated_pseudo_labels_epoch": 759639854,
+      "selected_pseudo_labels_epoch": 616843094,
+      "selection_rate_epoch": 0.8120204472578922,
+      "generated_pseudo_labels_cumulative": 26668986174,
+      "selected_pseudo_labels_cumulative": 19833497510,
+      "selection_rate_cumulative": 0.7436914692068789
+    },
+    {
+      "epoch": 35,
+      "generated_pseudo_labels_epoch": 762064288,
+      "selected_pseudo_labels_epoch": 620432459,
+      "selection_rate_epoch": 0.8141471379380528,
+      "generated_pseudo_labels_cumulative": 27431050462,
+      "selected_pseudo_labels_cumulative": 20453929969,
+      "selection_rate_cumulative": 0.7456488039834513
+    },
+    {
+      "epoch": 36,
+      "generated_pseudo_labels_epoch": 759090674,
+      "selected_pseudo_labels_epoch": 622443957,
+      "selection_rate_epoch": 0.8199863050879742,
+      "generated_pseudo_labels_cumulative": 28190141136,
+      "selected_pseudo_labels_cumulative": 21076373926,
+      "selection_rate_cumulative": 0.7476505287546993
+    },
+    {
+      "epoch": 37,
+      "generated_pseudo_labels_epoch": 762600792,
+      "selected_pseudo_labels_epoch": 623383432,
+      "selection_rate_epoch": 0.8174439871287205,
+      "generated_pseudo_labels_cumulative": 28952741928,
+      "selected_pseudo_labels_cumulative": 21699757358,
+      "selection_rate_cumulative": 0.7494888536623991
+    },
+    {
+      "epoch": 38,
+      "generated_pseudo_labels_epoch": 759858253,
+      "selected_pseudo_labels_epoch": 624672897,
+      "selection_rate_epoch": 0.8220913499770858,
+      "generated_pseudo_labels_cumulative": 29712600181,
+      "selected_pseudo_labels_cumulative": 22324430255,
+      "selection_rate_cumulative": 0.7513455611089724
+    },
+    {
+      "epoch": 39,
+      "generated_pseudo_labels_epoch": 762449719,
+      "selected_pseudo_labels_epoch": 623965446,
+      "selection_rate_epoch": 0.8183693041665349,
+      "generated_pseudo_labels_cumulative": 30475049900,
+      "selected_pseudo_labels_cumulative": 22948395701,
+      "selection_rate_cumulative": 0.7530224159206381
+    },
+    {
+      "epoch": 40,
+      "generated_pseudo_labels_epoch": 760148873,
+      "selected_pseudo_labels_epoch": 628351221,
+      "selection_rate_epoch": 0.8266160002581494,
+      "generated_pseudo_labels_cumulative": 31235198773,
+      "selected_pseudo_labels_cumulative": 23576746922,
+      "selection_rate_cumulative": 0.7548134107723355
+    },
+    {
+      "epoch": 41,
+      "generated_pseudo_labels_epoch": 760079127,
+      "selected_pseudo_labels_epoch": 629692915,
+      "selection_rate_epoch": 0.8284570548402916,
+      "generated_pseudo_labels_cumulative": 31995277900,
+      "selected_pseudo_labels_cumulative": 24206439837,
+      "selection_rate_cumulative": 0.7565628875816078
+    },
+    {
+      "epoch": 42,
+      "generated_pseudo_labels_epoch": 761200666,
+      "selected_pseudo_labels_epoch": 630720206,
+      "selection_rate_epoch": 0.8285859881262899,
+      "generated_pseudo_labels_cumulative": 32756478566,
+      "selected_pseudo_labels_cumulative": 24837160043,
+      "selection_rate_cumulative": 0.7582365727425916
+    },
+    {
+      "epoch": 43,
+      "generated_pseudo_labels_epoch": 761034168,
+      "selected_pseudo_labels_epoch": 634542288,
+      "selection_rate_epoch": 0.8337894863085832,
+      "generated_pseudo_labels_cumulative": 33517512734,
+      "selected_pseudo_labels_cumulative": 25471702331,
+      "selection_rate_cumulative": 0.7599520445668879
+    },
+    {
+      "epoch": 44,
+      "generated_pseudo_labels_epoch": 764618612,
+      "selected_pseudo_labels_epoch": 635533413,
+      "selection_rate_epoch": 0.8311770116838327,
+      "generated_pseudo_labels_cumulative": 34282131346,
+      "selected_pseudo_labels_cumulative": 26107235744,
+      "selection_rate_cumulative": 0.7615406253627274
+    },
+    {
+      "epoch": 45,
+      "generated_pseudo_labels_epoch": 762845317,
+      "selected_pseudo_labels_epoch": 635458462,
+      "selection_rate_epoch": 0.833010897279979,
+      "generated_pseudo_labels_cumulative": 35044976663,
+      "selected_pseudo_labels_cumulative": 26742694206,
+      "selection_rate_cumulative": 0.7630963622308405
+    },
+    {
+      "epoch": 46,
+      "generated_pseudo_labels_epoch": 761482016,
+      "selected_pseudo_labels_epoch": 633487053,
+      "selection_rate_epoch": 0.8319133475110199,
+      "generated_pseudo_labels_cumulative": 35806458679,
+      "selected_pseudo_labels_cumulative": 27376181259,
+      "selection_rate_cumulative": 0.7645598662638972
+    },
+    {
+      "epoch": 47,
+      "generated_pseudo_labels_epoch": 762613689,
+      "selected_pseudo_labels_epoch": 638012378,
+      "selection_rate_epoch": 0.8366128056744074,
+      "generated_pseudo_labels_cumulative": 36569072368,
+      "selected_pseudo_labels_cumulative": 28014193637,
+      "selection_rate_cumulative": 0.7660624627031557
+    },
+    {
+      "epoch": 48,
+      "generated_pseudo_labels_epoch": 762635736,
+      "selected_pseudo_labels_epoch": 637531512,
+      "selection_rate_epoch": 0.835958088384151,
+      "generated_pseudo_labels_cumulative": 37331708104,
+      "selected_pseudo_labels_cumulative": 28651725149,
+      "selection_rate_cumulative": 0.7674903347358499
+    },
+    {
+      "epoch": 49,
+      "generated_pseudo_labels_epoch": 761271767,
+      "selected_pseudo_labels_epoch": 638029851,
+      "selection_rate_epoch": 0.8381104865012025,
+      "generated_pseudo_labels_cumulative": 38092979871,
+      "selected_pseudo_labels_cumulative": 29289755000,
+      "selection_rate_cumulative": 0.7689016479988784
+    },
+    {
+      "epoch": 50,
+      "generated_pseudo_labels_epoch": 761376840,
+      "selected_pseudo_labels_epoch": 637763086,
+      "selection_rate_epoch": 0.8376444521217641,
+      "generated_pseudo_labels_cumulative": 38854356711,
+      "selected_pseudo_labels_cumulative": 29927518086,
+      "selection_rate_cumulative": 0.7702487087510386
+    },
+    {
+      "epoch": 51,
+      "generated_pseudo_labels_epoch": 762153480,
+      "selected_pseudo_labels_epoch": 640024839,
+      "selection_rate_epoch": 0.8397584683337009,
+      "generated_pseudo_labels_cumulative": 39616510191,
+      "selected_pseudo_labels_cumulative": 30567542925,
+      "selection_rate_cumulative": 0.7715859569060244
+    },
+    {
+      "epoch": 52,
+      "generated_pseudo_labels_epoch": 761523003,
+      "selected_pseudo_labels_epoch": 640958882,
+      "selection_rate_epoch": 0.8416802637280282,
+      "generated_pseudo_labels_cumulative": 40378033194,
+      "selected_pseudo_labels_cumulative": 31208501807,
+      "selection_rate_cumulative": 0.7729079238965371
+    },
+    {
+      "epoch": 53,
+      "generated_pseudo_labels_epoch": 760757616,
+      "selected_pseudo_labels_epoch": 639947587,
+      "selection_rate_epoch": 0.8411977396490501,
+      "generated_pseudo_labels_cumulative": 41138790810,
+      "selected_pseudo_labels_cumulative": 31848449394,
+      "selection_rate_cumulative": 0.7741707708690916
+    },
+    {
+      "epoch": 54,
+      "generated_pseudo_labels_epoch": 761965344,
+      "selected_pseudo_labels_epoch": 642403269,
+      "selection_rate_epoch": 0.8430872533226393,
+      "generated_pseudo_labels_cumulative": 41900756154,
+      "selected_pseudo_labels_cumulative": 32490852663,
+      "selection_rate_cumulative": 0.7754240172560299
+    },
+    {
+      "epoch": 55,
+      "generated_pseudo_labels_epoch": 761250955,
+      "selected_pseudo_labels_epoch": 642302090,
+      "selection_rate_epoch": 0.8437455293570042,
+      "generated_pseudo_labels_cumulative": 42662007109,
+      "selected_pseudo_labels_cumulative": 33133154753,
+      "selection_rate_cumulative": 0.7766431304637379
+    },
+    {
+      "epoch": 56,
+      "generated_pseudo_labels_epoch": 761065471,
+      "selected_pseudo_labels_epoch": 643078089,
+      "selection_rate_epoch": 0.8449707856999861,
+      "generated_pseudo_labels_cumulative": 43423072580,
+      "selected_pseudo_labels_cumulative": 33776232842,
+      "selection_rate_cumulative": 0.7778406924054659
+    },
+    {
+      "epoch": 57,
+      "generated_pseudo_labels_epoch": 763713070,
+      "selected_pseudo_labels_epoch": 646392069,
+      "selection_rate_epoch": 0.8463807867004293,
+      "generated_pseudo_labels_cumulative": 44186785650,
+      "selected_pseudo_labels_cumulative": 34422624911,
+      "selection_rate_cumulative": 0.7790253218158674
+    },
+    {
+      "epoch": 58,
+      "generated_pseudo_labels_epoch": 760347064,
+      "selected_pseudo_labels_epoch": 644041587,
+      "selection_rate_epoch": 0.8470363305039342,
+      "generated_pseudo_labels_cumulative": 44947132714,
+      "selected_pseudo_labels_cumulative": 35066666498,
+      "selection_rate_cumulative": 0.7801758283699716
+    },
+    {
+      "epoch": 59,
+      "generated_pseudo_labels_epoch": 763716890,
+      "selected_pseudo_labels_epoch": 646359952,
+      "selection_rate_epoch": 0.8463344996861337,
+      "generated_pseudo_labels_cumulative": 45710849604,
+      "selected_pseudo_labels_cumulative": 35713026450,
+      "selection_rate_cumulative": 0.7812811785251718
+    },
+    {
+      "epoch": 60,
+      "generated_pseudo_labels_epoch": 759806007,
+      "selected_pseudo_labels_epoch": 642502806,
+      "selection_rate_epoch": 0.8456142753290973,
+      "generated_pseudo_labels_cumulative": 46470655611,
+      "selected_pseudo_labels_cumulative": 36355529256,
+      "selection_rate_cumulative": 0.7823330395922871
+    },
+    {
+      "epoch": 61,
+      "generated_pseudo_labels_epoch": 759923752,
+      "selected_pseudo_labels_epoch": 643217151,
+      "selection_rate_epoch": 0.8464232751077374,
+      "generated_pseudo_labels_cumulative": 47230579363,
+      "selected_pseudo_labels_cumulative": 36998746407,
+      "selection_rate_cumulative": 0.7833642294039797
+    },
+    {
+      "epoch": 62,
+      "generated_pseudo_labels_epoch": 762234729,
+      "selected_pseudo_labels_epoch": 649522736,
+      "selection_rate_epoch": 0.8521295491903519,
+      "generated_pseudo_labels_cumulative": 47992814092,
+      "selected_pseudo_labels_cumulative": 37648269143,
+      "selection_rate_cumulative": 0.7844563786326431
+    },
+    {
+      "epoch": 63,
+      "generated_pseudo_labels_epoch": 760349552,
+      "selected_pseudo_labels_epoch": 646766466,
+      "selection_rate_epoch": 0.850617277670205,
+      "generated_pseudo_labels_cumulative": 48753163644,
+      "selected_pseudo_labels_cumulative": 38295035609,
+      "selection_rate_cumulative": 0.785488217516176
+    },
+    {
+      "epoch": 64,
+      "generated_pseudo_labels_epoch": 759726204,
+      "selected_pseudo_labels_epoch": 645689302,
+      "selection_rate_epoch": 0.849897369079032,
+      "generated_pseudo_labels_cumulative": 49512889848,
+      "selected_pseudo_labels_cumulative": 38940724911,
+      "selection_rate_cumulative": 0.786476512086942
+    },
+    {
+      "epoch": 65,
+      "generated_pseudo_labels_epoch": 761756275,
+      "selected_pseudo_labels_epoch": 649437036,
+      "selection_rate_epoch": 0.8525522628612413,
+      "generated_pseudo_labels_cumulative": 50274646123,
+      "selected_pseudo_labels_cumulative": 39590161947,
+      "selection_rate_cumulative": 0.7874776850768923
+    },
+    {
+      "epoch": 66,
+      "generated_pseudo_labels_epoch": 759332559,
+      "selected_pseudo_labels_epoch": 645938230,
+      "selection_rate_epoch": 0.850665788453304,
+      "generated_pseudo_labels_cumulative": 51033978682,
+      "selected_pseudo_labels_cumulative": 40236100177,
+      "selection_rate_cumulative": 0.7884178583785693
+    },
+    {
+      "epoch": 67,
+      "generated_pseudo_labels_epoch": 760885571,
+      "selected_pseudo_labels_epoch": 650372725,
+      "selection_rate_epoch": 0.8547576006011554,
+      "generated_pseudo_labels_cumulative": 51794864253,
+      "selected_pseudo_labels_cumulative": 40886472902,
+      "selection_rate_cumulative": 0.7893924135467123
+    },
+    {
+      "epoch": 68,
+      "generated_pseudo_labels_epoch": 761563539,
+      "selected_pseudo_labels_epoch": 649875121,
+      "selection_rate_epoch": 0.8533432704162062,
+      "generated_pseudo_labels_cumulative": 52556427792,
+      "selected_pseudo_labels_cumulative": 41536348023,
+      "selection_rate_cumulative": 0.7903190868943066
+    },
+    {
+      "epoch": 69,
+      "generated_pseudo_labels_epoch": 762003050,
+      "selected_pseudo_labels_epoch": 652062952,
+      "selection_rate_epoch": 0.8557222336577262,
+      "generated_pseudo_labels_cumulative": 53318430842,
+      "selected_pseudo_labels_cumulative": 42188410975,
+      "selection_rate_cumulative": 0.791253799272865
+    },
+    {
+      "epoch": 70,
+      "generated_pseudo_labels_epoch": 764126397,
+      "selected_pseudo_labels_epoch": 653301834,
+      "selection_rate_epoch": 0.8549656661056299,
+      "generated_pseudo_labels_cumulative": 54082557239,
+      "selected_pseudo_labels_cumulative": 42841712809,
+      "selection_rate_cumulative": 0.7921539771071697
+    },
+    {
+      "epoch": 71,
+      "generated_pseudo_labels_epoch": 762288004,
+      "selected_pseudo_labels_epoch": 652119200,
+      "selection_rate_epoch": 0.8554761410098223,
+      "generated_pseudo_labels_cumulative": 54844845243,
+      "selected_pseudo_labels_cumulative": 43493832009,
+      "selection_rate_cumulative": 0.7930340912859306
+    },
+    {
+      "epoch": 72,
+      "generated_pseudo_labels_epoch": 761091744,
+      "selected_pseudo_labels_epoch": 651791896,
+      "selection_rate_epoch": 0.8563907060329379,
+      "generated_pseudo_labels_cumulative": 55605936987,
+      "selected_pseudo_labels_cumulative": 44145623905,
+      "selection_rate_cumulative": 0.7939012684080967
+    },
+    {
+      "epoch": 73,
+      "generated_pseudo_labels_epoch": 761643538,
+      "selected_pseudo_labels_epoch": 651468267,
+      "selection_rate_epoch": 0.8553453610473618,
+      "generated_pseudo_labels_cumulative": 56367580525,
+      "selected_pseudo_labels_cumulative": 44797092172,
+      "selection_rate_cumulative": 0.7947315062091713
+    },
+    {
+      "epoch": 74,
+      "generated_pseudo_labels_epoch": 762166006,
+      "selected_pseudo_labels_epoch": 653288286,
+      "selection_rate_epoch": 0.8571469743561352,
+      "generated_pseudo_labels_cumulative": 57129746531,
+      "selected_pseudo_labels_cumulative": 45450380458,
+      "selection_rate_cumulative": 0.7955641888475299
+    },
+    {
+      "epoch": 75,
+      "generated_pseudo_labels_epoch": 762523947,
+      "selected_pseudo_labels_epoch": 652359700,
+      "selection_rate_epoch": 0.8555268363263613,
+      "generated_pseudo_labels_cumulative": 57892270478,
+      "selected_pseudo_labels_cumulative": 46102740158,
+      "selection_rate_cumulative": 0.7963539826187986
+    },
+    {
+      "epoch": 76,
+      "generated_pseudo_labels_epoch": 762080178,
+      "selected_pseudo_labels_epoch": 652135454,
+      "selection_rate_epoch": 0.8557307653788628,
+      "generated_pseudo_labels_cumulative": 58654350656,
+      "selected_pseudo_labels_cumulative": 46754875612,
+      "selection_rate_cumulative": 0.7971254491625208
+    },
+    {
+      "epoch": 77,
+      "generated_pseudo_labels_epoch": 761875110,
+      "selected_pseudo_labels_epoch": 652945328,
+      "selection_rate_epoch": 0.8570240967709262,
+      "generated_pseudo_labels_cumulative": 59416225766,
+      "selected_pseudo_labels_cumulative": 47407820940,
+      "selection_rate_cumulative": 0.7978935102122959
+    },
+    {
+      "epoch": 78,
+      "generated_pseudo_labels_epoch": 762685151,
+      "selected_pseudo_labels_epoch": 654162315,
+      "selection_rate_epoch": 0.8577095202945678,
+      "generated_pseudo_labels_cumulative": 60178910917,
+      "selected_pseudo_labels_cumulative": 48061983255,
+      "selection_rate_cumulative": 0.7986515960929915
+    },
+    {
+      "epoch": 79,
+      "generated_pseudo_labels_epoch": 761988465,
+      "selected_pseudo_labels_epoch": 653601102,
+      "selection_rate_epoch": 0.8577572128995418,
+      "generated_pseudo_labels_cumulative": 60940899382,
+      "selected_pseudo_labels_cumulative": 48715584357,
+      "selection_rate_cumulative": 0.7993906366828093
+    }
+  ],
+  "per_class": [
+    {
+      "class_index": 0,
+      "class_name": "background",
+      "generated_pseudo_labels_total": 37113662643,
+      "selected_pseudo_labels_total": 31510991723,
+      "pseudo_label_selection_rate": 0.8490402045766098,
+      "pseudo_label_accuracy_on_val": 0.9777165261945563
+    },
+    {
+      "class_index": 1,
+      "class_name": "aeroplane",
+      "generated_pseudo_labels_total": 821017854,
+      "selected_pseudo_labels_total": 616254470,
+      "pseudo_label_selection_rate": 0.7505981349828235,
+      "pseudo_label_accuracy_on_val": 0.9666121395374706
+    },
+    {
+      "class_index": 2,
+      "class_name": "bicycle",
+      "generated_pseudo_labels_total": 624555762,
+      "selected_pseudo_labels_total": 356472740,
+      "pseudo_label_selection_rate": 0.5707620707212369,
+      "pseudo_label_accuracy_on_val": 0.9083530892417545
+    },
+    {
+      "class_index": 3,
+      "class_name": "bird",
+      "generated_pseudo_labels_total": 834979903,
+      "selected_pseudo_labels_total": 643902437,
+      "pseudo_label_selection_rate": 0.7711592035766638,
+      "pseudo_label_accuracy_on_val": 0.9628037743652658
+    },
+    {
+      "class_index": 4,
+      "class_name": "boat",
+      "generated_pseudo_labels_total": 485533681,
+      "selected_pseudo_labels_total": 284401347,
+      "pseudo_label_selection_rate": 0.5857499863124841,
+      "pseudo_label_accuracy_on_val": 0.8497812261567653
+    },
+    {
+      "class_index": 5,
+      "class_name": "bottle",
+      "generated_pseudo_labels_total": 353265804,
+      "selected_pseudo_labels_total": 235980531,
+      "pseudo_label_selection_rate": 0.6679970954675251,
+      "pseudo_label_accuracy_on_val": 0.912104786351382
+    },
+    {
+      "class_index": 6,
+      "class_name": "bus",
+      "generated_pseudo_labels_total": 1065311078,
+      "selected_pseudo_labels_total": 879688314,
+      "pseudo_label_selection_rate": 0.8257572198080531,
+      "pseudo_label_accuracy_on_val": 0.98463091609979
+    },
+    {
+      "class_index": 7,
+      "class_name": "car",
+      "generated_pseudo_labels_total": 1579248215,
+      "selected_pseudo_labels_total": 1230862733,
+      "pseudo_label_selection_rate": 0.7793978940796207,
+      "pseudo_label_accuracy_on_val": 0.9343792907881943
+    },
+    {
+      "class_index": 8,
+      "class_name": "cat",
+      "generated_pseudo_labels_total": 2710528230,
+      "selected_pseudo_labels_total": 2227407295,
+      "pseudo_label_selection_rate": 0.8217613343211703,
+      "pseudo_label_accuracy_on_val": 0.963006674939184
+    },
+    {
+      "class_index": 9,
+      "class_name": "chair",
+      "generated_pseudo_labels_total": 620012012,
+      "selected_pseudo_labels_total": 238675982,
+      "pseudo_label_selection_rate": 0.3849538031208337,
+      "pseudo_label_accuracy_on_val": 0.4721234059520583
+    },
+    {
+      "class_index": 10,
+      "class_name": "cow",
+      "generated_pseudo_labels_total": 452932714,
+      "selected_pseudo_labels_total": 314964887,
+      "pseudo_label_selection_rate": 0.6953900154803127,
+      "pseudo_label_accuracy_on_val": 0.898539997384426
+    },
+    {
+      "class_index": 11,
+      "class_name": "dining table",
+      "generated_pseudo_labels_total": 633943421,
+      "selected_pseudo_labels_total": 373205378,
+      "pseudo_label_selection_rate": 0.5887045525471271,
+      "pseudo_label_accuracy_on_val": 0.48730534950693777
+    },
+    {
+      "class_index": 12,
+      "class_name": "dog",
+      "generated_pseudo_labels_total": 2454988856,
+      "selected_pseudo_labels_total": 1912615872,
+      "pseudo_label_selection_rate": 0.7790731380818944,
+      "pseudo_label_accuracy_on_val": 0.9637705787137227
+    },
+    {
+      "class_index": 13,
+      "class_name": "horse",
+      "generated_pseudo_labels_total": 793013660,
+      "selected_pseudo_labels_total": 533371437,
+      "pseudo_label_selection_rate": 0.6725879564294013,
+      "pseudo_label_accuracy_on_val": 0.9490907618160463
+    },
+    {
+      "class_index": 14,
+      "class_name": "motorbike",
+      "generated_pseudo_labels_total": 1009663998,
+      "selected_pseudo_labels_total": 692413795,
+      "pseudo_label_selection_rate": 0.685786357017357,
+      "pseudo_label_accuracy_on_val": 0.9257084222242835
+    },
+    {
+      "class_index": 15,
+      "class_name": "person",
+      "generated_pseudo_labels_total": 6276063793,
+      "selected_pseudo_labels_total": 4577867457,
+      "pseudo_label_selection_rate": 0.729416973438976,
+      "pseudo_label_accuracy_on_val": 0.9235887071494304
+    },
+    {
+      "class_index": 16,
+      "class_name": "potted plant",
+      "generated_pseudo_labels_total": 363820963,
+      "selected_pseudo_labels_total": 217666316,
+      "pseudo_label_selection_rate": 0.5982786538883412,
+      "pseudo_label_accuracy_on_val": 0.7197297503082065
+    },
+    {
+      "class_index": 17,
+      "class_name": "sheep",
+      "generated_pseudo_labels_total": 513235006,
+      "selected_pseudo_labels_total": 380917290,
+      "pseudo_label_selection_rate": 0.742188832692367,
+      "pseudo_label_accuracy_on_val": 0.927417406308448
+    },
+    {
+      "class_index": 18,
+      "class_name": "sofa",
+      "generated_pseudo_labels_total": 648885906,
+      "selected_pseudo_labels_total": 333777414,
+      "pseudo_label_selection_rate": 0.5143853656146448,
+      "pseudo_label_accuracy_on_val": 0.5988373881039941
+    },
+    {
+      "class_index": 19,
+      "class_name": "train",
+      "generated_pseudo_labels_total": 1076472386,
+      "selected_pseudo_labels_total": 820532041,
+      "pseudo_label_selection_rate": 0.7622416066323507,
+      "pseudo_label_accuracy_on_val": 0.9454149714021799
+    },
+    {
+      "class_index": 20,
+      "class_name": "tv/monitor",
+      "generated_pseudo_labels_total": 509763497,
+      "selected_pseudo_labels_total": 333614898,
+      "pseudo_label_selection_rate": 0.6544503479816641,
+      "pseudo_label_accuracy_on_val": 0.8097224558262603
+    }
+  ]
+}

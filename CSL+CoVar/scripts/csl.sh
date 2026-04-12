@@ -18,8 +18,5 @@ val_id_path=splits/$dataset/val.txt
 save_path=exp/$dataset/$method/$exp/$split
 
 mkdir -p $save_path
-# python $method.py --config=$config --labeled_id_path $labeled_id_path --unlabeled_id_path $unlabeled_id_path \
-#     --val_id_path $val_id_path --save_path $save_path
-
 python $method.py --config=$config --labeled_id_path $labeled_id_path --unlabeled_id_path $unlabeled_id_path \
-    --val_id_path $val_id_path --save_path $save_path --threshold_strategy fixed --fixed_threshold 0.95
+    --val_id_path $val_id_path --save_path $save_path --threshold_strategy 'fixed' --fixed_threshold 0.99 

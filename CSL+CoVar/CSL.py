@@ -8,6 +8,8 @@ from model.model_helper import ModelBuilder
 from train.semi_supervised_train import SemiModule
 from torch.utils.data import DataLoader
 from pytorch_lightning.loggers import TensorBoardLogger
+from pytorch_lightning.loggers import WandbLogger
+import wandb
 from supervised import find_latest_checkpoint
 
 def main():   
@@ -26,7 +28,9 @@ def main():
     args = parser.parse_args()
     cfg = yaml.load(open(args.config, "r"), Loader=yaml.Loader)
 
-    logger = TensorBoardLogger(save_dir=args.save_path, version=1, name="logs")
+    # 使用WandbLogger替换TensorBoardLogger
+    logger = WandbLogger(project="CSL-CoVar", save_dir=args.save_path)
+    wandb.config.update(cfg)
 
     pl.seed_everything(42, workers=True)
 
@@ -101,6 +105,8 @@ def main():
         enable_checkpointing=True,
         log_every_n_steps= batch_iters // 32,
     )
+    # 记录模型结构和超参数到wandb
+    wandb.watch(model)
 
     checkpoint_path = find_latest_checkpoint(os.path.join(args.save_path, "checkpoints"))
     if trainer.is_global_zero and checkpoint_path != None:
@@ -108,7 +114,8 @@ def main():
 
     trainer.fit(train_module, train_dataloaders=train_loaders, val_dataloaders=valloader, ckpt_path=checkpoint_path)
 
-
+    # 训练结束后关闭wandb
+    wandb.finish()
 
 if __name__ == '__main__':
     main()

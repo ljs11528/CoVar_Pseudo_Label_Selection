@@ -1,0 +1,62 @@
+[
+  {
+    "threshold": 0.9,
+    "pseudo_label_accuracy_on_val": 0.9540846586241275,
+    "selected_samples_percent": 87.88856161683756,
+    "source": "interpolated"
+  },
+  {
+    "threshold": 0.91,
+    "pseudo_label_accuracy_on_val": 0.9536794401767419,
+    "selected_samples_percent": 87.18493802781803,
+    "source": "interpolated"
+  },
+  {
+    "threshold": 0.92,
+    "pseudo_label_accuracy_on_val": 0.9523300555792025,
+    "selected_samples_percent": 84.36966791585589,
+    "source": "interpolated"
+  },
+  {
+    "threshold": 0.93,
+    "pseudo_label_accuracy_on_val": 0.9524147795745476,
+    "selected_samples_percent": 83.16873837277988,
+    "source": "interpolated"
+  },
+  {
+    "threshold": 0.94,
+    "pseudo_label_accuracy_on_val": 0.9518324484241448,
+    "selected_samples_percent": 81.20643970482952,
+    "source": "interpolated"
+  },
+  {
+    "threshold": 0.95,
+    "pseudo_label_accuracy_on_val": 0.9512985500891948,
+    "selected_samples_percent": 79.93906366828092,
+    "source": "/data/zxf_test/user1/kd/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/visualize/95/pseudo_label_metrics_summary.json"
+  },
+  {
+    "threshold": 0.96,
+    "pseudo_label_accuracy_on_val": 0.9510234307994525,
+    "selected_samples_percent": 78.63406163566002,
+    "source": "interpolated"
+  },
+  {
+    "threshold": 0.97,
+    "pseudo_label_accuracy_on_val": 0.9502206727247923,
+    "selected_samples_percent": 76.55126766761016,
+    "source": "/data/zxf_test/user1/kd/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/visualize/97/pseudo_label_metrics_summary.json"
+  },
+  {
+    "threshold": 0.98,
+    "pseudo_label_accuracy_on_val": 0.9495410017655516,
+    "selected_samples_percent": 72.41441116982254,
+    "source": "interpolated"
+  },
+  {
+    "threshold": 0.99,
+    "pseudo_label_accuracy_on_val": 0.9488217123877742,
+    "selected_samples_percent": 67.15031346506689,
+    "source": "/data/zxf_test/user1/kd/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/visualize/99/pseudo_label_metrics_summary.json"
+  }
+]
