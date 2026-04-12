@@ -12,3 +12,4 @@
 {"time":"2026-04-12T21:06:49.478336007+08:00","level":"INFO","msg":"filestream: sending request","total_files":4,"history_offset":0,"history_lines":1,"events_offset":1,"events_lines":3,"console_offset":31,"console_lines":1}
 {"time":"2026-04-12T21:06:49.909814895+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
 {"time":"2026-04-12T21:07:04.478202037+08:00","level":"INFO","msg":"filestream: sending request","total_files":4,"history_offset":1,"history_lines":1,"events_offset":4,"events_lines":2,"console_offset":31,"console_lines":1}
+{"time":"2026-04-12T21:07:04.81998777+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}

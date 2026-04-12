@@ -29,4 +29,4 @@ LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
 335       Modules in train mode
 0         Modules in eval mode
 0         Total Flops
-Epoch 0:   6%|▋         | 31/496 [00:37<09:26,  0.82it/s, v_num=q3cz, total_loss_total=0.691] 
+Epoch 0:   7%|▋         | 37/496 [00:42<08:49,  0.87it/s, v_num=q3cz, total_loss_total=0.245] 
