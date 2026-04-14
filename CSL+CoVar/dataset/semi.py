@@ -50,14 +50,16 @@ class SemiDataset(Dataset):
         ignore_mask = Image.fromarray(np.zeros((mask.size[1], mask.size[0])))
 
         mask = torch.from_numpy(np.array(mask)).long()
+        gt_mask = mask.clone()
         ignore_mask = torch.from_numpy(np.array(ignore_mask)).long()
 
         ignore_mask[mask == 254] = 255
+        gt_mask[gt_mask == 254] = 255
         
         img_s = normalize(img_s, ignore_mask=ignore_mask)
         img_m = normalize(img_m, ignore_mask=ignore_mask)
 
-        return normalize(img_w), img_s, img_m, ignore_mask, cutmix_box, cover_mask
+        return normalize(img_w), img_s, img_m, ignore_mask, gt_mask, cutmix_box, cover_mask
         
     def mix_image_transformations(self, img):
         if random.random() < 0.8:

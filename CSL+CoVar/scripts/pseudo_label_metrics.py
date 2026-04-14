@@ -4,6 +4,49 @@ import numpy as np
 import torch
 
 
+def _default_monitor_thresholds():
+    return [round(0.90 + 0.01 * i, 2) for i in range(10)]
+
+
+def _normalize_thresholds(thresholds):
+    if thresholds is None:
+        return _default_monitor_thresholds()
+
+    parsed = []
+    if isinstance(thresholds, str):
+        for token in thresholds.split(','):
+            token = token.strip()
+            if token:
+                parsed.append(float(token))
+    else:
+        parsed = [float(x) for x in thresholds]
+
+    valid = []
+    for thr in parsed:
+        if 0.0 <= thr <= 1.0:
+            valid.append(round(thr, 4))
+
+    if not valid:
+        return _default_monitor_thresholds()
+    return sorted(set(valid))
+
+
+def _threshold_key(threshold):
+    return f"{float(threshold):.2f}"
+
+
+def _json_safe(value):
+    if isinstance(value, float):
+        if np.isnan(value) or np.isinf(value):
+            return None
+        return value
+    if isinstance(value, list):
+        return [_json_safe(v) for v in value]
+    if isinstance(value, dict):
+        return {k: _json_safe(v) for k, v in value.items()}
+    return value
+
+
 def compute_metrics(pseudo_labels, gt_labels, mask, num_classes):
     """
     pseudo_labels: [B, H, W] 预测标签
@@ -60,134 +103,216 @@ def compute_metrics(pseudo_labels, gt_labels, mask, num_classes):
 
 
 class PseudoLabelMetricsTracker:
-    def __init__(self, save_path, num_classes):
+    def __init__(self, save_path, num_classes, monitor_thresholds=None):
         self.save_path = save_path
         self.num_classes = num_classes
-        self.metrics_history = []
+        self.monitor_thresholds = _normalize_thresholds(monitor_thresholds)
+        self.threshold_keys = [_threshold_key(thr) for thr in self.monitor_thresholds]
 
-    def update_pseudo_label_metrics(self, pseudo_labels, gt_labels, mask):
-        # 计算并保存本 batch 的伪标签指标
-        metrics = compute_metrics(pseudo_labels, gt_labels, mask, self.num_classes)
-        self.metrics_history.append(metrics)
-        return metrics
+        self.epoch_history = []
+        self._epoch_states = {k: self._empty_state() for k in self.threshold_keys}
+        self._total_states = {k: self._empty_state() for k in self.threshold_keys}
 
-    def aggregate_distributed_pair(self, generated, selected, device):
-        if torch.distributed.is_available() and torch.distributed.is_initialized():
-            stats_tensor = torch.tensor([generated, selected], dtype=torch.long, device=device)
-            torch.distributed.all_reduce(stats_tensor, op=torch.distributed.ReduceOp.SUM)
-            generated = int(stats_tensor[0].item())
-            selected = int(stats_tensor[1].item())
-        return generated, selected
+    def _empty_state(self):
+        return {
+            'total_pixels': 0.0,
+            'selected_pixels': 0.0,
+            'full_correct_pixels': 0.0,
+            'masked_correct_pixels': 0.0,
+            'intersections': np.zeros(self.num_classes, dtype=np.float64),
+            'unions': np.zeros(self.num_classes, dtype=np.float64),
+            'selected_per_class': np.zeros(self.num_classes, dtype=np.float64),
+            'correct_per_class': np.zeros(self.num_classes, dtype=np.float64),
+        }
 
-    def aggregate_distributed(self, device):
-        return self.aggregate_distributed_pair(self.generated_pixels, self.selected_pixels, device)
+    def _build_state(self, pseudo_labels, gt_labels, mask):
+        valid = gt_labels != 255
+        selected = mask & valid
+        correct = pseudo_labels == gt_labels
+
+        state = self._empty_state()
+        state['total_pixels'] = float(valid.sum().item())
+        state['selected_pixels'] = float(selected.sum().item())
+        state['full_correct_pixels'] = float((correct & valid).sum().item())
+        state['masked_correct_pixels'] = float((correct & selected).sum().item())
+
+        for cls in range(self.num_classes):
+            pred_cls = pseudo_labels == cls
+            gt_cls = (gt_labels == cls) & valid
+            pred_cls_selected = pred_cls & selected
+            intersection = (pred_cls_selected & gt_cls).sum().item()
+            union = (pred_cls_selected | gt_cls).sum().item()
+            selected_cls = pred_cls_selected.sum().item()
+
+            state['intersections'][cls] = float(intersection)
+            state['unions'][cls] = float(union)
+            state['selected_per_class'][cls] = float(selected_cls)
+            state['correct_per_class'][cls] = float(intersection)
+
+        return state
+
+    def _accumulate_state(self, target, source):
+        target['total_pixels'] += source['total_pixels']
+        target['selected_pixels'] += source['selected_pixels']
+        target['full_correct_pixels'] += source['full_correct_pixels']
+        target['masked_correct_pixels'] += source['masked_correct_pixels']
+        target['intersections'] += source['intersections']
+        target['unions'] += source['unions']
+        target['selected_per_class'] += source['selected_per_class']
+        target['correct_per_class'] += source['correct_per_class']
+
+    def _state_to_metrics(self, state):
+        total_pixels = state['total_pixels']
+        selected_pixels = state['selected_pixels']
+        masked_correct_pixels = state['masked_correct_pixels']
+        full_correct_pixels = state['full_correct_pixels']
+
+        masked_acc = masked_correct_pixels / (selected_pixels + 1e-7)
+        full_acc = full_correct_pixels / (total_pixels + 1e-7)
+        coverage = selected_pixels / (total_pixels + 1e-7)
+
+        valid_ious = state['unions'] > 0
+        miou = float(np.mean(state['intersections'][valid_ious] / (state['unions'][valid_ious] + 1e-7))) if np.any(valid_ious) else 0.0
+
+        cat_acc = []
+        for cls in range(self.num_classes):
+            cls_selected = state['selected_per_class'][cls]
+            if cls_selected > 0:
+                cat_acc.append(float(state['correct_per_class'][cls] / (cls_selected + 1e-7)))
+            else:
+                cat_acc.append(float('nan'))
+
+        return {
+            'masked_acc': float(masked_acc),
+            'full_acc': float(full_acc),
+            'coverage': float(coverage),
+            'miou': float(miou),
+            'cat_acc': cat_acc,
+        }
+
+    def _reduce_state(self, state, device):
+        if not (torch.distributed.is_available() and torch.distributed.is_initialized()):
+            return state
+
+        scalar_tensor = torch.tensor(
+            [
+                state['total_pixels'],
+                state['selected_pixels'],
+                state['full_correct_pixels'],
+                state['masked_correct_pixels'],
+            ],
+            dtype=torch.float64,
+            device=device,
+        )
+        intersections = torch.tensor(state['intersections'], dtype=torch.float64, device=device)
+        unions = torch.tensor(state['unions'], dtype=torch.float64, device=device)
+        selected_per_class = torch.tensor(state['selected_per_class'], dtype=torch.float64, device=device)
+        correct_per_class = torch.tensor(state['correct_per_class'], dtype=torch.float64, device=device)
+
+        torch.distributed.all_reduce(scalar_tensor, op=torch.distributed.ReduceOp.SUM)
+        torch.distributed.all_reduce(intersections, op=torch.distributed.ReduceOp.SUM)
+        torch.distributed.all_reduce(unions, op=torch.distributed.ReduceOp.SUM)
+        torch.distributed.all_reduce(selected_per_class, op=torch.distributed.ReduceOp.SUM)
+        torch.distributed.all_reduce(correct_per_class, op=torch.distributed.ReduceOp.SUM)
+
+        return {
+            'total_pixels': float(scalar_tensor[0].item()),
+            'selected_pixels': float(scalar_tensor[1].item()),
+            'full_correct_pixels': float(scalar_tensor[2].item()),
+            'masked_correct_pixels': float(scalar_tensor[3].item()),
+            'intersections': intersections.cpu().numpy(),
+            'unions': unions.cpu().numpy(),
+            'selected_per_class': selected_per_class.cpu().numpy(),
+            'correct_per_class': correct_per_class.cpu().numpy(),
+        }
+
+    def update_pseudo_label_metrics(self, pseudo_labels, gt_labels, max_probs):
+        batch_metrics_by_threshold = {}
+        for threshold in self.monitor_thresholds:
+            key = _threshold_key(threshold)
+            threshold_mask = max_probs >= threshold
+            state = self._build_state(pseudo_labels, gt_labels, threshold_mask)
+            metrics = self._state_to_metrics(state)
+
+            self._accumulate_state(self._epoch_states[key], state)
+            self._accumulate_state(self._total_states[key], state)
+            batch_metrics_by_threshold[key] = metrics
+
+        return batch_metrics_by_threshold
 
     def on_epoch_end(self, current_epoch, trainer, module, logger=None):
         device = module.device if isinstance(module.device, torch.device) else torch.device('cpu')
-        epoch_generated, epoch_selected = self.aggregate_distributed_pair(
-            self.epoch_generated_pixels,
-            self.epoch_selected_pixels,
-            device,
-        )
+        epoch_metrics_by_threshold = {}
+        epoch_record = {'epoch': int(current_epoch), 'threshold_metrics': {}}
+
+        for threshold in self.monitor_thresholds:
+            key = _threshold_key(threshold)
+            reduced_epoch_state = self._reduce_state(self._epoch_states[key], device)
+            epoch_metrics = self._state_to_metrics(reduced_epoch_state)
+            epoch_metrics_by_threshold[key] = epoch_metrics
+
+            epoch_record['threshold_metrics'][key] = {
+                'total_pixels': int(reduced_epoch_state['total_pixels']),
+                'selected_pixels': int(reduced_epoch_state['selected_pixels']),
+                'masked_acc': epoch_metrics['masked_acc'],
+                'full_acc': epoch_metrics['full_acc'],
+                'coverage': epoch_metrics['coverage'],
+                'miou': epoch_metrics['miou'],
+                'cat_acc': epoch_metrics['cat_acc'],
+            }
 
         is_global_zero = getattr(trainer, 'is_global_zero', True)
         if is_global_zero:
-            self.cumulative_generated_pixels += epoch_generated
-            self.cumulative_selected_pixels += epoch_selected
-            epoch_selection_rate = float(epoch_selected / epoch_generated) if epoch_generated > 0 else 0.0
-            cumulative_selection_rate = (
-                float(self.cumulative_selected_pixels / self.cumulative_generated_pixels)
-                if self.cumulative_generated_pixels > 0
-                else 0.0
-            )
-
-            record = {
-                'epoch': int(current_epoch),
-                'generated_pseudo_labels_epoch': int(epoch_generated),
-                'selected_pseudo_labels_epoch': int(epoch_selected),
-                'selection_rate_epoch': float(epoch_selection_rate),
-                'generated_pseudo_labels_cumulative': int(self.cumulative_generated_pixels),
-                'selected_pseudo_labels_cumulative': int(self.cumulative_selected_pixels),
-                'selection_rate_cumulative': float(cumulative_selection_rate),
-            }
-            self.epoch_history.append(record)
+            self.epoch_history.append(epoch_record)
 
             if logger is not None:
+                segments = []
+                for threshold in self.monitor_thresholds:
+                    key = _threshold_key(threshold)
+                    metric = epoch_metrics_by_threshold[key]
+                    segments.append(
+                        f"t={key}: masked={metric['masked_acc']:.4f}, cov={metric['coverage']:.4f}, miou={metric['miou']:.4f}"
+                    )
                 logger.info(
                     'Pseudo-label epoch summary | '
-                    f"epoch={record['epoch']}, "
-                    f"generated_epoch={record['generated_pseudo_labels_epoch']}, "
-                    f"selected_epoch={record['selected_pseudo_labels_epoch']}, "
-                    f"epoch_rate={record['selection_rate_epoch']:.6f}, "
-                    f"generated_cum={record['generated_pseudo_labels_cumulative']}, "
-                    f"selected_cum={record['selected_pseudo_labels_cumulative']}, "
-                    f"cum_rate={record['selection_rate_cumulative']:.6f}"
+                    f"epoch={int(current_epoch)} | "
+                    + ' | '.join(segments)
                 )
 
-        self.epoch_generated_pixels = 0
-        self.epoch_selected_pixels = 0
-
-    @torch.no_grad()
-    def evaluate_pseudo_accuracy(self, module, val_loader):
-        if val_loader is None:
-            return None
-
-        was_training = module.training
-        module.eval()
-
-        total_valid = 0
-        total_correct = 0
-
-        for batch in val_loader:
-            img, mask, _ = batch
-            img = img.to(module.device, non_blocking=True)
-            mask = mask.to(module.device, non_blocking=True)
-
-            if module.eval_mode == 'center_crop':
-                pred, eval_mask = module.center_crop_eval(img, mask)
-            elif module.eval_mode == 'sliding_window':
-                pred = module.sliding_window_eval(img)
-                eval_mask = mask
-            else:
-                pred = module(img, False).argmax(dim=1)
-                eval_mask = mask
-
-            valid = eval_mask != 255
-            total_valid += int(valid.sum().item())
-            if total_valid == 0:
-                continue
-            total_correct += int((pred[valid] == eval_mask[valid]).sum().item())
-
-        if was_training:
-            module.train()
-
-        if total_valid == 0:
-            return 0.0
-        return float(total_correct / total_valid)
+        self._epoch_states = {k: self._empty_state() for k in self.threshold_keys}
+        return epoch_metrics_by_threshold
 
     def finalize(self, module, trainer, logger=None):
-        # 汇总所有 batch 的伪标签指标
-        all_metrics = self.metrics_history
-        mean_metrics = {}
-        if all_metrics:
-            for k in all_metrics[0].keys():
-                vals = [m[k] for m in all_metrics if not isinstance(m[k], list)]
-                mean_metrics[k] = float(np.nanmean(vals))
-            # 类别精度单独处理
-            cat_accs = [m['cat_acc'] for m in all_metrics]
-            mean_metrics['cat_acc'] = np.nanmean(cat_accs, axis=0).tolist()
+        device = module.device if isinstance(module.device, torch.device) else torch.device('cpu')
+        summary_metrics_by_threshold = {}
+        for threshold in self.monitor_thresholds:
+            key = _threshold_key(threshold)
+            reduced_total_state = self._reduce_state(self._total_states[key], device)
+            summary_metrics_by_threshold[key] = self._state_to_metrics(reduced_total_state)
+
+        if not getattr(trainer, 'is_global_zero', True):
+            return summary_metrics_by_threshold
 
         os.makedirs(self.save_path, exist_ok=True)
         summary_path = os.path.join(self.save_path, 'pseudo_label_metrics_summary.json')
+        payload = {
+            'monitor_thresholds': self.monitor_thresholds,
+            'summary_metrics_by_threshold': summary_metrics_by_threshold,
+            'per_epoch_metrics': self.epoch_history,
+        }
         with open(summary_path, 'w', encoding='utf-8') as handle:
-            json.dump({'mean_metrics': mean_metrics, 'all_metrics': all_metrics}, handle, indent=2)
+            json.dump(_json_safe(payload), handle, indent=2)
 
         if logger is not None:
             logger.info('===== Pseudo Label Training Summary =====')
-            logger.info(f"Masked Pseudo-Label Acc: {mean_metrics.get('masked_acc', 0):.6f}")
-            logger.info(f"Full Pseudo-Label Acc: {mean_metrics.get('full_acc', 0):.6f}")
-            logger.info(f"Coverage: {mean_metrics.get('coverage', 0):.6f}")
-            logger.info(f"mIoU: {mean_metrics.get('miou', 0):.6f}")
-            logger.info(f"Categorical Acc: {mean_metrics.get('cat_acc', [])}")
+            for threshold in self.monitor_thresholds:
+                key = _threshold_key(threshold)
+                metric = summary_metrics_by_threshold[key]
+                logger.info(
+                    f"t={key} | masked={metric.get('masked_acc', 0):.6f}, "
+                    f"full={metric.get('full_acc', 0):.6f}, "
+                    f"coverage={metric.get('coverage', 0):.6f}, "
+                    f"miou={metric.get('miou', 0):.6f}"
+                )
             logger.info(f'Pseudo-label metrics summary saved to: {summary_path}')
-        return mean_metrics
+        return summary_metrics_by_threshold

@@ -1,6 +1,7 @@
 CSL+CoVar/data/
 __pycache__/
 .venv/
+wandb/
 *.pth
 
 *.ckpt

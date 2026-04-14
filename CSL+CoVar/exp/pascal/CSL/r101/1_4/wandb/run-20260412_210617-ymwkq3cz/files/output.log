@@ -29,4 +29,34 @@ LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
 335       Modules in train mode
 0         Modules in eval mode
 0         Total Flops
-Epoch 0:   7%|▋         | 37/496 [00:42<08:49,  0.87it/s, v_num=q3cz, total_loss_total=0.245] 
+Epoch 0: 100%|██████████| 496/496 [07:43<00:00,  1.07it/s, v_num=q3cz, total_loss_total=0.167] 
+                                                                            
+/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/result.py:433: It is recommended to use `self.log('lr', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/data/zxf_test/user1/kd/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/CSL.py", line 121, in <module>
+[rank0]:     main()
+[rank0]:   File "/data/zxf_test/user1/kd/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/CSL.py", line 115, in main
+[rank0]:     trainer.fit(train_module, train_dataloaders=train_loaders, val_dataloaders=valloader, ckpt_path=checkpoint_path)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 584, in fit
+[rank0]:     call._call_and_handle_interrupt(
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 48, in _call_and_handle_interrupt
+[rank0]:     return trainer.strategy.launcher.launch(trainer_fn, *args, trainer=trainer, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/strategies/launchers/subprocess_script.py", line 105, in launch
+[rank0]:     return function(*args, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 630, in _fit_impl
+[rank0]:     self._run(model, ckpt_path=ckpt_path, weights_only=weights_only)
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1079, in _run
+[rank0]:     results = self._run_stage()
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1123, in _run_stage
+[rank0]:     self.fit_loop.run()
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/loops/fit_loop.py", line 218, in run
+[rank0]:     self.on_advance_end()
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/loops/fit_loop.py", line 479, in on_advance_end
+[rank0]:     call._call_lightning_module_hook(trainer, "on_train_epoch_end")
+[rank0]:   File "/data/zxf_test/user1/kd/pytorch_a800_env/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 177, in _call_lightning_module_hook
+[rank0]:     output = fn(*args, **kwargs)
+[rank0]:   File "/data/zxf_test/user1/kd/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/train/semi_supervised_train.py", line 138, in on_train_epoch_end
+[rank0]:     self.pseudo_metrics.on_epoch_end(
+[rank0]:   File "/data/zxf_test/user1/kd/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/scripts/pseudo_label_metrics.py", line 88, in on_epoch_end
+[rank0]:     self.epoch_generated_pixels,
+[rank0]: AttributeError: 'PseudoLabelMetricsTracker' object has no attribute 'epoch_generated_pixels'

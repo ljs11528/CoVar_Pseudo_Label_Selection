@@ -13,6 +13,7 @@ class SemiModule(SupervisedModule):
         self.select_lam = kwargs.pop('select_lam', 0.5)
         self.threshold_strategy = kwargs.pop('threshold_strategy', 'dynamic')
         self.fixed_threshold = float(kwargs.pop('fixed_threshold', 0.95))
+        self.monitor_thresholds = kwargs.pop('monitor_thresholds', None)
         self.enable_visual_artifacts = kwargs.pop('enable_visual_artifacts', False)
         super(SemiModule, self).__init__(nclass=nclass, **kwargs)
         self.batch_iters = batch_iters
@@ -36,7 +37,11 @@ class SemiModule(SupervisedModule):
             self.loss_u_fp_recorder,
             self.mask_ratio_recorder,
         ]
-        self.pseudo_metrics = PseudoLabelMetricsTracker(save_path=self.save_path, num_classes=self.num_classes)
+        self.pseudo_metrics = PseudoLabelMetricsTracker(
+            save_path=self.save_path,
+            num_classes=self.num_classes,
+            monitor_thresholds=self.monitor_thresholds,
+        )
         self.visual_artifacts = None
         if self.enable_visual_artifacts:
             self.visual_artifacts = PseudoLabelArtifactsCollector(
@@ -45,7 +50,7 @@ class SemiModule(SupervisedModule):
             )
         
     def on_train_batch_start(self, batch, batch_idx):   
-        (img_u_w_mix, _, _, ignore_mask_mix, _, _) = batch['mixed']
+        (img_u_w_mix, _, _, ignore_mask_mix, _, _, _) = batch['mixed']
         with torch.no_grad():
             self.pred_u_w_mix = self(img_u_w_mix, False, False).detach()
             self.weight_u_w_mix = self.get_weight(self.pred_u_w_mix.softmax(dim=1), ignore_mask_mix, num_classes=self.num_classes)
@@ -54,8 +59,8 @@ class SemiModule(SupervisedModule):
 
     def training_step(self, batch, batch_idx):   
         ((img_x, mask_x),
-        (img_u_w, img_u_s, img_u_m, ignore_mask, cutmix_box, cutmix_box2),
-        (_, img_u_s_mix, _, ignore_mask_mix, _, _)) = batch['labeled'], batch['unlabeled'], batch['mixed']
+        (img_u_w, img_u_s, img_u_m, ignore_mask, gt_mask_u, cutmix_box, cutmix_box2),
+        (_, img_u_s_mix, _, ignore_mask_mix, _, _, _)) = batch['labeled'], batch['unlabeled'], batch['mixed']
 
         num_lb, num_ulb = img_x.shape[0], img_u_w.shape[0]
         preds, preds_fp = self(torch.cat((img_x, img_u_w)), True)
@@ -63,8 +68,10 @@ class SemiModule(SupervisedModule):
         pred_u_fp = preds_fp[num_lb:]
 
         pred_u_w = pred_u_w.detach()
-        weight_u_w = self.get_weight(pred_u_w.softmax(dim=1), ignore_mask, num_classes=self.num_classes)
+        pred_u_w_prob = pred_u_w.softmax(dim=1)
+        weight_u_w = self.get_weight(pred_u_w_prob, ignore_mask, num_classes=self.num_classes)
         mask_u_w = pred_u_w.argmax(dim=1)
+        max_probs = pred_u_w_prob.max(dim=1).values
 
         conf_mask = weight_u_w == 1
         # cutmix_box2 = conf_mask & (cutmix_box2 == 1)
@@ -114,8 +121,8 @@ class SemiModule(SupervisedModule):
         with torch.no_grad():
             self.pseudo_metrics.update_pseudo_label_metrics(
                 pseudo_labels=mask_u_w,
-                gt_labels=ignore_mask, 
-                mask=conf_mask
+                gt_labels=gt_mask_u,
+                max_probs=max_probs,
             )
 
         if self.visual_artifacts is not None:
@@ -135,12 +142,27 @@ class SemiModule(SupervisedModule):
         return loss
 
     def on_train_epoch_end(self) -> None:
-        self.pseudo_metrics.on_epoch_end(
+        epoch_metrics_by_threshold = self.pseudo_metrics.on_epoch_end(
             current_epoch=self.current_epoch,
             trainer=self.trainer,
             module=self,
             logger=self.logging_callback,
         )
+
+        for threshold_key, metric in epoch_metrics_by_threshold.items():
+            tag = threshold_key.replace('.', '')
+            self.log(f'pseudo_masked_acc_t{tag}', metric['masked_acc'], prog_bar=False, logger=True, sync_dist=True)
+            self.log(f'pseudo_full_acc_t{tag}', metric['full_acc'], prog_bar=False, logger=True, sync_dist=True)
+            self.log(f'pseudo_coverage_t{tag}', metric['coverage'], prog_bar=False, logger=True, sync_dist=True)
+            self.log(f'pseudo_miou_t{tag}', metric['miou'], prog_bar=False, logger=True, sync_dist=True)
+
+        fixed_key = f"{self.fixed_threshold:.2f}"
+        if fixed_key in epoch_metrics_by_threshold:
+            fixed_metric = epoch_metrics_by_threshold[fixed_key]
+            self.log('pseudo_masked_acc', fixed_metric['masked_acc'], prog_bar=False, logger=True, sync_dist=True)
+            self.log('pseudo_full_acc', fixed_metric['full_acc'], prog_bar=False, logger=True, sync_dist=True)
+            self.log('pseudo_coverage', fixed_metric['coverage'], prog_bar=False, logger=True, sync_dist=True)
+            self.log('pseudo_miou', fixed_metric['miou'], prog_bar=False, logger=True, sync_dist=True)
         if self.visual_artifacts is not None:
             self.visual_artifacts.on_epoch_end(self.current_epoch)
 
