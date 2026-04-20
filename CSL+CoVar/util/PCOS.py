@@ -1,7 +1,7 @@
 import torch
 
 @torch.no_grad()
-def get_max_confidence_and_residual_variance(predictions, valid_mask, num_classes, epsilon=1e-8):
+def get_max_confidence_and_residual_variance(predictions, valid_mask, num_classes, epsilon=1e-8, g_alpha=1.0):
     # predictions: [n, c, w, h]
     # valid_mask: [n, w, h]
     # num_classes: K (total number of classes)
@@ -37,7 +37,7 @@ def get_max_confidence_and_residual_variance(predictions, valid_mask, num_classe
     residual_variance = sum_squared_diff / num_remaining_classes  # [n, w, h]
     
     # Step 9: Scale residual variance by g_j
-    scaled_residual_variance = g_j * residual_variance  # [n, w, h]
+    scaled_residual_variance = g_alpha * g_j * residual_variance  # [n, w, h]
     
     return max_confidence, scaled_residual_variance
 
@@ -47,7 +47,7 @@ def batch_class_stats(
     res_var,
     num_classes,
     select_mode: str = 'linear',
-    lam: float = 1.0,
+    lam: float = 0.25,
     eps: float = 1e-8,
 ):
     means = []

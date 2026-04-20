@@ -9,8 +9,9 @@ from scripts.pseudo_label_metrics import PseudoLabelMetricsTracker
 class SemiModule(SupervisedModule):   
     def __init__(self, batch_iters, alpha, nclass, **kwargs):
         # Extract clustering selection configs (do not forward to super)
-        self.select_mode = kwargs.pop('select_mode', 'neglog')
-        self.select_lam = kwargs.pop('select_lam', 0.5)
+        self.g_alpha = kwargs.pop('g_alpha', 1.0)
+        self.select_mode = kwargs.pop('select_mode', 'linear')
+        self.select_lam = kwargs.pop('select_lam', 0.25)
         self.threshold_strategy = kwargs.pop('threshold_strategy', 'dynamic')
         self.fixed_threshold = float(kwargs.pop('fixed_threshold', 0.95))
         self.monitor_thresholds = kwargs.pop('monitor_thresholds', None)
@@ -41,6 +42,7 @@ class SemiModule(SupervisedModule):
             save_path=self.save_path,
             num_classes=self.num_classes,
             monitor_thresholds=self.monitor_thresholds,
+            threshold_strategy=self.threshold_strategy,
         )
         self.visual_artifacts = None
         if self.enable_visual_artifacts:
@@ -123,6 +125,7 @@ class SemiModule(SupervisedModule):
                 pseudo_labels=mask_u_w,
                 gt_labels=gt_mask_u,
                 max_probs=max_probs,
+                selection_mask=conf_mask if self.threshold_strategy == 'dynamic' else None,
             )
 
         if self.visual_artifacts is not None:
@@ -149,20 +152,29 @@ class SemiModule(SupervisedModule):
             logger=self.logging_callback,
         )
 
-        for threshold_key, metric in epoch_metrics_by_threshold.items():
-            tag = threshold_key.replace('.', '')
-            self.log(f'pseudo_masked_acc_t{tag}', metric['masked_acc'], prog_bar=False, logger=True, sync_dist=True)
-            self.log(f'pseudo_full_acc_t{tag}', metric['full_acc'], prog_bar=False, logger=True, sync_dist=True)
-            self.log(f'pseudo_coverage_t{tag}', metric['coverage'], prog_bar=False, logger=True, sync_dist=True)
-            self.log(f'pseudo_miou_t{tag}', metric['miou'], prog_bar=False, logger=True, sync_dist=True)
+        if self.threshold_strategy == 'dynamic':
+            metric = epoch_metrics_by_threshold.get('dynamic', {})
+            if metric:
+                self.log('pseudo_masked_acc', metric['masked_acc'], prog_bar=False, logger=True, sync_dist=True)
+                self.log('pseudo_full_acc', metric['full_acc'], prog_bar=False, logger=True, sync_dist=True)
+                self.log('pseudo_coverage', metric['coverage'], prog_bar=False, logger=True, sync_dist=True)
+                self.log('pseudo_miou', metric['miou'], prog_bar=False, logger=True, sync_dist=True)
+        else:
+            for threshold_key, metric in epoch_metrics_by_threshold.items():
+                tag = threshold_key.replace('.', '')
+                self.log(f'pseudo_masked_acc_t{tag}', metric['masked_acc'], prog_bar=False, logger=True, sync_dist=True)
+                self.log(f'pseudo_full_acc_t{tag}', metric['full_acc'], prog_bar=False, logger=True, sync_dist=True)
+                self.log(f'pseudo_coverage_t{tag}', metric['coverage'], prog_bar=False, logger=True, sync_dist=True)
+                self.log(f'pseudo_miou_t{tag}', metric['miou'], prog_bar=False, logger=True, sync_dist=True)
 
-        fixed_key = f"{self.fixed_threshold:.2f}"
-        if fixed_key in epoch_metrics_by_threshold:
-            fixed_metric = epoch_metrics_by_threshold[fixed_key]
-            self.log('pseudo_masked_acc', fixed_metric['masked_acc'], prog_bar=False, logger=True, sync_dist=True)
-            self.log('pseudo_full_acc', fixed_metric['full_acc'], prog_bar=False, logger=True, sync_dist=True)
-            self.log('pseudo_coverage', fixed_metric['coverage'], prog_bar=False, logger=True, sync_dist=True)
-            self.log('pseudo_miou', fixed_metric['miou'], prog_bar=False, logger=True, sync_dist=True)
+            fixed_key = f"{self.fixed_threshold:.2f}"
+            if fixed_key in epoch_metrics_by_threshold:
+                fixed_metric = epoch_metrics_by_threshold[fixed_key]
+                self.log('pseudo_masked_acc', fixed_metric['masked_acc'], prog_bar=False, logger=True, sync_dist=True)
+                self.log('pseudo_full_acc', fixed_metric['full_acc'], prog_bar=False, logger=True, sync_dist=True)
+                self.log('pseudo_coverage', fixed_metric['coverage'], prog_bar=False, logger=True, sync_dist=True)
+                self.log('pseudo_miou', fixed_metric['miou'], prog_bar=False, logger=True, sync_dist=True)
+
         if self.visual_artifacts is not None:
             self.visual_artifacts.on_epoch_end(self.current_epoch)
 
@@ -187,7 +199,7 @@ class SemiModule(SupervisedModule):
         weight_mask = torch.zeros_like(ignore, device=ignore.device)
 
         max_confidence, scaled_residual_variance = get_max_confidence_and_residual_variance(
-            pred, valid_mask, num_classes, epsilon
+            pred, valid_mask, num_classes, epsilon, g_alpha=getattr(self, 'g_alpha', 1.0)
         )
         means, vars = batch_class_stats(
             max_confidence,

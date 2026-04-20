@@ -103,11 +103,17 @@ def compute_metrics(pseudo_labels, gt_labels, mask, num_classes):
 
 
 class PseudoLabelMetricsTracker:
-    def __init__(self, save_path, num_classes, monitor_thresholds=None):
+    def __init__(self, save_path, num_classes, monitor_thresholds=None, threshold_strategy='fixed'):
         self.save_path = save_path
         self.num_classes = num_classes
-        self.monitor_thresholds = _normalize_thresholds(monitor_thresholds)
-        self.threshold_keys = [_threshold_key(thr) for thr in self.monitor_thresholds]
+        self.threshold_strategy = threshold_strategy
+
+        if threshold_strategy == 'dynamic':
+            self.monitor_thresholds = []
+            self.threshold_keys = ['dynamic']
+        else:
+            self.monitor_thresholds = _normalize_thresholds(monitor_thresholds)
+            self.threshold_keys = [_threshold_key(thr) for thr in self.monitor_thresholds]
 
         self.epoch_history = []
         self._epoch_states = {k: self._empty_state() for k in self.threshold_keys}
@@ -123,6 +129,8 @@ class PseudoLabelMetricsTracker:
             'unions': np.zeros(self.num_classes, dtype=np.float64),
             'selected_per_class': np.zeros(self.num_classes, dtype=np.float64),
             'correct_per_class': np.zeros(self.num_classes, dtype=np.float64),
+            'gt_per_class': np.zeros(self.num_classes, dtype=np.float64),
+            'covered_gt_per_class': np.zeros(self.num_classes, dtype=np.float64),
         }
 
     def _build_state(self, pseudo_labels, gt_labels, mask):
@@ -148,6 +156,8 @@ class PseudoLabelMetricsTracker:
             state['unions'][cls] = float(union)
             state['selected_per_class'][cls] = float(selected_cls)
             state['correct_per_class'][cls] = float(intersection)
+            state['gt_per_class'][cls] = float(gt_cls.sum().item())
+            state['covered_gt_per_class'][cls] = float((gt_cls & selected).sum().item())
 
         return state
 
@@ -160,6 +170,8 @@ class PseudoLabelMetricsTracker:
         target['unions'] += source['unions']
         target['selected_per_class'] += source['selected_per_class']
         target['correct_per_class'] += source['correct_per_class']
+        target['gt_per_class'] += source['gt_per_class']
+        target['covered_gt_per_class'] += source['covered_gt_per_class']
 
     def _state_to_metrics(self, state):
         total_pixels = state['total_pixels']
@@ -182,12 +194,21 @@ class PseudoLabelMetricsTracker:
             else:
                 cat_acc.append(float('nan'))
 
+        cat_coverage = []
+        for cls in range(self.num_classes):
+            gt_total = state['gt_per_class'][cls]
+            if gt_total > 0:
+                cat_coverage.append(float(state['covered_gt_per_class'][cls] / (gt_total + 1e-7)))
+            else:
+                cat_coverage.append(float('nan'))
+
         return {
             'masked_acc': float(masked_acc),
             'full_acc': float(full_acc),
             'coverage': float(coverage),
             'miou': float(miou),
             'cat_acc': cat_acc,
+            'cat_coverage': cat_coverage,
         }
 
     def _reduce_state(self, state, device):
@@ -208,12 +229,16 @@ class PseudoLabelMetricsTracker:
         unions = torch.tensor(state['unions'], dtype=torch.float64, device=device)
         selected_per_class = torch.tensor(state['selected_per_class'], dtype=torch.float64, device=device)
         correct_per_class = torch.tensor(state['correct_per_class'], dtype=torch.float64, device=device)
+        gt_per_class = torch.tensor(state['gt_per_class'], dtype=torch.float64, device=device)
+        covered_gt_per_class = torch.tensor(state['covered_gt_per_class'], dtype=torch.float64, device=device)
 
         torch.distributed.all_reduce(scalar_tensor, op=torch.distributed.ReduceOp.SUM)
         torch.distributed.all_reduce(intersections, op=torch.distributed.ReduceOp.SUM)
         torch.distributed.all_reduce(unions, op=torch.distributed.ReduceOp.SUM)
         torch.distributed.all_reduce(selected_per_class, op=torch.distributed.ReduceOp.SUM)
         torch.distributed.all_reduce(correct_per_class, op=torch.distributed.ReduceOp.SUM)
+        torch.distributed.all_reduce(gt_per_class, op=torch.distributed.ReduceOp.SUM)
+        torch.distributed.all_reduce(covered_gt_per_class, op=torch.distributed.ReduceOp.SUM)
 
         return {
             'total_pixels': float(scalar_tensor[0].item()),
@@ -224,66 +249,133 @@ class PseudoLabelMetricsTracker:
             'unions': unions.cpu().numpy(),
             'selected_per_class': selected_per_class.cpu().numpy(),
             'correct_per_class': correct_per_class.cpu().numpy(),
+            'gt_per_class': gt_per_class.cpu().numpy(),
+            'covered_gt_per_class': covered_gt_per_class.cpu().numpy(),
         }
 
-    def update_pseudo_label_metrics(self, pseudo_labels, gt_labels, max_probs):
+    def update_pseudo_label_metrics(self, pseudo_labels, gt_labels, max_probs, selection_mask=None):
         batch_metrics_by_threshold = {}
-        for threshold in self.monitor_thresholds:
-            key = _threshold_key(threshold)
-            threshold_mask = max_probs >= threshold
-            state = self._build_state(pseudo_labels, gt_labels, threshold_mask)
-            metrics = self._state_to_metrics(state)
 
+        if self.threshold_strategy == 'dynamic':
+            if selection_mask is None:
+                raise ValueError("selection_mask is required for dynamic threshold strategy")
+            key = 'dynamic'
+            state = self._build_state(pseudo_labels, gt_labels, selection_mask)
+            metrics = self._state_to_metrics(state)
             self._accumulate_state(self._epoch_states[key], state)
             self._accumulate_state(self._total_states[key], state)
             batch_metrics_by_threshold[key] = metrics
+        else:
+            for threshold in self.monitor_thresholds:
+                key = _threshold_key(threshold)
+                threshold_mask = max_probs >= threshold
+                state = self._build_state(pseudo_labels, gt_labels, threshold_mask)
+                metrics = self._state_to_metrics(state)
+
+                self._accumulate_state(self._epoch_states[key], state)
+                self._accumulate_state(self._total_states[key], state)
+                batch_metrics_by_threshold[key] = metrics
 
         return batch_metrics_by_threshold
+
+    def _build_epoch_record(self, reduced_state, metrics):
+        return {
+            'total_pixels': int(reduced_state['total_pixels']),
+            'selected_pixels': int(reduced_state['selected_pixels']),
+            'masked_acc': metrics['masked_acc'],
+            'full_acc': metrics['full_acc'],
+            'coverage': metrics['coverage'],
+            'miou': metrics['miou'],
+            'cat_acc': metrics['cat_acc'],
+            'cat_coverage': metrics['cat_coverage'],
+        }
 
     def on_epoch_end(self, current_epoch, trainer, module, logger=None):
         device = module.device if isinstance(module.device, torch.device) else torch.device('cpu')
         epoch_metrics_by_threshold = {}
-        epoch_record = {'epoch': int(current_epoch), 'threshold_metrics': {}}
 
-        for threshold in self.monitor_thresholds:
-            key = _threshold_key(threshold)
+        if self.threshold_strategy == 'dynamic':
+            key = 'dynamic'
             reduced_epoch_state = self._reduce_state(self._epoch_states[key], device)
             epoch_metrics = self._state_to_metrics(reduced_epoch_state)
             epoch_metrics_by_threshold[key] = epoch_metrics
-
-            epoch_record['threshold_metrics'][key] = {
-                'total_pixels': int(reduced_epoch_state['total_pixels']),
-                'selected_pixels': int(reduced_epoch_state['selected_pixels']),
-                'masked_acc': epoch_metrics['masked_acc'],
-                'full_acc': epoch_metrics['full_acc'],
-                'coverage': epoch_metrics['coverage'],
-                'miou': epoch_metrics['miou'],
-                'cat_acc': epoch_metrics['cat_acc'],
+            epoch_record = {
+                'epoch': int(current_epoch),
+                'metrics': self._build_epoch_record(reduced_epoch_state, epoch_metrics),
             }
+        else:
+            epoch_record = {'epoch': int(current_epoch), 'threshold_metrics': {}}
+            for threshold in self.monitor_thresholds:
+                key = _threshold_key(threshold)
+                reduced_epoch_state = self._reduce_state(self._epoch_states[key], device)
+                epoch_metrics = self._state_to_metrics(reduced_epoch_state)
+                epoch_metrics_by_threshold[key] = epoch_metrics
+                epoch_record['threshold_metrics'][key] = self._build_epoch_record(
+                    reduced_epoch_state, epoch_metrics
+                )
 
         is_global_zero = getattr(trainer, 'is_global_zero', True)
         if is_global_zero:
             self.epoch_history.append(epoch_record)
 
             if logger is not None:
-                segments = []
-                for threshold in self.monitor_thresholds:
-                    key = _threshold_key(threshold)
-                    metric = epoch_metrics_by_threshold[key]
-                    segments.append(
-                        f"t={key}: masked={metric['masked_acc']:.4f}, cov={metric['coverage']:.4f}, miou={metric['miou']:.4f}"
+                if self.threshold_strategy == 'dynamic':
+                    metric = epoch_metrics_by_threshold['dynamic']
+                    logger.info(
+                        'Pseudo-label epoch summary | '
+                        f"epoch={int(current_epoch)} | "
+                        f"masked={metric['masked_acc']:.4f}, cov={metric['coverage']:.4f}, miou={metric['miou']:.4f}"
                     )
-                logger.info(
-                    'Pseudo-label epoch summary | '
-                    f"epoch={int(current_epoch)} | "
-                    + ' | '.join(segments)
-                )
+                else:
+                    segments = []
+                    for threshold in self.monitor_thresholds:
+                        key = _threshold_key(threshold)
+                        metric = epoch_metrics_by_threshold[key]
+                        segments.append(
+                            f"t={key}: masked={metric['masked_acc']:.4f}, cov={metric['coverage']:.4f}, miou={metric['miou']:.4f}"
+                        )
+                    logger.info(
+                        'Pseudo-label epoch summary | '
+                        f"epoch={int(current_epoch)} | "
+                        + ' | '.join(segments)
+                    )
 
         self._epoch_states = {k: self._empty_state() for k in self.threshold_keys}
         return epoch_metrics_by_threshold
 
     def finalize(self, module, trainer, logger=None):
         device = module.device if isinstance(module.device, torch.device) else torch.device('cpu')
+
+        if self.threshold_strategy == 'dynamic':
+            key = 'dynamic'
+            reduced_total_state = self._reduce_state(self._total_states[key], device)
+            summary_metrics = self._state_to_metrics(reduced_total_state)
+
+            if not getattr(trainer, 'is_global_zero', True):
+                return {key: summary_metrics}
+
+            os.makedirs(self.save_path, exist_ok=True)
+            summary_path = os.path.join(self.save_path, 'pseudo_label_metrics_summary.json')
+            payload = {
+                'threshold_strategy': 'dynamic',
+                'summary_metrics': summary_metrics,
+                'per_epoch_metrics': self.epoch_history,
+            }
+            with open(summary_path, 'w', encoding='utf-8') as handle:
+                json.dump(_json_safe(payload), handle, indent=2)
+
+            if logger is not None:
+                logger.info('===== Pseudo Label Training Summary (dynamic) =====')
+                logger.info(
+                    f"masked={summary_metrics.get('masked_acc', 0):.6f}, "
+                    f"full={summary_metrics.get('full_acc', 0):.6f}, "
+                    f"coverage={summary_metrics.get('coverage', 0):.6f}, "
+                    f"miou={summary_metrics.get('miou', 0):.6f}"
+                )
+                logger.info(f'Pseudo-label metrics summary saved to: {summary_path}')
+            return {key: summary_metrics}
+
+        # Fixed threshold mode
         summary_metrics_by_threshold = {}
         for threshold in self.monitor_thresholds:
             key = _threshold_key(threshold)

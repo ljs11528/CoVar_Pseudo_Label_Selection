@@ -25,6 +25,8 @@ def main():
                         help='Pseudo-label threshold strategy: dynamic (max_confidence + residual variance) or fixed (max_confidence only)')
     parser.add_argument('--fixed_threshold', type=float, default=0.95,
                         help='Fixed confidence threshold used when --threshold_strategy fixed')
+    parser.add_argument('--g_alpha', type=float, default=1.0,
+                        help='Scale parameter for residual variance')
     parser.add_argument('--monitor_thresholds', type=str, default='0.90,0.91,0.92,0.93,0.94,0.95,0.96,0.97,0.98,0.99',
                         help='Comma-separated confidence thresholds for monitoring pseudo-label metrics during training')
     args = parser.parse_args()
@@ -95,6 +97,7 @@ def main():
         'enable_visual_artifacts': args.enable_visual_artifacts,
         'threshold_strategy': args.threshold_strategy,
         'fixed_threshold': args.fixed_threshold,
+        'g_alpha': args.g_alpha,
         'monitor_thresholds': monitor_thresholds,
         })
     trainer = pl.Trainer(
