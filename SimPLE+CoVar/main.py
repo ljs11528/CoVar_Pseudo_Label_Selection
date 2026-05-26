@@ -14,7 +14,7 @@ if not hasattr(torch, 'solve'):
 
     torch.solve = _torch_solve
 
-from utils import get_args, timing, set_random_seed, get_device, get_dataset
+from utils import get_args, timing, set_random_seed, get_device, get_dataset, load_torch_checkpoint
 from models import get_augmenter
 from simple_estimator import SimPLEEstimator
 from ablation_estimator import AblationEstimator
@@ -111,7 +111,7 @@ def main(args: Namespace, datamodule: Optional[SSLDataModule] = None, device: Op
     best_checkpoint_path = trainer.saver.find_best_checkpoint_path(ignore_absolute_best=False)
 
     if best_checkpoint_path is not None:
-        best_checkpoint = torch.load(str(best_checkpoint_path), map_location=device)
+        best_checkpoint = load_torch_checkpoint(str(best_checkpoint_path), map_location=device)
         trainer.load_checkpoint(best_checkpoint)
 
     # evaluation

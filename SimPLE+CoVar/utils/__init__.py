@@ -5,7 +5,14 @@ from torch.backends import cudnn
 
 from .cli import get_arg_parser, get_args, update_args, args_to_logger_config
 from .dataset import get_dataset, repeater
-from .file_io import find_checkpoint_path, read_yaml, find_all_files
+from .file_io import (
+    find_checkpoint_path,
+    find_latest_checkpoint_from_latest_log_dir,
+    find_latest_directory,
+    load_torch_checkpoint,
+    read_yaml,
+    find_all_files,
+)
 
 from .timing import timing
 from .loggers import Logger, LogAggregator
@@ -75,6 +82,9 @@ __all__ = [
     "get_dataset",
     "repeater",
     "find_checkpoint_path",
+    "find_latest_checkpoint_from_latest_log_dir",
+    "find_latest_directory",
+    "load_torch_checkpoint",
     "read_yaml",
     "find_all_files",
     "timing",

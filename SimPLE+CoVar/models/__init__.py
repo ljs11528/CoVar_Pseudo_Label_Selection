@@ -1,6 +1,7 @@
 import torch
 
 from functools import partial
+from utils.file_io import load_torch_checkpoint
 
 from .augmentation import get_augmenter
 from .rampup import RampUp, LinearRampUp, get_ramp_up
@@ -33,7 +34,7 @@ def load_pretrain(model: Module,
     full_allowed_prefix = f"{allowed_prefix}." if bool(allowed_prefix) else allowed_prefix
     full_ignored_prefix = f"{ignored_prefix}." if bool(ignored_prefix) else ignored_prefix
 
-    checkpoint = torch.load(checkpoint_path, map_location=device)
+    checkpoint = load_torch_checkpoint(checkpoint_path, map_location=device)
     if checkpoint_key is not None:
         pretrain_state_dict = checkpoint[checkpoint_key]
     else:

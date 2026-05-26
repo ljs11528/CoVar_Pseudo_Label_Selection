@@ -3,10 +3,6 @@ from torch import nn
 from torch.nn import functional as F
 import numpy as np
 import os
-import matplotlib
-# Use Agg backend so plotting works in headless envs
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 
 import random
 from functools import partial
@@ -15,8 +11,9 @@ from copy import deepcopy
 from models import (build_model, build_ema_model, build_optimizer, get_accuracy, interleave, get_ramp_up, load_pretrain,
                     build_lr_scheduler, get_trainable_params, get_mixmatch_function)
 from loss import (build_supervised_loss, build_unsupervised_loss, build_pair_loss)
+from loss.pair_loss.utils import get_pair_indices
 from models.utils import unwrap_model, consume_prefix_in_state_dict_if_present
-from utils import get_device
+from utils import get_device, load_torch_checkpoint
 from loss.visualization import get_pair_info
 
 # for type hint
@@ -28,6 +25,7 @@ from torch.optim.optimizer import Optimizer
 
 from loss.types import LossInfoType
 from models.types import LRSchedulerType, OptimizerParametersType
+from classification_metrics import ClassificationPseudoLabelMetricsTracker
 
 
 class SimPLEEstimator:
@@ -92,6 +90,16 @@ class SimPLEEstimator:
         self.supervised_loss = build_supervised_loss(self.exp_args)
         self.unsupervised_loss = build_unsupervised_loss(self.exp_args)
         self.pair_loss = build_pair_loss(self.exp_args)
+        default_threshold_strategy = "dynamic" if getattr(self.exp_args, "use_csl", False) else "fixed"
+        self.threshold_strategy: str = getattr(self.exp_args, "threshold_strategy", default_threshold_strategy)
+        self.fixed_threshold: float = float(getattr(self.exp_args, "confidence_threshold", 0.0))
+        self.select_mode: str = getattr(self.exp_args, "select_mode", "neglog")
+        self.select_lam: float = float(getattr(self.exp_args, "select_lam", 0.5))
+        self.use_csl: bool = (self.threshold_strategy == "dynamic")
+        self.exp_args.threshold_strategy = self.threshold_strategy
+        self.exp_args.select_mode = self.select_mode
+        self.exp_args.select_lam = self.select_lam
+        self.exp_args.use_csl = self.use_csl
 
         # val loss
         self.val_loss_fn = nn.CrossEntropyLoss()
@@ -112,31 +120,19 @@ class SimPLEEstimator:
         # stats
         self._global_step: int = 0
 
-        # pseudo-label statistics for plotting
-        # per-epoch totals (appended at epoch end)
-        self.pseudo_total_per_epoch = []
-        self.pseudo_selected_per_epoch = []
-
-        # temporary counters for current epoch
-        self._pseudo_epoch = None
-        self._epoch_selected_count_current = 0
-        self._epoch_total_count_current = 0
-
-        # scatter selection: pick a random epoch and a random batch index in that epoch
-        num_epochs_cfg = getattr(self.exp_args, 'num_epochs', 1)
-        try:
-            self._scatter_epoch = random.randrange(max(1, int(num_epochs_cfg)))
-        except Exception:
-            self._scatter_epoch = 0
-        # pick random batch index within epoch
-        self._scatter_target_batch_idx = random.randrange(max(1, int(self.num_step_per_epoch))) if hasattr(self.exp_args, 'num_step_per_epoch') else 0
-        self._scatter_collected = False
-        self._scatter_points = None
+        self.classification_metrics = ClassificationPseudoLabelMetricsTracker(
+            save_path=getattr(self.exp_args, 'log_dir', None),
+            num_classes=num_classes,
+            dataset_name=getattr(self.exp_args, 'dataset', None),
+            use_csl=self.use_csl,
+            threshold_strategy=self.threshold_strategy,
+            confidence_threshold=self._get_confidence_threshold(),
+            select_mode=self.select_mode,
+            select_lam=self.select_lam,
+        )
 
         # move to device
         self.to(self.device)
-
-        self.use_csl: bool = getattr(self.exp_args, "use_csl", True)   # CSL: Class-Specific Loss
 
 
     @property
@@ -392,6 +388,17 @@ class SimPLEEstimator:
         x_probs = F.softmax(x_logits, dim=1)
         u_probs = F.softmax(u_logits, dim=1)
 
+        selection_state = self.compute_selection_state(
+            pseudo_probs=u_targets,
+            num_classes=self.exp_args.num_classes,
+        )
+        self.record_selection_state(
+            selection_state=selection_state,
+            targets=u_targets,
+            true_targets=u_true_targets,
+            batch_idx=batch_idx,
+        )
+
         loss_x = self.supervised_loss(x_logits, x_probs, x_targets)
 
         # init log info dict
@@ -408,7 +415,7 @@ class SimPLEEstimator:
                                                                          probs=u_probs,
                                                                          targets=u_targets,
                                                                          ramp_up_value=ramp_up_value,
-                                                                         batch_idx=batch_idx)
+                                                                         selection_state=selection_state)
             loss += weighted_loss_u
 
             log_info.update(loss_u_log)
@@ -417,7 +424,8 @@ class SimPLEEstimator:
             weighted_loss_pair, loss_pair_log = self.compute_pair_loss(logits=u_logits,
                                                                        probs=u_probs,
                                                                        targets=u_targets,
-                                                                       ramp_up_value=ramp_up_value)
+                                                                       ramp_up_value=ramp_up_value,
+                                                                       selection_state=selection_state)
             loss += weighted_loss_pair
 
             log_info.update(loss_pair_log)
@@ -440,71 +448,17 @@ class SimPLEEstimator:
     #         weighted_loss_u=weighted_loss.detach().clone(),
     #     )
     
-    def compute_unsupervised_loss(self, logits: Tensor, probs: Tensor, targets: Tensor, ramp_up_value: float,
-                                  batch_idx: int) -> Tuple[Tensor, Dict[str, Tensor]]:
+    def compute_unsupervised_loss(self,
+                                  logits: Tensor,
+                                  probs: Tensor,
+                                  targets: Tensor,
+                                  ramp_up_value: float,
+                                  selection_state: Dict[str, Tensor]) -> Tuple[Tensor, Dict[str, Tensor]]:
         """
         Compute unsupervised loss and collect pseudo-label statistics for plotting.
         """
-        current_epoch = self.epoch
-
-        # initialize epoch counters if first time seeing this epoch
-        if (self._pseudo_epoch is None) or (self._pseudo_epoch != current_epoch):
-            self._pseudo_epoch = current_epoch
-            self._epoch_selected_count_current = 0
-            self._epoch_total_count_current = 0
-
-        batch_total = probs.size(0)
-
-        if self.use_csl:
-            # Step 1: 计算逐样本的无监督损失
-            per_sample_loss = self.unsupervised_loss(logits, probs, targets, reduction='none')  # shape [B] or [B, C]
-
-            # Step 2: 计算样本级权重（shape [B]）并获取样本级统计量
-            weight, stats = self.compute_csl_weight(probs, num_classes=self.exp_args.num_classes)
-            max_confidence, scaled_residual_variance = stats
-
-            # Step 3: 统一维度，使两者可相乘
-            if per_sample_loss.ndim > 1:
-                # 对每个样本取平均，得到 [B]
-                per_sample_loss = per_sample_loss.mean(dim=1)
-
-            # Step 4: 样本级加权平均损失
-            weighted_loss = (per_sample_loss * weight).mean()
-
-            # Count selected pseudo labels according to unsupervised loss thresholding
-            try:
-                confidence_threshold = float(self.unsupervised_loss.confidence_threshold)
-            except Exception:
-                confidence_threshold = 0.0
-
-            selected_mask = (targets.max(dim=1).values > confidence_threshold)
-            selected_count = int(selected_mask.sum().item())
-
-            # accumulate for epoch
-            self._epoch_selected_count_current += selected_count
-            self._epoch_total_count_current += int(batch_total)
-
-            # maybe collect scatter for randomly chosen epoch/batch
-            if (not self._scatter_collected) and (current_epoch == self._scatter_epoch):
-                # we chose a random batch within epoch at init; capture when batch_idx matches
-                if batch_idx == self._scatter_target_batch_idx:
-                    # save numpy arrays for plotting later (move to cpu first)
-                    self._scatter_points = (
-                        scaled_residual_variance.detach().cpu().numpy(),
-                        max_confidence.detach().cpu().numpy())
-                    self._scatter_collected = True
-
-        else:
-            weighted_loss = self.unsupervised_loss(logits, probs, targets)
-            # count selected based on targets
-            try:
-                confidence_threshold = float(self.unsupervised_loss.confidence_threshold)
-            except Exception:
-                confidence_threshold = 0.0
-            selected_mask = (targets.max(dim=1).values > confidence_threshold)
-            selected_count = int(selected_mask.sum().item())
-            self._epoch_selected_count_current += selected_count
-            self._epoch_total_count_current += int(batch_total)
+        per_sample_loss = self.compute_per_sample_unsupervised_loss(logits=logits, probs=probs, targets=targets)
+        weighted_loss = (per_sample_loss * selection_state["weight"]).mean()
 
         final_loss = ramp_up_value * self.lambda_u * weighted_loss
 
@@ -514,54 +468,137 @@ class SimPLEEstimator:
         )
 
     @torch.no_grad()
-    def compute_csl_weight(self, probs: Tensor, num_classes: int, epsilon=1e-8, alpha=2.0):
-        """
-        Compute CSL-based weights for image classification task.
-        Args:
-            probs: Tensor, shape [batch, num_classes], softmax probabilities
-        Returns:
-            weight: Tensor, shape [batch]
-            (max_confidence, scaled_residual_variance): two Tensors with shape [batch]
-        """
-        batch_size = probs.size(0)
+    def compute_selection_state(
+        self,
+        pseudo_probs: Tensor,
+        num_classes: int,
+        epsilon: float = 1e-8,
+        alpha: float = 2.0,
+    ) -> Dict[str, Tensor]:
+        max_confidence, scaled_residual_variance = self._compute_selection_stats(
+            pseudo_probs=pseudo_probs,
+            num_classes=num_classes,
+            epsilon=epsilon,
+        )
 
-        # Step 1: max confidence & corresponding index
-        max_confidence, max_indices = probs.max(dim=1)  # [batch]
+        if self.threshold_strategy == "fixed":
+            selected_mask = max_confidence >= self.fixed_threshold
+            if self.unsupervised_loss.loss_thresholded:
+                weight = selected_mask.to(dtype=pseudo_probs.dtype)
+            else:
+                weight = torch.ones_like(max_confidence, dtype=pseudo_probs.dtype)
 
-        # Step 2: compute g_j
-        g_j = (num_classes - 1) ** 2 / (2 * (1 - max_confidence + epsilon))  # [batch]
+            return {
+                "weight": weight,
+                "selected_mask": selected_mask,
+                "max_confidence": max_confidence,
+                "scaled_residual_variance": scaled_residual_variance,
+            }
 
-        # Step 3: compute residual variance (exclude max class)
-        mask = torch.ones_like(probs, dtype=torch.bool)
-        mask.scatter_(1, max_indices.unsqueeze(1), False)
-        remaining_preds = probs.masked_fill(~mask, float('nan'))
-        mean_remaining = torch.nanmean(remaining_preds, dim=1)  # [batch]
-        residual_variance = torch.nanmean((remaining_preds - mean_remaining.unsqueeze(1)) ** 2, dim=1)  # [batch]
+        features = torch.stack([max_confidence, scaled_residual_variance], dim=-1)
+        means, vars, cluster_counts = self._batch_class_stats(features, num_clusters=2)
+        selected_index, selected_mean, selected_var, cluster_scores = self._select_cluster_stats(
+            means,
+            vars,
+            epsilon=epsilon,
+        )
+        rejected_index = selected_index
+        if means.size(0) > 1:
+            for index in range(means.size(0)):
+                if index != selected_index:
+                    rejected_index = index
+                    break
 
-        # Step 4: scaled residual variance
-        scaled_residual_variance = g_j * residual_variance  # [batch]
+        conf_mean, res_mean = selected_mean[0], selected_mean[1]
+        conf_var, res_var = selected_var[0], selected_var[1]
 
-        # Step 5: batch_class_stats with SVD clustering
-        features = torch.stack([max_confidence, scaled_residual_variance], dim=-1)  # [batch, 2]
-        means, vars = self._batch_class_stats(features, num_clusters=2)
-
-        # Pick the cluster with highest confidence mean
-        conf_mean, res_mean = means[0]
-        conf_var, res_var = vars[0]
-
-        # Step 6: Z-score
         conf_z = (max_confidence - conf_mean) / torch.sqrt(conf_var + epsilon)
         res_z = (res_mean - scaled_residual_variance) / torch.sqrt(res_var + epsilon)
 
-        # Step 7: weight = exp(-z^2/alpha)
         weight_conf = torch.exp(- (conf_z ** 2) / alpha)
         weight_res = torch.exp(- (res_z ** 2) / alpha)
         weight = weight_conf * weight_res
 
-        # Step 8: confident mask (positive z-score -> weight=1)
-        confident_mask = (conf_z > 0) | (res_z > 0)
-        weight = torch.where(confident_mask, torch.ones_like(weight), weight)
-        return weight, (max_confidence, scaled_residual_variance)
+        selected_mask = (conf_z > 0) | (res_z > 0)
+        weight = torch.where(selected_mask, torch.ones_like(weight), weight)
+
+        return {
+            "weight": weight,
+            "selected_mask": selected_mask,
+            "max_confidence": max_confidence,
+            "scaled_residual_variance": scaled_residual_variance,
+            "cluster_means": means,
+            "cluster_vars": vars,
+            "cluster_counts": cluster_counts,
+            "cluster_scores": cluster_scores,
+            "selected_cluster_index": selected_index,
+            "selected_cluster_count": float(cluster_counts[selected_index].item()),
+            "selected_cluster_mean": selected_mean,
+            "selected_cluster_var": selected_var,
+            "selected_cluster_score": cluster_scores[selected_index],
+            "rejected_cluster_index": rejected_index,
+            "rejected_cluster_count": float(cluster_counts[rejected_index].item()),
+            "rejected_cluster_mean": means[rejected_index],
+            "rejected_cluster_var": vars[rejected_index],
+            "rejected_cluster_score": cluster_scores[rejected_index],
+        }
+
+    @torch.no_grad()
+    def record_selection_state(
+        self,
+        selection_state: Dict[str, Tensor],
+        targets: Tensor,
+        true_targets: Tensor,
+        batch_idx: int,
+    ) -> None:
+        self.classification_metrics.update_batch(
+            targets=targets,
+            true_targets=true_targets,
+            selected_mask=selection_state["selected_mask"],
+        )
+        self.classification_metrics.update_selection_stats(selection_state)
+
+    def compute_per_sample_unsupervised_loss(self, logits: Tensor, probs: Tensor, targets: Tensor) -> Tensor:
+        loss_input = probs if self.unsupervised_loss.loss_use_prob else logits
+        per_sample_loss = self.unsupervised_loss.loss_fn(loss_input, targets, dim=1, reduction='none')
+        if per_sample_loss.ndim > 1:
+            per_sample_loss = per_sample_loss.mean(dim=1)
+        return per_sample_loss
+
+    @torch.no_grad()
+    def compute_csl_weight(self, probs: Tensor, num_classes: int, epsilon=1e-8, alpha=2.0):
+        selection_state = self.compute_selection_state(
+            pseudo_probs=probs,
+            num_classes=num_classes,
+            epsilon=epsilon,
+            alpha=alpha,
+        )
+        return selection_state["weight"], (
+            selection_state["max_confidence"],
+            selection_state["scaled_residual_variance"],
+        )
+
+    @torch.no_grad()
+    def _compute_selection_stats(self, pseudo_probs: Tensor, num_classes: int, epsilon: float = 1e-8):
+        """
+        Compute max confidence and scaled residual variance for classification pseudo-labels.
+        """
+        max_confidence, max_indices = pseudo_probs.max(dim=1)
+        if num_classes <= 1:
+            return torch.log(max_confidence), torch.zeros_like(max_confidence)
+
+        g_j = (num_classes - 1) ** 2 / (2 * (1 - max_confidence + epsilon))  # [batch]
+
+        max_one_hot = F.one_hot(max_indices, num_classes=num_classes).to(dtype=pseudo_probs.dtype)
+        remaining_probs = pseudo_probs * (1 - max_one_hot)
+        mean_remaining = remaining_probs.sum(dim=1) / (num_classes - 1)
+        residual_variance = (
+            ((remaining_probs - mean_remaining.unsqueeze(1)) ** 2) * (1 - max_one_hot)
+        ).sum(dim=1) / (num_classes - 1)
+        scaled_residual_variance = g_j * residual_variance  # [batch]
+
+        return torch.log(max_confidence), scaled_residual_variance
+
     @torch.no_grad()
     def _batch_class_stats(self, features: Tensor, num_clusters: int = 2):
         """
@@ -570,27 +607,48 @@ class SimPLEEstimator:
             means: [num_clusters, 2]
             vars: [num_clusters, 2]
         """
+        if features.size(0) == 0:
+            default_means = torch.tensor([[1.0, 0.0]] * num_clusters, device=features.device, dtype=features.dtype)
+            default_vars = torch.ones_like(default_means)
+            default_counts = torch.zeros(num_clusters, device=features.device, dtype=features.dtype)
+            return default_means, default_vars, default_counts
+
         eigenvectors = self._compute_eigenvectors_with_svd(features, num_clusters)
         class_assignments = torch.argmax(torch.abs(eigenvectors), dim=1)
 
         means = []
         vars = []
+        counts = []
         for class_id in range(num_clusters):
             points = features[class_assignments == class_id]
+            counts.append(float(points.size(0)))
             if points.size(0) == 0:
-                means.append(torch.zeros(2, device=features.device))
-                vars.append(torch.ones(2, device=features.device))
+                means.append(torch.zeros(2, device=features.device, dtype=features.dtype))
+                vars.append(torch.ones(2, device=features.device, dtype=features.dtype))
+            elif points.size(0) == 1:
+                means.append(points.squeeze(0))
+                vars.append(torch.zeros(2, device=features.device, dtype=features.dtype))
             else:
                 means.append(points.mean(dim=0))
                 # use unbiased=False to avoid dof warnings when points.size(0) <= 1
                 vars.append(points.var(dim=0, unbiased=False))
         means = torch.stack(means)
         vars = torch.stack(vars)
+        counts_tensor = torch.tensor(counts, device=features.device, dtype=features.dtype)
 
-        # Pick cluster with max conf mean
-        max_conf_idx = torch.argmax(means[:, 0])
-        
-        return means[max_conf_idx:max_conf_idx+1], vars[max_conf_idx:max_conf_idx+1]
+        return means, vars, counts_tensor
+
+    @torch.no_grad()
+    def _select_cluster_stats(self, means: Tensor, vars: Tensor, epsilon: float = 1e-8) -> Tuple[int, Tensor, Tensor, Tensor]:
+        if self.select_mode == "neglog":
+            scores = means[:, 0] + self.select_lam * (-torch.log(means[:, 1].clamp_min(epsilon)))
+        elif self.select_mode == "linear":
+            scores = means[:, 0] - self.select_lam * means[:, 1]
+        else:
+            scores = means[:, 0]
+
+        selected_index = int(torch.argmax(scores).item())
+        return selected_index, means[selected_index], vars[selected_index], scores
     
     @torch.no_grad()
     def _compute_eigenvectors_with_svd(self, X: Tensor, num_clusters: int):
@@ -626,10 +684,35 @@ class SimPLEEstimator:
                           logits: Tensor,
                           probs: Tensor,
                           targets: Tensor,
-                          ramp_up_value: float) -> Tuple[Tensor, Dict[str, Tensor]]:
-        loss = self.pair_loss(logits=logits,
-                              probs=probs,
-                              targets=targets)
+                          ramp_up_value: float,
+                          selection_state: Dict[str, Tensor]) -> Tuple[Tensor, Dict[str, Tensor]]:
+        indices = get_pair_indices(targets, ordered_pair=True)
+        if indices.numel() == 0:
+            loss = logits.new_zeros(())
+        else:
+            i_indices, j_indices = indices[:, 0], indices[:, 1]
+            similarities = self.pair_loss.get_similarity(
+                targets_i=targets[i_indices],
+                targets_j=targets[j_indices],
+                dim=1,
+            )
+            sim_mask = F.threshold(similarities, self.pair_loss.similarity_threshold, 0).detach()
+            conf_mask = selection_state["selected_mask"][i_indices].detach().to(dtype=logits.dtype)
+            distance = self.pair_loss.get_distance_loss(
+                logits=logits[j_indices],
+                probs=probs[j_indices],
+                targets=targets[i_indices],
+                dim=1,
+                reduction='none',
+            )
+            loss = conf_mask * sim_mask * distance
+            total_size = max(len(indices) // 2, 1)
+
+            if self.pair_loss.reduction == "sum":
+                loss = torch.sum(loss)
+            else:
+                loss = torch.sum(loss) / total_size
+
         weighted_loss = ramp_up_value * self.lambda_pair * loss
 
         return weighted_loss, dict(
@@ -638,66 +721,38 @@ class SimPLEEstimator:
         )
 
     def visualize_loss(self, u_targets: Tensor, u_true_targets: Tensor) -> LossInfoType:
+        selection_state = self.compute_selection_state(
+            pseudo_probs=u_targets,
+            num_classes=self.exp_args.num_classes,
+        )
         return self.get_pair_info(targets=u_targets,
                                   true_targets=u_true_targets,
+                                  selection_mask=selection_state["selected_mask"],
                                   return_plot_info=self.return_plot_info)
 
     def training_epoch_end(self, *args, **kwargs) -> None:
-        # called at the end of each training epoch
-        # append per-epoch pseudo-label stats
-        total = getattr(self, '_epoch_total_count_current', 0)
-        selected = getattr(self, '_epoch_selected_count_current', 0)
-
-        # append only if we have seen any pseudo labels in this epoch
-        if total is not None:
-            self.pseudo_total_per_epoch.append(int(total))
-            self.pseudo_selected_per_epoch.append(int(selected))
-
-        # Plotting: only save once per epoch end and only on main process
         log_dir = getattr(self.exp_args, 'log_dir', None)
-        if log_dir is None:
-            return
-
-        try:
-            os.makedirs(log_dir, exist_ok=True)
-        except Exception:
-            pass
-
-        # Line plot: epoch vs selected/total ratio
-        try:
-            epochs = list(range(1, len(self.pseudo_total_per_epoch) + 1))
-            ratios = []
-            for t, s in zip(self.pseudo_total_per_epoch, self.pseudo_selected_per_epoch):
-                ratios.append(float(s) / float(t) if t > 0 else 0.0)
-
-            plt.figure()
-            plt.plot(epochs, ratios, marker='o')
-            plt.xlabel('Epoch')
-            plt.ylabel('Selected pseudo / Total pseudo')
-            plt.title('Per-epoch selected pseudo-label ratio')
-            plt.grid(True)
-            line_path = os.path.join(log_dir, 'pseudo_label_ratio.png')
-            plt.savefig(line_path)
-            plt.close()
-        except Exception:
-            # don't crash training for plotting errors
-            pass
-
-        # Scatter plot: for the randomly chosen epoch/batch, if collected, save scatter
-        if getattr(self, '_scatter_collected', False) and (self._scatter_points is not None):
+        if log_dir is not None:
             try:
-                x_vals, y_vals = self._scatter_points
-                plt.figure()
-                plt.scatter(x_vals, y_vals, s=8, alpha=0.7)
-                plt.xlabel('residual_variance (scaled)')
-                plt.ylabel('max_confidence')
-                plt.title(f'Pseudo labels scatter epoch {self._scatter_epoch} batch {self._scatter_target_batch_idx}')
-                plt.grid(True)
-                scatter_path = os.path.join(log_dir, f'pseudo_scatter_epoch{self._scatter_epoch}_batch{self._scatter_target_batch_idx}.png')
-                plt.savefig(scatter_path)
-                plt.close()
+                os.makedirs(log_dir, exist_ok=True)
             except Exception:
                 pass
+
+        current_epoch = max(0, self.epoch - 1)
+        self.classification_metrics.set_save_path(log_dir)
+        self.classification_metrics.on_epoch_end(current_epoch=current_epoch, device=self.device)
+
+    def _get_confidence_threshold(self) -> Optional[float]:
+        if self.threshold_strategy != "fixed":
+            return None
+        try:
+            return float(self.fixed_threshold)
+        except Exception:
+            return None
+
+    @staticmethod
+    def _is_main_process() -> bool:
+        return not (torch.distributed.is_available() and torch.distributed.is_initialized()) or torch.distributed.get_rank() == 0
 
     def get_checkpoint(self) -> Dict[str, Any]:
         checkpoint = dict(
@@ -707,6 +762,7 @@ class SimPLEEstimator:
             lr_scheduler_state=self.lr_scheduler.state_dict(),
             ramp_state=self.ramp_up.state_dict(),
             global_step=self.global_step,
+            classification_metrics_state=self.classification_metrics.state_dict(),
             # save random state
             torch_rng_state=torch.get_rng_state(),
             numpy_random_state=np.random.get_state(),
@@ -737,6 +793,11 @@ class SimPLEEstimator:
             else:
                 self.ramp_up.current = self.global_step
                 self.ramp_up.length = self.max_warmup_step
+
+        if "classification_metrics_state" in checkpoint:
+            self.classification_metrics.load_state_dict(checkpoint["classification_metrics_state"])
+        else:
+            self.classification_metrics.load_from_summary_file()
 
         return self
 
@@ -769,7 +830,7 @@ class SimPLEEstimator:
         Returns:
 
         """
-        checkpoint = torch.load(checkpoint_path, map_location=device)
+        checkpoint = load_torch_checkpoint(checkpoint_path, map_location=device)
 
         recovered_args = checkpoint["args"]
         if args_override is None:

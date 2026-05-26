@@ -9,7 +9,7 @@ from .utils import to_tensor
 from .pair_loss.utils import get_pair_indices
 
 # for type hint
-from typing import Tuple, Union, Dict
+from typing import Optional, Tuple, Union, Dict
 from torch import Tensor
 from plotly.graph_objects import Figure
 
@@ -20,12 +20,31 @@ def _detorch(t: Tensor) -> np.ndarray:
     return t.detach().cpu().clone().numpy()
 
 
+def _get_histogram_values(t: Tensor) -> np.ndarray:
+    # Upcast before binning so half-precision tensors do not trip NumPy bin-edge precision checks.
+    values = t.detach().reshape(-1).to(device="cpu", dtype=torch.float64).numpy()
+    return values[np.isfinite(values)]
+
+
+def _make_histogram(t: Tensor) -> wandb.Histogram:
+    values = _get_histogram_values(t)
+    if values.size == 0:
+        return wandb.Histogram(values)
+
+    try:
+        return wandb.Histogram(values)
+    except ValueError:
+        num_bins = min(64, max(1, int(np.unique(values).size)))
+        return wandb.Histogram(np_histogram=np.histogram(values, bins=num_bins))
+
+
 @torch.no_grad()
 def get_pair_info(targets: Tensor,
                   true_targets: Tensor,
                   similarity_metric: SimilarityType,
                   confidence_threshold: float,
                   similarity_threshold: float,
+                  selection_mask: Optional[Tensor] = None,
                   return_plot_info: bool = False) -> LossInfoType:
     indices = get_pair_indices(targets, ordered_pair=True)
     i_indices, j_indices = indices[:, 0], indices[:, 1]
@@ -36,7 +55,10 @@ def get_pair_info(targets: Tensor,
 
     similarities: Tensor = similarity_metric(targets_i=targets_i, targets_j=targets_j, dim=1)
 
-    conf_mask: Tensor = targets_max_prob[i_indices] > confidence_threshold
+    if selection_mask is None:
+        conf_mask = targets_max_prob[i_indices] > confidence_threshold
+    else:
+        conf_mask = selection_mask.to(dtype=torch.bool)[i_indices]
     sim_mask: Tensor = (similarities > similarity_threshold)
     final_mask: Tensor = (conf_mask & sim_mask)
     true_pair_mask: Tensor = (true_labels[i_indices] == true_labels[j_indices])
@@ -55,7 +77,8 @@ def get_pair_info(targets: Tensor,
         i_indices=i_indices,
         j_indices=j_indices,
         similarities=similarities,
-        final_mask=final_mask)
+        final_mask=final_mask,
+        return_plot_info=return_plot_info)
 
     log_info.update(extra_log_info)
     plot_info.update(extra_plot_info)
@@ -148,7 +171,8 @@ def get_pair_extra_info(targets_max_prob: Tensor,
                         i_indices: Tensor,
                         j_indices: Tensor,
                         similarities: Tensor,
-                        final_mask: Tensor) -> Tuple[LogDictType, PlotDictType]:
+                        final_mask: Tensor,
+                        return_plot_info: bool = False) -> Tuple[LogDictType, PlotDictType]:
     def mean_std_max_min(t: Union[Tensor, np.ndarray], prefix: str = "") -> Dict[str, Union[Tensor, np.ndarray]]:
         return {
             f"{prefix}/mean": t.mean() if t.numel() > 0 else to_tensor(0, tensor_like=t),
@@ -168,20 +192,18 @@ def get_pair_extra_info(targets_max_prob: Tensor,
     selected_j_conf_stat = mean_std_max_min(selected_j_conf, prefix="selected_j_conf")
     selected_sim_stat = mean_std_max_min(selected_sim, prefix="selected_sim")
 
-    selected_i_conf_hist = wandb.Histogram(_detorch(selected_i_conf))
-    selected_j_conf_hist = wandb.Histogram(_detorch(selected_j_conf))
-    selected_sim_hist = wandb.Histogram(_detorch(selected_sim))
-
     log_info = {
         **selected_i_conf_stat,
         **selected_j_conf_stat,
         **selected_sim_stat,
     }
-    plot_info = {
-        "selected_i_conf_hist": selected_i_conf_hist,
-        "selected_j_conf_hist": selected_j_conf_hist,
-        "selected_sim_hist": selected_sim_hist,
-    }
+    plot_info = {}
+    if return_plot_info:
+        plot_info = {
+            "selected_i_conf_hist": _make_histogram(selected_i_conf),
+            "selected_j_conf_hist": _make_histogram(selected_j_conf),
+            "selected_sim_hist": _make_histogram(selected_sim),
+        }
 
     return {f"pair_loss/{k}": v for k, v in log_info.items()}, \
            {f"pair_loss/{k}": v for k, v in plot_info.items()}

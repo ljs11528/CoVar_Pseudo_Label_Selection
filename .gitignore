@@ -13,3 +13,5 @@ wandb/
 *.txt
 
 *.jpg
+SimPLE+CoVar/data/cifar-100-python/
+SimPLE+CoVar/data/cifar-100-python.tar.gz

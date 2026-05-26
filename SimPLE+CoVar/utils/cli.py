@@ -1,12 +1,13 @@
 import argparse
 from datetime import datetime
 from pathlib import Path
+import shlex
 import warnings
 
 import numpy as np
 
 from .utils import str_to_bool, filter_dict
-from .file_io import read_yaml
+from .file_io import find_latest_checkpoint_from_latest_log_dir, read_yaml
 
 # for type hint
 from typing import Union, Tuple, List, Optional, Set, Dict, Any
@@ -29,9 +30,20 @@ LOGGER_EXCLUDED_KEYS = {
     "logger_config_dict",
 }
 
+DEFAULT_LOG_ROOT = Path(__file__).resolve().parent.parent / "logs"
+
+
+def _convert_arg_line_to_args(arg_line: str) -> List[str]:
+    stripped_line = arg_line.strip()
+    if not stripped_line or stripped_line.startswith("#"):
+        return []
+
+    return shlex.split(stripped_line, comments=True)
+
 
 def get_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser("SimPLE", fromfile_prefix_chars="@")
+    parser.convert_arg_line_to_args = _convert_arg_line_to_args
 
     # Experiment
     parser.add_argument('-e',
@@ -68,7 +80,7 @@ def get_arg_parser() -> argparse.ArgumentParser:
                         '--train-batch-size',
                         '--labeled-train-batch-size',
                         dest="train_batch_size",
-                        default=64,
+                        default=128,
                         type=int,
                         help='train batch size')
 
@@ -292,6 +304,26 @@ def get_arg_parser() -> argparse.ArgumentParser:
                         type=float,
                         help="confidence threshold for pair loss and unsupervised loss")
 
+    parser.add_argument('--threshold-strategy',
+                        dest="threshold_strategy",
+                        choices=["fixed", "dynamic"],
+                        default="fixed",
+                        type=str,
+                        help='pseudo-label selection strategy; "dynamic" enables CoVar/PCOS-style selection')
+
+    parser.add_argument('--select-mode',
+                        dest="select_mode",
+                        choices=["neglog", "linear", "confidence"],
+                        default="neglog",
+                        type=str,
+                        help='cluster scoring rule for dynamic pseudo-label selection')
+
+    parser.add_argument('--select-lam',
+                        dest="select_lam",
+                        default=0.5,
+                        type=float,
+                        help='trade-off coefficient used by dynamic pseudo-label selection')
+
     parser.add_argument('--sim-threshold',
                         '--similarity-threshold',
                         dest="similarity_threshold",
@@ -365,6 +397,13 @@ def get_arg_parser() -> argparse.ArgumentParser:
                         type=str,
                         help="checkpoint path to recover from")
 
+    parser.add_argument('--continue-train',
+                        '--resume-latest',
+                        dest="continue_train",
+                        default=False,
+                        action='store_true',
+                        help='continue training from the latest checkpoint in the newest logs directory')
+
     parser.add_argument('--use-pretrain',
                         dest="use_pretrain",
                         default=False,
@@ -437,7 +476,7 @@ def get_arg_parser() -> argparse.ArgumentParser:
     # other settings
     parser.add_argument('--device',
                         dest="device",
-                        default='1',
+                        default='0',
                         type=str,
                         help='"cpu" if using CPU or id(s) for CUDA_VISIBLE_DEVICES')
 
@@ -502,6 +541,18 @@ def get_arg_parser() -> argparse.ArgumentParser:
                         default=None,
                         help=f"interval for logging train loss")
 
+    parser.add_argument('--profile-step-time',
+                        dest="profile_step_time",
+                        default=False,
+                        action='store_true',
+                        help='log sampled train-step data/computation timing during training')
+
+    parser.add_argument('--profile-step-time-interval',
+                        dest="profile_step_time_interval",
+                        type=int,
+                        default=1,
+                        help='profile every Nth training step when step timing is enabled')
+
     parser.add_argument('--logger-run-name',
                         dest="logger_run_name",
                         type=str,
@@ -558,8 +609,14 @@ def get_arg_parser() -> argparse.ArgumentParser:
                         '--num-latest-checkpoints-kept',
                         dest="num_latest_checkpoints_kept",
                         type=int,
-                        default=None,
-                        help=f"Number of latest checkpoints to be kept")
+                        default=1,
+                        help=f"Number of latest checkpoints to keep")
+
+    parser.add_argument('--num-best-checkpoints-kept',
+                        dest="num_best_checkpoints_kept",
+                        type=int,
+                        default=5,
+                        help=f"Number of top-scoring checkpoints to keep")
 
     return parser
 
@@ -610,6 +667,24 @@ def parse_args(args: Namespace) -> Namespace:
         args.k_strong = args.k
 
     args.num_workers = max(args.num_workers, 0)
+    args.use_csl = (args.threshold_strategy == "fixed")
+
+    if args.continue_train:
+        if args.use_pretrain:
+            raise AssertionError("continue_train cannot be combined with use_pretrain")
+
+        if args.checkpoint_path is None:
+            checkpoint_search_dir = Path(args.log_dir) if args.log_dir is not None else DEFAULT_LOG_ROOT
+            latest_checkpoint_path = find_latest_checkpoint_from_latest_log_dir(
+                checkpoint_search_dir,
+                step_filter=r"latest@step-(\d+)\.pth",
+            )
+            assert latest_checkpoint_path is not None, \
+                f'cannot find a latest checkpoint under "{checkpoint_search_dir}"'
+            args.checkpoint_path = str(latest_checkpoint_path)
+
+        if args.log_dir is None:
+            args.log_dir = str(Path(args.checkpoint_path).parent)
 
     # value check
     verify_args(args)
@@ -623,6 +698,9 @@ def parse_args(args: Namespace) -> Namespace:
     if (args.checkpoint_path is not None) and (not args.use_pretrain) and \
             bool(args.logger_config_dict.get("resume", False)):
         # use the same log_dir if continuing on previous run
+        args.log_dir = str(Path(args.checkpoint_path).parent)
+
+    if args.continue_train:
         args.log_dir = str(Path(args.checkpoint_path).parent)
 
     if args.log_dir is None:
@@ -692,6 +770,8 @@ def verify_args(args: Namespace) -> None:
     assert args.num_step_per_epoch >= 1, f"num_step_per_epoch must be >= 1 but get {args.num_step_per_epoch}"
     assert args.train_batch_size >= 1, f"train_batch_size must be >= 1 but get {args.train_batch_size}"
     assert args.test_batch_size >= 1, f"test_batch_size must be >= 1 but get {args.test_batch_size}"
+    assert args.profile_step_time_interval >= 1, \
+        f"profile_step_time_interval must be >= 1 but get {args.profile_step_time_interval}"
     assert args.learning_rate > 0, f"learning_rate must be > 0 but get {args.learning_rate}"
     if args.feature_learning_rate is not None:
         assert args.feature_learning_rate > 0, f"feature_learning_rate must be > 0 but get {args.feature_learning_rate}"
@@ -705,12 +785,20 @@ def verify_args(args: Namespace) -> None:
     assert args.labeled_train_size >= 1, f"labeled_train_size must be >= 1 but get {args.labeled_train_size}"
     assert args.validation_size >= 1, f"validation_size must be >= 1 but get {args.validation_size}"
     assert args.lr_warmup_step >= 0, f"lr_warmup_step must be >= 0 but get {args.lr_warmup_step}"
+    assert 0 <= args.confidence_threshold <= 1, \
+        f"confidence_threshold must be in [0, 1] but get {args.confidence_threshold}"
+    assert args.select_lam >= 0, f"select_lam must be >= 0 but get {args.select_lam}"
 
     if args.data_dims is not None:
         assert all(dim > 0 for dim in args.data_dims), f"data_dims must all be > 0 but get {args.data_dims}"
 
-    assert args.num_latest_checkpoints_kept is None or args.num_latest_checkpoints_kept >= 0, \
-        f"num_latest_checkpoints_kept must be None or >= 0, but get {args.num_latest_checkpoints_kept}"
+    assert args.num_latest_checkpoints_kept >= 0, \
+        f"num_latest_checkpoints_kept must be >= 0, but get {args.num_latest_checkpoints_kept}"
+    assert args.num_best_checkpoints_kept >= 0, \
+        f"num_best_checkpoints_kept must be >= 0, but get {args.num_best_checkpoints_kept}"
+
+    assert not (args.continue_train and args.use_pretrain), \
+        "continue_train cannot be combined with use_pretrain"
 
     if args.checkpoint_path is not None:
         assert Path(args.checkpoint_path).is_file(), f"\"{args.checkpoint_path}\" is invalid"

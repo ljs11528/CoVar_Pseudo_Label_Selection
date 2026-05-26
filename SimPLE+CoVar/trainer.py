@@ -2,6 +2,7 @@ import torch
 from torch import distributed
 from torch.utils.data import DataLoader, DistributedSampler
 from tqdm import tqdm
+import time
 
 from pathlib import Path
 
@@ -61,9 +62,9 @@ class Trainer:
                                      logger=self.logger,
                                      checkpoint_metric="validation/mean_acc",
                                      best_checkpoint_str="best@step-{global_step}.pth",
-                                     best_checkpoint_pattern=r"best@step-(\d+)\.pt",
+                                     best_checkpoint_pattern=r"best@step-(\d+)\.pth",
                                      latest_checkpoint_str="latest@step-{global_step}.pth",
-                                     latest_checkpoint_pattern=r"latest@step-(\d+)\.pt",
+                                     latest_checkpoint_pattern=r"latest@step-(\d+)\.pth",
                                      delayed_best_model_saving=True)
 
     @property
@@ -327,17 +328,55 @@ class Trainer:
         # when global_step is recovered from checkpoint, it might not be the start/end of an epoch
         total_step = self.num_step_per_epoch - (self.global_step % self.num_step_per_epoch)
 
-        # create progress bar
-        p_bar = tqdm(self.get_train_batch(max_iter=total_step),
-                     desc=f"Epoch {self.epoch + 1}",
-                     total=total_step)
+        train_batch_iter = iter(self.get_train_batch(max_iter=total_step))
 
-        for batch_idx, batch in p_bar:
+        # create progress bar
+        p_bar = tqdm(range(total_step), desc=f"Epoch {self.epoch + 1}", total=total_step)
+
+        for _ in p_bar:
+            data_start_time = time.perf_counter()
+
+            try:
+                batch_idx, batch = next(train_batch_iter)
+            except StopIteration:
+                break
+
+            data_time = time.perf_counter() - data_start_time
+            is_profile_step = self.exp_args.profile_step_time and \
+                (self.global_step % self.exp_args.profile_step_time_interval == 0)
+
+            compute_start_event = None
+            compute_end_event = None
+            compute_start_time = None
+
+            if is_profile_step:
+                if self.device.type == "cuda":
+                    compute_start_event = torch.cuda.Event(enable_timing=True)
+                    compute_end_event = torch.cuda.Event(enable_timing=True)
+                    compute_start_event.record()
+                else:
+                    compute_start_time = time.perf_counter()
+
             # compute train loss
             loss, log_dict = self.training_step(batch, batch_idx)
 
             # update parameters
             self.update_model_params(loss)
+
+            if is_profile_step:
+                if compute_start_event is not None and compute_end_event is not None:
+                    compute_end_event.record()
+                    compute_end_event.synchronize()
+                    compute_time = compute_start_event.elapsed_time(compute_end_event) / 1000.0
+                else:
+                    compute_time = time.perf_counter() - compute_start_time
+
+                total_profile_time = data_time + compute_time
+                log_dict["log"].update({
+                    "data_time_sec": data_time,
+                    "compute_time_sec": compute_time,
+                    "data_ratio": data_time / total_profile_time if total_profile_time > 0 else 0.0,
+                })
 
             # update logs
             self.logger.accumulate_log(log_info=log_dict["log"], plot_info=log_dict["plot"])

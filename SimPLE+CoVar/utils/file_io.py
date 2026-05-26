@@ -1,3 +1,4 @@
+import torch
 import numpy as np
 import yaml
 
@@ -8,8 +9,24 @@ import re
 from typing import Union, Pattern, Optional, Dict, Any, List
 
 
+def load_torch_checkpoint(
+    checkpoint_path: Union[str, Path],
+    map_location: Optional[Union[str, torch.device, Dict[str, str], Dict[torch.device, torch.device]]] = None,
+):
+    load_kwargs = dict(map_location=map_location)
+
+    try:
+        return torch.load(checkpoint_path, weights_only=False, **load_kwargs)
+    except TypeError:
+        # Older PyTorch versions do not support weights_only.
+        return torch.load(checkpoint_path, **load_kwargs)
+
+
 def find_checkpoint_path(checkpoint_dir: Union[str, Path], step_filter: Union[Pattern, str]) -> Optional[Path]:
     checkpoint_dir_path = Path(checkpoint_dir)
+    if not checkpoint_dir_path.is_dir():
+        return None
+
     output_file = None
     max_step_num = -np.inf
 
@@ -27,6 +44,44 @@ def find_checkpoint_path(checkpoint_dir: Union[str, Path], step_filter: Union[Pa
             output_file = file_item
 
     return output_file
+
+
+def find_latest_directory(search_dir: Union[str, Path]) -> Optional[Path]:
+    search_dir_path = Path(search_dir)
+    if not search_dir_path.is_dir():
+        return None
+
+    candidate_dirs = [child for child in search_dir_path.iterdir() if child.is_dir()]
+    if not candidate_dirs:
+        return None
+
+    return max(candidate_dirs, key=lambda path: (path.stat().st_mtime, path.name))
+
+
+def find_latest_checkpoint_from_latest_log_dir(
+    search_dir: Union[str, Path],
+    step_filter: Union[Pattern, str],
+) -> Optional[Path]:
+    search_dir_path = Path(search_dir)
+    if not search_dir_path.is_dir():
+        return None
+
+    direct_checkpoint_path = find_checkpoint_path(search_dir_path, step_filter)
+    if direct_checkpoint_path is not None:
+        return direct_checkpoint_path
+
+    candidate_dirs = sorted(
+        (child for child in search_dir_path.iterdir() if child.is_dir()),
+        key=lambda path: (path.stat().st_mtime, path.name),
+        reverse=True,
+    )
+
+    for run_dir in candidate_dirs:
+        checkpoint_path = find_checkpoint_path(run_dir, step_filter)
+        if checkpoint_path is not None:
+            return checkpoint_path
+
+    return None
 
 
 def read_yaml(path: Union[str, Path]) -> Dict[str, Any]:
