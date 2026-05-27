@@ -27,10 +27,10 @@ def load_majority_mask(txt_path, n_classes=21):
     return is_majority
 
 def main():
-    covar_path = "/data/zxf_test/user1/kd/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/visualize/covar/pseudo_label_metrics_summary.json"
-    covar2_path = "/data/zxf_test/user1/kd/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/visualize/covar2/pseudo_label_metrics_summary.json"
-    fixed_path = "/data/zxf_test/user1/kd/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/visualize/95/pseudo_label_metrics_summary.json"
-    txt_path = "/data/zxf_test/user1/kd/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/visualize/pseudo_per_class_epoch_76.txt"
+    covar_path = "/workspace/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/visualize/covar/pseudo_label_metrics_summary.json"
+    covar2_path = "/workspace/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/visualize/covar2/pseudo_label_metrics_summary.json"
+    fixed_path = "/workspace/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/visualize/95/pseudo_label_metrics_summary.json"
+    txt_path = "/workspace/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/visualize/pseudo_per_class_epoch_76.txt"
 
     # Load data
     covar_data = load_json(covar_path)["summary_metrics"]
@@ -102,8 +102,8 @@ def main():
     # Explicit legend handles with a standard opaque legend box.
     legend_handles = [
         Patch(facecolor='gray', alpha=1.0, edgecolor='none', label='Majority class (opaque)'),
-        Patch(facecolor=c_covar2_bar, edgecolor='none', label='Fixed(0.95) - Coverage (Bar)'),
-        Patch(facecolor=c_covar_bar, edgecolor='none', label='W/O Cov(g, v) - Coverage (Bar)'),
+        Patch(facecolor=c_covar_bar, edgecolor='none', label='Fixed(0.95) - Coverage (Bar)'),
+        Patch(facecolor=c_covar2_bar, edgecolor='none', label='W/O Cov(g, v) - Coverage (Bar)'),
         Patch(facecolor=c_fixed_bar, edgecolor='none', label='W/ Cov(g, v) - Coverage (Bar)'),
         Patch(facecolor='gray', alpha=0.5, edgecolor='none', label='Minority class (α=0.5)'),
         Line2D([0], [0], color=c_covar_line, marker='o', lw=2.5, ms=6, label='Fixed(0.95) - Accuracy (Line)'),
@@ -122,10 +122,10 @@ def main():
     )
     leg.set_zorder(1000)
     
-    plt.title('Comparison of Pseudo-Label Selection Rate and Accuracy Across Categories', fontsize=16, fontweight='bold', pad=40)
+    # plt.title('Comparison of Pseudo-Label Selection Rate and Accuracy Across Categories', fontsize=16, fontweight='bold', pad=40)
     plt.tight_layout()
-    plt.savefig('/data/zxf_test/user1/kd/plot_category_comparison.png', dpi=300)
-    print("Saved figure to /data/zxf_test/user1/kd/plot_category_comparison.png")
+    plt.savefig('/workspace/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/visualize/plot_category_comparison.png', dpi=300)
+    print("Saved figure to /workspace/covar/CoVar_Pseudo_Label_Selection/CSL+CoVar/visualize/plot_category_comparison.png")
 
 if __name__ == "__main__":
     main()

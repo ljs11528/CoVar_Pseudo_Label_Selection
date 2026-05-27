@@ -5,9 +5,14 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.legend_handler import HandlerTuple
+from matplotlib.lines import Line2D
 
 
 DEFAULT_THRESHOLD = 0.95
+DEFAULT_X_LIMITS = (-0.1, 1.0)
+DEFAULT_Y_LIMITS = (0.9, 1.0)
+VALID_CATEGORY_KEYS = ("A", "B", "C", "D")
 
 
 def parse_args():
@@ -23,7 +28,7 @@ def parse_args():
         "--output",
         type=Path,
         default=None,
-        help="Output image path. Defaults to <input_stem>_grouped_scatter.png.",
+        help="Output image path. Defaults to <input_stem>_grouped_scatter.pdf.",
     )
     parser.add_argument(
         "--threshold",
@@ -34,7 +39,7 @@ def parse_args():
     parser.add_argument(
         "--alpha",
         type=float,
-        default=0.42,
+        default=1.0,
         help="Point transparency in the scatter plot.",
     )
     parser.add_argument(
@@ -47,9 +52,50 @@ def parse_args():
         "--x-scale",
         choices=("log", "linear"),
         default="log",
-        help="Scale used for the rcv axis. Defaults to log because rcv often spans multiple orders of magnitude.",
+        help="Scale used for the rcv axis. Defaults to log because rcv often spans multiple orders of magnitude; the plot falls back to linear if the visible x-range includes 0.",
+    )
+    parser.add_argument(
+        "--legend-count",
+        action="append",
+        default=[],
+        metavar="CATEGORY=COUNT",
+        help="Override the displayed legend/sample count for a category, e.g. --legend-count A=75185. Can be repeated for A/B/C/D.",
     )
     return parser.parse_args()
+
+
+def parse_legend_count_overrides(entries):
+    overrides = {}
+    for entry in entries:
+        if "=" not in entry:
+            raise ValueError(
+                f"Invalid --legend-count value '{entry}'. Expected CATEGORY=COUNT."
+            )
+
+        category_key, count_text = entry.split("=", 1)
+        category_key = category_key.strip().upper()
+        count_text = count_text.strip()
+
+        if category_key not in VALID_CATEGORY_KEYS:
+            raise ValueError(
+                f"Invalid category '{category_key}' in --legend-count. Expected one of {VALID_CATEGORY_KEYS}."
+            )
+
+        try:
+            count_value = int(count_text)
+        except ValueError as exc:
+            raise ValueError(
+                f"Invalid count '{count_text}' for category '{category_key}'. Expected an integer."
+            ) from exc
+
+        if count_value < 0:
+            raise ValueError(
+                f"Invalid count '{count_value}' for category '{category_key}'. Expected a non-negative integer."
+            )
+
+        overrides[category_key] = count_value
+
+    return overrides
 
 
 def load_points(input_path):
@@ -91,25 +137,27 @@ def build_categories(points, threshold):
     categories = {
         "A": {
             "label": f"A: mc >= {threshold:.2f}, selected = 1",
-            "color": "#1f77b4",
+            "color": "#4C46A8",
             "marker": "o",
             "points": [],
         },
         "B": {
             "label": f"B: mc < {threshold:.2f}, selected = 1",
-            "color": "#ff7f0e",
+            "color": "#DF6D84",
             "marker": "^",
+            "size_scale": 1.2,
+            "legend_markersize": 8,
             "points": [],
         },
         "C": {
             "label": f"C: mc >= {threshold:.2f}, selected = 0",
-            "color": "#2ca02c",
+            "color": "#57B7A8",
             "marker": "s",
             "points": [],
         },
         "D": {
             "label": f"D: mc < {threshold:.2f}, selected = 0",
-            "color": "#d62728",
+            "color": "#8CCEF2",
             "marker": "D",
             "points": [],
         },
@@ -133,26 +181,52 @@ def build_categories(points, threshold):
     return categories
 
 
-def plot_categories(categories, threshold, output_path, x_scale, alpha, marker_size, title):
+def get_display_count(category_key, category, legend_count_overrides):
+    return legend_count_overrides.get(category_key, len(category["points"]))
+
+
+def plot_categories(
+    categories,
+    threshold,
+    output_path,
+    x_scale,
+    alpha,
+    marker_size,
+    title,
+    legend_count_overrides,
+):
     fig, ax = plt.subplots(figsize=(10, 7))
     scatter_handles = {}
 
-    for key in ("D", "A", "C", "B"):
+    def build_marker_handle(category_key):
+        category = categories[category_key]
+        return Line2D(
+            [],
+            [],
+            linestyle="none",
+            marker=category["marker"],
+            markersize=category.get("legend_markersize", 7),
+            markerfacecolor=category["color"],
+            markeredgecolor=category["color"],
+        )
+
+    for key in ("D", "C", "A", "B"):
         category = categories[key]
         if not category["points"]:
             continue
 
         x_values, y_values = zip(*category["points"])
+        display_count = get_display_count(key, category, legend_count_overrides)
         scatter_handles[key] = ax.scatter(
             x_values,
             y_values,
-            s=marker_size,
+            s=marker_size * category.get("size_scale", 1.0),
             c=category["color"],
             marker=category["marker"],
             alpha=alpha,
             linewidths=0,
             rasterized=True,
-            label=f"{category['label']} (n={len(category['points'])})",
+            label=f"{category['label']} (n={display_count})",
         )
 
     threshold_handle = ax.axhline(
@@ -161,28 +235,47 @@ def plot_categories(categories, threshold, output_path, x_scale, alpha, marker_s
         linestyle="--",
         linewidth=1.1,
         alpha=0.8,
-        label=f"mc = {threshold:.2f}",
+        label=f"MC = {threshold:.2f}",
     )
-    ax.set_xlabel("rcv")
-    ax.set_ylabel("mc")
-    ax.set_title(title)
+    ax.set_xlabel("RCV")
+    ax.set_ylabel("MC")
+    # ax.set_title(title)
     ax.grid(True, linestyle="--", alpha=0.25)
 
-    if x_scale == "log":
+    if x_scale == "log" and DEFAULT_X_LIMITS[0] > 0:
         ax.set_xscale("log")
 
-    ax.set_ylim(0.0, 1.02)
+    ax.set_xlim(*DEFAULT_X_LIMITS)
+    ax.set_ylim(*DEFAULT_Y_LIMITS)
     legend_handles = [
         scatter_handles[key] for key in ("A", "B", "C", "D") if key in scatter_handles
     ]
     legend_labels = [
-        f"{categories[key]['label']} (n={len(categories[key]['points'])})"
-        for key in ("A", "B", "C", "D")
+        f"{categories[key]['label']} (n={get_display_count(key, categories[key], legend_count_overrides)})"
+        for key in VALID_CATEGORY_KEYS
         if key in scatter_handles
     ]
     legend_handles.append(threshold_handle)
     legend_labels.append(f"mc = {threshold:.2f}")
-    ax.legend(legend_handles, legend_labels, loc="best", frameon=True)
+    legend_handles.extend(
+        [
+            (build_marker_handle("A"), build_marker_handle("C")),
+            (build_marker_handle("A"), build_marker_handle("B")),
+        ]
+    )
+    legend_labels.extend(
+        [
+            f"Fixed={threshold:.2f}: A+C",
+            f"Ours: A+B",
+        ]
+    )
+    ax.legend(
+        legend_handles,
+        legend_labels,
+        loc="best",
+        frameon=True,
+        handler_map={tuple: HandlerTuple(ndivide=None)},
+    )
     fig.tight_layout()
     fig.savefig(output_path, dpi=220, bbox_inches="tight")
     plt.close(fig)
@@ -193,11 +286,12 @@ def main():
     output_path = args.output
     if output_path is None:
         output_path = args.input_path.with_name(
-            f"{args.input_path.stem}_grouped_scatter.png"
+            f"{args.input_path.stem}_grouped_scatter.pdf"
         )
 
     points = load_points(args.input_path)
     categories = build_categories(points, args.threshold)
+    legend_count_overrides = parse_legend_count_overrides(args.legend_count)
     title = f"Pseudo Label Scatter by Category ({args.input_path.stem})"
     plot_categories(
         categories=categories,
@@ -207,6 +301,7 @@ def main():
         alpha=args.alpha,
         marker_size=args.size,
         title=title,
+        legend_count_overrides=legend_count_overrides,
     )
 
     print(f"Saved scatter plot to {output_path}")

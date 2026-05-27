@@ -29,6 +29,9 @@ class SSLDataModule(DataModule, ABC):
                  unlabeled_batch_size: int,
                  test_batch_size: int,
                  num_workers: int,
+                 pin_memory: bool = True,
+                 persistent_workers: bool = True,
+                 prefetch_factor: int = 2,
                  train_min_size: int = 0,
                  unlabeled_train_min_size: int = 0,
                  test_min_size: int = 0,
@@ -44,6 +47,9 @@ class SSLDataModule(DataModule, ABC):
         self.unlabeled_batch_size = unlabeled_batch_size
         self.test_batch_size = test_batch_size
         self.num_workers = num_workers
+        self.pin_memory = bool(pin_memory)
+        self.persistent_workers = bool(persistent_workers)
+        self.prefetch_factor = int(prefetch_factor)
 
         self.train_min_size = max(train_min_size, 0)
         self.unlabeled_train_min_size = max(unlabeled_train_min_size, 0)
@@ -57,6 +63,23 @@ class SSLDataModule(DataModule, ABC):
         # dataset stats
         self.dataset_mean: Optional[List[float]] = None
         self.dataset_std: Optional[List[float]] = None
+
+    def _loader_kwargs(self, **kwargs):
+        loader_kwargs = {
+            "pin_memory": self.pin_memory,
+        }
+        if self.num_workers > 0:
+            loader_kwargs["persistent_workers"] = self.persistent_workers
+            loader_kwargs["prefetch_factor"] = self.prefetch_factor
+
+        loader_kwargs.update(kwargs)
+
+        if self.num_workers <= 0:
+            # PyTorch only accepts these options when worker processes are enabled.
+            loader_kwargs.pop("persistent_workers", None)
+            loader_kwargs.pop("prefetch_factor", None)
+
+        return loader_kwargs
 
     @property
     def labeled_train_set(self) -> Optional[DatasetType]:
@@ -96,13 +119,13 @@ class SSLDataModule(DataModule, ABC):
                            batch_size=self.train_batch_size,
                            num_workers=self.num_workers,
                            drop_last=True,
-                           **kwargs),
+                           **self._loader_kwargs(**kwargs)),
                 DataLoader(self.unlabeled_train_set,
                            shuffle=True,
                            batch_size=self.unlabeled_batch_size,
                            num_workers=self.num_workers,
                            drop_last=True,
-                           **kwargs)]
+                           **self._loader_kwargs(**kwargs))]
 
     def val_dataloader(self, **kwargs) -> Optional[DataLoaderType]:
         return DataLoader(self.validation_set,
@@ -110,7 +133,7 @@ class SSLDataModule(DataModule, ABC):
                           shuffle=False,
                           num_workers=self.num_workers,
                           drop_last=False,
-                          **kwargs) if self.validation_set is not None else None
+                          **self._loader_kwargs(**kwargs)) if self.validation_set is not None else None
 
     def test_dataloader(self, **kwargs) -> Optional[DataLoaderType]:
         return DataLoader(self.test_set,
@@ -118,7 +141,7 @@ class SSLDataModule(DataModule, ABC):
                           shuffle=False,
                           num_workers=self.num_workers,
                           drop_last=False,
-                          **kwargs) if self.test_set is not None else None
+                          **self._loader_kwargs(**kwargs)) if self.test_set is not None else None
 
     def get_train_batch(self, train_loaders: List[DataLoader], **kwargs) -> BatchGeneratorType:
         return get_batch(train_loaders, **kwargs)

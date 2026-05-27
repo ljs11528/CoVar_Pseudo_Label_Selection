@@ -391,6 +391,37 @@ def get_arg_parser() -> argparse.ArgumentParser:
                         type=int,
                         help="number of processes for data loader")
 
+    parser.add_argument('--pin-memory',
+                        dest="pin_memory",
+                        default=True,
+                        action='store_true',
+                        help='Enable pinned host memory for DataLoader to speed up host-to-device transfer')
+
+    parser.add_argument('--no-pin-memory',
+                        dest="pin_memory",
+                        default=True,
+                        action='store_false',
+                        help='Disable pinned host memory for DataLoader')
+
+    parser.add_argument('--persistent-workers',
+                        dest="persistent_workers",
+                        default=True,
+                        action='store_true',
+                        help='Keep DataLoader workers alive across epochs')
+
+    parser.add_argument('--no-persistent-workers',
+                        dest="persistent_workers",
+                        default=True,
+                        action='store_false',
+                        help='Restart DataLoader workers every epoch')
+
+    parser.add_argument('--prefetch-factor',
+                        '--dataloader-prefetch-factor',
+                        dest="prefetch_factor",
+                        default=2,
+                        type=int,
+                        help='Number of batches prefetched per worker when num_workers > 0')
+
     parser.add_argument('--checkpoint-path',
                         dest="checkpoint_path",
                         default=None,
@@ -479,6 +510,13 @@ def get_arg_parser() -> argparse.ArgumentParser:
                         default='0',
                         type=str,
                         help='"cpu" if using CPU or id(s) for CUDA_VISIBLE_DEVICES')
+
+    parser.add_argument('--precision',
+                        dest="precision",
+                        choices=["fp32", "fp16", "bf16"],
+                        default="fp32",
+                        type=str,
+                        help='Training precision mode. fp16/bf16 enable CUDA autocast acceleration')
 
     parser.add_argument('--seed',
                         dest="seed",
@@ -667,7 +705,7 @@ def parse_args(args: Namespace) -> Namespace:
         args.k_strong = args.k
 
     args.num_workers = max(args.num_workers, 0)
-    args.use_csl = (args.threshold_strategy == "fixed")
+    args.use_csl = (args.threshold_strategy == "dynamic")
 
     if args.continue_train:
         if args.use_pretrain:
@@ -788,6 +826,7 @@ def verify_args(args: Namespace) -> None:
     assert 0 <= args.confidence_threshold <= 1, \
         f"confidence_threshold must be in [0, 1] but get {args.confidence_threshold}"
     assert args.select_lam >= 0, f"select_lam must be >= 0 but get {args.select_lam}"
+    assert args.prefetch_factor >= 1, f"prefetch_factor must be >= 1 but get {args.prefetch_factor}"
 
     if args.data_dims is not None:
         assert all(dim > 0 for dim in args.data_dims), f"data_dims must all be > 0 but get {args.data_dims}"

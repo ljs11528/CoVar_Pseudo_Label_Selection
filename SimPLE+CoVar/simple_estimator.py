@@ -273,6 +273,17 @@ class SimPLEEstimator:
 
         outputs.update(model_outputs)
 
+        selection_state = self.compute_selection_state(
+            pseudo_probs=outputs["u_targets"],
+            num_classes=self.exp_args.num_classes,
+        )
+        self.record_selection_state(
+            selection_state=selection_state,
+            targets=outputs["u_targets"],
+            true_targets=outputs["u_true_targets"],
+            batch_idx=batch_idx,
+        )
+
         # calculate loss
         loss, log_dict = self.compute_train_loss(
             x_logits=outputs["x_logits"],
@@ -280,16 +291,19 @@ class SimPLEEstimator:
             u_logits=outputs["u_logits"],
             u_targets=outputs["u_targets"],
             u_true_targets=outputs["u_true_targets"],
+            selection_state=selection_state,
             batch_idx=batch_idx)
 
-        # save additional logging info and plots
-        extra_log_info = self.visualize_loss(
-            u_targets=outputs["u_targets"],
-            u_true_targets=outputs["u_true_targets"]
-        )
+        # Pair visualization/statistics can be expensive; collect them only on logging steps.
+        if self.return_plot_info:
+            extra_log_info = self.visualize_loss(
+                u_targets=outputs["u_targets"],
+                u_true_targets=outputs["u_true_targets"],
+                selection_state=selection_state,
+            )
 
-        log_dict["log"].update(extra_log_info["log"])
-        log_dict["plot"].update(extra_log_info["plot"])
+            log_dict["log"].update(extra_log_info["log"])
+            log_dict["plot"].update(extra_log_info["plot"])
 
         return loss, log_dict
 
@@ -298,8 +312,8 @@ class SimPLEEstimator:
         x, y = batch
 
         # move to device
-        x = x.to(self.device)
-        y = y.to(self.device)
+        x = x.to(self.device, non_blocking=True)
+        y = y.to(self.device, non_blocking=True)
 
         x = self.val_augmenter(x)
 
@@ -320,10 +334,10 @@ class SimPLEEstimator:
         batch_size = len(x_inputs)
 
         # load data to device
-        x_inputs = x_inputs.to(self.device)
-        x_targets = x_targets.to(self.device)
-        u_inputs = u_inputs.to(self.device)
-        u_true_targets = u_true_targets.to(self.device)
+        x_inputs = x_inputs.to(self.device, non_blocking=True)
+        x_targets = x_targets.to(self.device, non_blocking=True)
+        u_inputs = u_inputs.to(self.device, non_blocking=True)
+        u_true_targets = u_true_targets.to(self.device, non_blocking=True)
 
         outputs = self.mixmatch_fn(
             model=self.model,
@@ -371,6 +385,7 @@ class SimPLEEstimator:
                            u_logits: Tensor,
                            u_targets: Tensor,
                            u_true_targets: Tensor,
+                           selection_state: Dict[str, Tensor],
                            batch_idx: int) -> Tuple[Tensor, LossInfoType]:
         """
 
@@ -387,17 +402,6 @@ class SimPLEEstimator:
         """
         x_probs = F.softmax(x_logits, dim=1)
         u_probs = F.softmax(u_logits, dim=1)
-
-        selection_state = self.compute_selection_state(
-            pseudo_probs=u_targets,
-            num_classes=self.exp_args.num_classes,
-        )
-        self.record_selection_state(
-            selection_state=selection_state,
-            targets=u_targets,
-            true_targets=u_true_targets,
-            batch_idx=batch_idx,
-        )
 
         loss_x = self.supervised_loss(x_logits, x_probs, x_targets)
 
@@ -482,7 +486,10 @@ class SimPLEEstimator:
         )
 
         if self.threshold_strategy == "fixed":
-            selected_mask = max_confidence >= self.fixed_threshold
+            # _compute_selection_stats returns log-confidence for clustering stability.
+            # Fixed thresholding expects probability-domain confidence in [0, 1].
+            confidence = torch.exp(max_confidence)
+            selected_mask = confidence >= self.fixed_threshold
             if self.unsupervised_loss.loss_thresholded:
                 weight = selected_mask.to(dtype=pseudo_probs.dtype)
             else:
@@ -491,7 +498,7 @@ class SimPLEEstimator:
             return {
                 "weight": weight,
                 "selected_mask": selected_mask,
-                "max_confidence": max_confidence,
+                "max_confidence": confidence,
                 "scaled_residual_variance": scaled_residual_variance,
             }
 
@@ -720,11 +727,15 @@ class SimPLEEstimator:
             weighted_loss_pair=weighted_loss.detach().clone(),
         )
 
-    def visualize_loss(self, u_targets: Tensor, u_true_targets: Tensor) -> LossInfoType:
-        selection_state = self.compute_selection_state(
-            pseudo_probs=u_targets,
-            num_classes=self.exp_args.num_classes,
-        )
+    def visualize_loss(self,
+                       u_targets: Tensor,
+                       u_true_targets: Tensor,
+                       selection_state: Optional[Dict[str, Tensor]] = None) -> LossInfoType:
+        if selection_state is None:
+            selection_state = self.compute_selection_state(
+                pseudo_probs=u_targets,
+                num_classes=self.exp_args.num_classes,
+            )
         return self.get_pair_info(targets=u_targets,
                                   true_targets=u_true_targets,
                                   selection_mask=selection_state["selected_mask"],

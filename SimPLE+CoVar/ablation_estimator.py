@@ -27,8 +27,8 @@ class AblationEstimator(SimPLEEstimator):
         (x_inputs, x_targets), (_, _) = batch
 
         # load data to device
-        x_inputs = x_inputs.to(self.device)
-        x_targets = x_targets.to(self.device)
+        x_inputs = x_inputs.to(self.device, non_blocking=True)
+        x_targets = x_targets.to(self.device, non_blocking=True)
 
         # apply augmentations
         x_inputs = self.augmenter(x_inputs)

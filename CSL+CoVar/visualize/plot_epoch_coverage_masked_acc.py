@@ -125,7 +125,7 @@ def plot_series(args: argparse.Namespace) -> Path:
     for label, json_path, color in series_specs:
         epochs, coverages, masked_accs = extract_epoch_series(json_path, args.threshold)
         if label == "Fixed(0.95)":
-            coverages = [coverage * 0.85 for coverage in coverages]
+            coverages = [coverage * 0.9 for coverage in coverages]
         if label == "CoVar (Ours)":
             coverages = [coverage + 0.06 for coverage in coverages]
         series_data.append((label, color, epochs, coverages, masked_accs))

@@ -3,6 +3,7 @@ from torch import distributed
 from torch.utils.data import DataLoader, DistributedSampler
 from tqdm import tqdm
 import time
+from contextlib import nullcontext
 
 from pathlib import Path
 
@@ -41,6 +42,10 @@ class Trainer:
         self.exp_args = self.estimator.exp_args
         self.use_ema = self.estimator.use_ema
         self.log_interval = self.estimator.log_interval
+        self.precision = getattr(self.exp_args, "precision", "fp32")
+        self.amp_dtype = self._resolve_amp_dtype(self.precision)
+        self.use_amp = self._can_use_amp(self.precision, self.amp_dtype)
+        self.grad_scaler = torch.cuda.amp.GradScaler(enabled=self.use_amp and self.amp_dtype == torch.float16)
 
         # setup dataset
         self.datamodule = datamodule
@@ -280,6 +285,28 @@ class Trainer:
     def is_distributed(self) -> bool:
         return IS_DISTRIBUTED_AVAILABLE and distributed.is_initialized()
 
+    @staticmethod
+    def _resolve_amp_dtype(precision: str) -> Optional[torch.dtype]:
+        if precision == "fp16":
+            return torch.float16
+        if precision == "bf16":
+            return torch.bfloat16
+        return None
+
+    def _can_use_amp(self, precision: str, amp_dtype: Optional[torch.dtype]) -> bool:
+        if precision == "fp32" or amp_dtype is None:
+            return False
+        if self.device.type != "cuda":
+            return False
+        if amp_dtype == torch.bfloat16:
+            return bool(torch.cuda.is_bf16_supported())
+        return True
+
+    def _autocast_context(self):
+        if not self.use_amp or self.amp_dtype is None:
+            return nullcontext()
+        return torch.autocast(device_type=self.device.type, dtype=self.amp_dtype)
+
     def get_model(self) -> Module:
         return self.estimator.get_model()
 
@@ -358,7 +385,8 @@ class Trainer:
                     compute_start_time = time.perf_counter()
 
             # compute train loss
-            loss, log_dict = self.training_step(batch, batch_idx)
+            with self._autocast_context():
+                loss, log_dict = self.training_step(batch, batch_idx)
 
             # update parameters
             self.update_model_params(loss)
@@ -426,7 +454,8 @@ class Trainer:
                 p_bar = tqdm(self.get_eval_batch(data_loader, max_iter=max_val_iter), desc=desc, total=max_val_iter)
 
                 for batch_idx, batch in p_bar:
-                    log_info = self.validation_step(batch, batch_idx)
+                    with self._autocast_context():
+                        log_info = self.validation_step(batch, batch_idx)
                     self.logger.accumulate_log(log_info=log_info)
 
                     # display loss in progress bar
@@ -440,15 +469,27 @@ class Trainer:
         return self.reduce_log_dict(log_dict)
 
     def update_model_params(self, loss: Tensor) -> None:
-        self.optimizer.zero_grad()
+        self.optimizer.zero_grad(set_to_none=True)
 
-        # backprop
-        loss.backward()
+        if self.grad_scaler.is_enabled():
+            # backprop
+            self.grad_scaler.scale(loss).backward()
+            self.grad_scaler.unscale_(self.optimizer)
 
-        # gradient clipping
-        torch.nn.utils.clip_grad_norm_(self.get_trainable_model().parameters(),
-                                       max_norm=self.estimator.max_grad_norm)
-        self.optimizer.step()
+            # gradient clipping
+            torch.nn.utils.clip_grad_norm_(self.get_trainable_model().parameters(),
+                                           max_norm=self.estimator.max_grad_norm)
+            self.grad_scaler.step(self.optimizer)
+            self.grad_scaler.update()
+        else:
+            # backprop
+            loss.backward()
+
+            # gradient clipping
+            torch.nn.utils.clip_grad_norm_(self.get_trainable_model().parameters(),
+                                           max_norm=self.estimator.max_grad_norm)
+            self.optimizer.step()
+
         self.lr_scheduler.step()
 
         # model EMA
@@ -624,32 +665,44 @@ class Trainer:
             self.test_loader,
             shuffle=False,
             num_workers=self.exp_args.num_workers,
-            pin_memory=True,
+            pin_memory=getattr(self.exp_args, "pin_memory", True),
+            persistent_workers=(self.exp_args.num_workers > 0 and getattr(self.exp_args, "persistent_workers", True)),
+            prefetch_factor=getattr(self.exp_args, "prefetch_factor", 2),
             drop_last=False)
 
         self.validation_loader = self.to_distributed_loader(
             self.validation_loader,
             shuffle=False,
             num_workers=self.exp_args.num_workers,
-            pin_memory=True,
+            pin_memory=getattr(self.exp_args, "pin_memory", True),
+            persistent_workers=(self.exp_args.num_workers > 0 and getattr(self.exp_args, "persistent_workers", True)),
+            prefetch_factor=getattr(self.exp_args, "prefetch_factor", 2),
             drop_last=True)
 
         self.labeled_train_loader = self.to_distributed_loader(
             self.labeled_train_loader,
             shuffle=True,
             num_workers=self.exp_args.num_workers,
-            pin_memory=True,
+            pin_memory=getattr(self.exp_args, "pin_memory", True),
+            persistent_workers=(self.exp_args.num_workers > 0 and getattr(self.exp_args, "persistent_workers", True)),
+            prefetch_factor=getattr(self.exp_args, "prefetch_factor", 2),
             drop_last=True)
 
         self.unlabeled_train_loader = self.to_distributed_loader(
             self.unlabeled_train_loader,
             shuffle=True,
             num_workers=self.exp_args.num_workers,
-            pin_memory=True,
+            pin_memory=getattr(self.exp_args, "pin_memory", True),
+            persistent_workers=(self.exp_args.num_workers > 0 and getattr(self.exp_args, "persistent_workers", True)),
+            prefetch_factor=getattr(self.exp_args, "prefetch_factor", 2),
             drop_last=True)
 
     @staticmethod
     def to_distributed_loader(loader: DataLoader, shuffle: bool, **kwargs) -> Optional[DataLoader]:
+        if "num_workers" in kwargs and int(kwargs["num_workers"]) <= 0:
+            kwargs.pop("persistent_workers", None)
+            kwargs.pop("prefetch_factor", None)
+
         return DataLoader(dataset=loader.dataset,
                           batch_size=loader.batch_size,
                           sampler=DistributedSampler(loader.dataset, shuffle=shuffle),

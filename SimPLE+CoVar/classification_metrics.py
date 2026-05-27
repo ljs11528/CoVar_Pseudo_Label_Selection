@@ -231,10 +231,22 @@ class ClassificationPseudoLabelMetricsTracker:
         selected_per_class = torch.bincount(true_labels[selected_mask], minlength=self.num_classes)
         correct_selected_per_class = torch.bincount(true_labels[selected_correct_mask], minlength=self.num_classes)
 
-        for class_index in range(self.num_classes):
-            self.epoch_total_samples_per_class[class_index] += int(total_per_class[class_index].item())
-            self.epoch_selected_samples_per_class[class_index] += int(selected_per_class[class_index].item())
-            self.epoch_correct_selected_samples_per_class[class_index] += int(correct_selected_per_class[class_index].item())
+        # Convert once to CPU to avoid many tiny host syncs from repeated .item() calls.
+        total_per_class_list = [int(value) for value in total_per_class.detach().to(device="cpu").tolist()]
+        selected_per_class_list = [int(value) for value in selected_per_class.detach().to(device="cpu").tolist()]
+        correct_selected_per_class_list = [
+            int(value) for value in correct_selected_per_class.detach().to(device="cpu").tolist()
+        ]
+
+        self.epoch_total_samples_per_class = [
+            old + new for old, new in zip(self.epoch_total_samples_per_class, total_per_class_list)
+        ]
+        self.epoch_selected_samples_per_class = [
+            old + new for old, new in zip(self.epoch_selected_samples_per_class, selected_per_class_list)
+        ]
+        self.epoch_correct_selected_samples_per_class = [
+            old + new for old, new in zip(self.epoch_correct_selected_samples_per_class, correct_selected_per_class_list)
+        ]
 
     def aggregate_scalars(self, values: Sequence[int], device: torch.device) -> List[int]:
         tensor = torch.tensor(list(values), dtype=torch.long, device=device)
