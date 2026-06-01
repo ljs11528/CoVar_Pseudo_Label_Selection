@@ -344,6 +344,91 @@ class Trainer:
 
         # TODO: add best metric update
 
+    @staticmethod
+    def _get_train_batch_sizes(batch: Tuple[Tuple[Tensor, Tensor], ...]) -> Tuple[int, int]:
+        (x_inputs, _), (u_inputs, _) = batch
+        return len(x_inputs), len(u_inputs)
+
+    def _should_measure_step_timing(self) -> bool:
+        if self.exp_args.profile_step_time:
+            return self.global_step % self.exp_args.profile_step_time_interval == 0
+
+        return self.global_step % self.log_interval == 0
+
+    def _collect_step_timing(
+        self,
+        batch: Tuple[Tuple[Tensor, Tensor], ...],
+        data_time: float,
+        step_start_time: float,
+    ) -> Dict[str, float]:
+        labeled_batch_size, unlabeled_batch_size = self._get_train_batch_sizes(batch)
+        total_batch_size = labeled_batch_size + unlabeled_batch_size
+
+        if self.device.type == "cuda":
+            torch.cuda.synchronize(device=self.device)
+
+        step_time = time.perf_counter() - step_start_time
+        compute_time = max(step_time - data_time, 0.0)
+
+        if step_time <= 0:
+            samples_per_sec = 0.0
+            labeled_samples_per_sec = 0.0
+            unlabeled_samples_per_sec = 0.0
+            data_wait_ratio = 0.0
+        else:
+            samples_per_sec = total_batch_size / step_time
+            labeled_samples_per_sec = labeled_batch_size / step_time
+            unlabeled_samples_per_sec = unlabeled_batch_size / step_time
+            data_wait_ratio = data_time / step_time
+
+        return {
+            "step_time_sec": step_time,
+            "compute_time_sec": compute_time,
+            "data_wait_ratio": data_wait_ratio,
+            "train_samples_per_sec": samples_per_sec,
+            "labeled_samples_per_sec": labeled_samples_per_sec,
+            "unlabeled_samples_per_sec": unlabeled_samples_per_sec,
+            "train_total_batch_size": float(total_batch_size),
+        }
+
+    @staticmethod
+    def _accumulate_train_log_sums(
+        log_sums: Dict[str, Union[Tensor, float]],
+        log_info: Dict[str, Any],
+    ) -> None:
+        for key, value in log_info.items():
+            if isinstance(value, Tensor):
+                detached_value = value.detach()
+                if key in log_sums and isinstance(log_sums[key], Tensor):
+                    log_sums[key] = log_sums[key] + detached_value
+                else:
+                    log_sums[key] = detached_value.clone()
+            else:
+                numeric_value = float(value)
+                log_sums[key] = float(log_sums.get(key, 0.0)) + numeric_value
+
+    def _reduce_scalar(self, value: float) -> float:
+        reduced = self.reduce_tensor(torch.tensor(value, dtype=torch.float64, device=self.device))
+        return float(reduced.item())
+
+    def _reduce_interval_log_sums(
+        self,
+        log_sums: Dict[str, Union[Tensor, float]],
+        num_steps: int,
+    ) -> Dict[str, Any]:
+        if num_steps <= 0:
+            return {}
+
+        outputs: Dict[str, Any] = {}
+        for key, value in log_sums.items():
+            if isinstance(value, Tensor):
+                reduced_value = self.reduce_tensor(value / num_steps)
+                outputs[key] = reduced_value.item() if reduced_value.numel() == 1 else reduced_value
+            else:
+                outputs[key] = self._reduce_scalar(value / num_steps)
+
+        return outputs
+
     @timing
     def training_epoch(self) -> Dict[str, Any]:
         # turn on training mode
@@ -356,73 +441,74 @@ class Trainer:
         total_step = self.num_step_per_epoch - (self.global_step % self.num_step_per_epoch)
 
         train_batch_iter = iter(self.get_train_batch(max_iter=total_step))
+        train_log_sums: Dict[str, Union[Tensor, float]] = {}
+        train_log_steps = 0
+        pending_plot_info: Dict[str, Any] = {}
 
         # create progress bar
-        p_bar = tqdm(range(total_step), desc=f"Epoch {self.epoch + 1}", total=total_step)
+        p_bar = tqdm(range(total_step), desc=f"Epoch {self.epoch + 1}", total=total_step, disable=not self.is_main_thread)
 
         for _ in p_bar:
-            data_start_time = time.perf_counter()
+            step_start_time = time.perf_counter()
 
             try:
                 batch_idx, batch = next(train_batch_iter)
             except StopIteration:
                 break
 
-            data_time = time.perf_counter() - data_start_time
-            is_profile_step = self.exp_args.profile_step_time and \
-                (self.global_step % self.exp_args.profile_step_time_interval == 0)
-
-            compute_start_event = None
-            compute_end_event = None
-            compute_start_time = None
-
-            if is_profile_step:
-                if self.device.type == "cuda":
-                    compute_start_event = torch.cuda.Event(enable_timing=True)
-                    compute_end_event = torch.cuda.Event(enable_timing=True)
-                    compute_start_event.record()
-                else:
-                    compute_start_time = time.perf_counter()
+            data_time = time.perf_counter() - step_start_time
+            should_measure_step_timing = self._should_measure_step_timing()
+            labeled_batch_size, unlabeled_batch_size = self._get_train_batch_sizes(batch)
 
             # compute train loss
             with self._autocast_context():
                 loss, log_dict = self.training_step(batch, batch_idx)
 
+            log_dict["log"].update({
+                "data_wait_time_sec": data_time,
+                "train_total_batch_size": float(labeled_batch_size + unlabeled_batch_size),
+            })
+
             # update parameters
             self.update_model_params(loss)
 
-            if is_profile_step:
-                if compute_start_event is not None and compute_end_event is not None:
-                    compute_end_event.record()
-                    compute_end_event.synchronize()
-                    compute_time = compute_start_event.elapsed_time(compute_end_event) / 1000.0
-                else:
-                    compute_time = time.perf_counter() - compute_start_time
+            if should_measure_step_timing:
+                step_timing = self._collect_step_timing(
+                    batch=batch,
+                    data_time=data_time,
+                    step_start_time=step_start_time,
+                )
+                log_dict["log"].update(step_timing)
 
-                total_profile_time = data_time + compute_time
-                log_dict["log"].update({
-                    "data_time_sec": data_time,
-                    "compute_time_sec": compute_time,
-                    "data_ratio": data_time / total_profile_time if total_profile_time > 0 else 0.0,
-                })
-
-            # update logs
-            self.logger.accumulate_log(log_info=log_dict["log"], plot_info=log_dict["plot"])
+            self._accumulate_train_log_sums(train_log_sums, log_dict["log"])
+            train_log_steps += 1
+            if self.is_main_thread and log_dict["plot"]:
+                pending_plot_info.update(log_dict["plot"])
 
             # increment global step
             self.global_step += 1
 
             if self.global_step % self.log_interval == 0:
-                outputs = self.logger.aggregate_log(reduction="mean")
+                outputs = self._reduce_interval_log_sums(train_log_sums, train_log_steps)
+                if pending_plot_info:
+                    outputs.update(pending_plot_info)
                 self.log_train_info(outputs, is_commit=True, prefix="train", step=self.global_step)
 
-                # reset output history
-                self.logger.reset_aggregator()
+                train_log_sums.clear()
+                train_log_steps = 0
+                pending_plot_info = {}
 
             # display loss in progress bar
-            p_bar.set_postfix(loss=log_dict["log"]['loss'])
+            if self.is_main_thread:
+                postfix = {
+                    "loss": f"{float(loss.detach().item()):.2f}",
+                    "wait_ms": f"{log_dict['log']['data_wait_time_sec'] * 1000:.1f}",
+                }
+                if should_measure_step_timing:
+                    postfix["wait_%"] = f"{log_dict['log']['data_wait_ratio'] * 100:.0f}"
+                p_bar.set_postfix(postfix)
 
-        outputs = self.logger.aggregate_log(reduction="mean")
+        outputs = self._reduce_interval_log_sums(train_log_sums, train_log_steps)
         outputs = self.log_train_info(outputs, is_commit=False)
 
         self.training_epoch_end()
@@ -433,9 +519,7 @@ class Trainer:
         self.estimator.training_epoch_end(*args, **kwargs)
 
     def training_step(self, batch: Tuple[Tuple[Tensor, Tensor], ...], batch_idx: int) -> Tuple[Tensor, LossInfoType]:
-        loss, log_dict = self.estimator.training_step(batch, batch_idx)
-
-        return loss, {k: self.reduce_log_dict(v) for k, v in log_dict.items()}
+        return self.estimator.training_step(batch, batch_idx)
 
     def validation_epoch(self,
                          data_loader: DataLoader,
@@ -451,7 +535,12 @@ class Trainer:
         with set_model_mode(self.model, mode=False):
             with torch.no_grad():
                 # create progress bar
-                p_bar = tqdm(self.get_eval_batch(data_loader, max_iter=max_val_iter), desc=desc, total=max_val_iter)
+                p_bar = tqdm(
+                    self.get_eval_batch(data_loader, max_iter=max_val_iter),
+                    desc=desc,
+                    total=max_val_iter,
+                    disable=not self.is_main_thread,
+                )
 
                 for batch_idx, batch in p_bar:
                     with self._autocast_context():
@@ -459,7 +548,8 @@ class Trainer:
                     self.logger.accumulate_log(log_info=log_info)
 
                     # display loss in progress bar
-                    p_bar.set_postfix(loss=log_info["loss"])
+                    if self.is_main_thread:
+                        p_bar.set_postfix(loss=log_info["loss"])
 
         return self.logger.aggregate_log(reduction="mean")
 
@@ -649,11 +739,13 @@ class Trainer:
 
         # setup models
         from torch.nn.parallel import DistributedDataParallel
-        from torch.nn import SyncBatchNorm
 
         local_rank = self.exp_args.local_rank
 
-        self.model = SyncBatchNorm.convert_sync_batchnorm(self.model)
+        if getattr(self.exp_args, "sync_bn", True):
+            from torch.nn import SyncBatchNorm
+            self.model = SyncBatchNorm.convert_sync_batchnorm(self.model)
+
         self.model = DistributedDataParallel(
             self.model,
             device_ids=[local_rank],

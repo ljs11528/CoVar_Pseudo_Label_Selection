@@ -43,6 +43,10 @@ SELECTION_ACCUMULATOR_KEYS = [
     "rejected_cluster_score_sum",
 ]
 
+SELECTION_ACCUMULATOR_INDEX = {
+    key: index for index, key in enumerate(SELECTION_ACCUMULATOR_KEYS)
+}
+
 
 def _build_empty_selection_accumulator() -> Dict[str, float]:
     return {key: 0.0 for key in SELECTION_ACCUMULATOR_KEYS}
@@ -98,6 +102,12 @@ class ClassificationPseudoLabelMetricsTracker:
         self.total_selection_stats = _build_empty_selection_accumulator()
         self.epoch_selection_stats = _build_empty_selection_accumulator()
 
+        self._epoch_scalar_counts_tensor: Optional[torch.Tensor] = None
+        self._epoch_total_samples_per_class_tensor: Optional[torch.Tensor] = None
+        self._epoch_selected_samples_per_class_tensor: Optional[torch.Tensor] = None
+        self._epoch_correct_selected_samples_per_class_tensor: Optional[torch.Tensor] = None
+        self._epoch_selection_stats_tensor: Optional[torch.Tensor] = None
+
     @property
     def summary_path(self) -> Optional[Path]:
         if not self.save_path:
@@ -121,6 +131,111 @@ class ClassificationPseudoLabelMetricsTracker:
         self.epoch_correct_selected_samples_per_class = [0] * self.num_classes
         self.epoch_selection_stats = _build_empty_selection_accumulator()
 
+        if self._epoch_scalar_counts_tensor is not None:
+            self._epoch_scalar_counts_tensor.zero_()
+        if self._epoch_total_samples_per_class_tensor is not None:
+            self._epoch_total_samples_per_class_tensor.zero_()
+        if self._epoch_selected_samples_per_class_tensor is not None:
+            self._epoch_selected_samples_per_class_tensor.zero_()
+        if self._epoch_correct_selected_samples_per_class_tensor is not None:
+            self._epoch_correct_selected_samples_per_class_tensor.zero_()
+        if self._epoch_selection_stats_tensor is not None:
+            self._epoch_selection_stats_tensor.zero_()
+
+    def _ensure_epoch_tensors(self, device: torch.device) -> None:
+        device = torch.device(device)
+
+        if self._epoch_scalar_counts_tensor is None:
+            self._epoch_scalar_counts_tensor = torch.tensor(
+                [
+                    self.epoch_total_samples,
+                    self.epoch_selected_samples,
+                    self.epoch_correct_total_samples,
+                    self.epoch_correct_selected_samples,
+                ],
+                dtype=torch.long,
+                device=device,
+            )
+            self._epoch_total_samples_per_class_tensor = torch.tensor(
+                self.epoch_total_samples_per_class,
+                dtype=torch.long,
+                device=device,
+            )
+            self._epoch_selected_samples_per_class_tensor = torch.tensor(
+                self.epoch_selected_samples_per_class,
+                dtype=torch.long,
+                device=device,
+            )
+            self._epoch_correct_selected_samples_per_class_tensor = torch.tensor(
+                self.epoch_correct_selected_samples_per_class,
+                dtype=torch.long,
+                device=device,
+            )
+            self._epoch_selection_stats_tensor = torch.tensor(
+                [self.epoch_selection_stats[key] for key in SELECTION_ACCUMULATOR_KEYS],
+                dtype=torch.float64,
+                device=device,
+            )
+            return
+
+        if self._epoch_scalar_counts_tensor.device != device:
+            self._epoch_scalar_counts_tensor = self._epoch_scalar_counts_tensor.to(device=device)
+            self._epoch_total_samples_per_class_tensor = self._epoch_total_samples_per_class_tensor.to(device=device)
+            self._epoch_selected_samples_per_class_tensor = self._epoch_selected_samples_per_class_tensor.to(device=device)
+            self._epoch_correct_selected_samples_per_class_tensor = (
+                self._epoch_correct_selected_samples_per_class_tensor.to(device=device)
+            )
+            self._epoch_selection_stats_tensor = self._epoch_selection_stats_tensor.to(device=device)
+
+    def _get_epoch_scalar_state(self) -> List[int]:
+        if self._epoch_scalar_counts_tensor is None:
+            return [
+                int(self.epoch_total_samples),
+                int(self.epoch_selected_samples),
+                int(self.epoch_correct_total_samples),
+                int(self.epoch_correct_selected_samples),
+            ]
+
+        return [
+            int(value) for value in self._epoch_scalar_counts_tensor.detach().to(device="cpu").tolist()
+        ]
+
+    def _get_epoch_total_samples_per_class_state(self) -> List[int]:
+        if self._epoch_total_samples_per_class_tensor is None:
+            return [int(value) for value in self.epoch_total_samples_per_class]
+
+        return [
+            int(value) for value in self._epoch_total_samples_per_class_tensor.detach().to(device="cpu").tolist()
+        ]
+
+    def _get_epoch_selected_samples_per_class_state(self) -> List[int]:
+        if self._epoch_selected_samples_per_class_tensor is None:
+            return [int(value) for value in self.epoch_selected_samples_per_class]
+
+        return [
+            int(value)
+            for value in self._epoch_selected_samples_per_class_tensor.detach().to(device="cpu").tolist()
+        ]
+
+    def _get_epoch_correct_selected_samples_per_class_state(self) -> List[int]:
+        if self._epoch_correct_selected_samples_per_class_tensor is None:
+            return [int(value) for value in self.epoch_correct_selected_samples_per_class]
+
+        return [
+            int(value)
+            for value in self._epoch_correct_selected_samples_per_class_tensor.detach().to(device="cpu").tolist()
+        ]
+
+    def _get_epoch_selection_stats_state(self) -> Dict[str, float]:
+        if self._epoch_selection_stats_tensor is None:
+            return dict(self.epoch_selection_stats)
+
+        values = self._epoch_selection_stats_tensor.detach().to(device="cpu").tolist()
+        return {
+            key: float(value)
+            for key, value in zip(SELECTION_ACCUMULATOR_KEYS, values)
+        }
+
     @staticmethod
     def _tensor_sum(values: torch.Tensor) -> float:
         if values.numel() == 0:
@@ -142,6 +257,12 @@ class ClassificationPseudoLabelMetricsTracker:
         return float(value)
 
     @staticmethod
+    def _as_tensor(value: Any, device: torch.device, dtype: torch.dtype = torch.float64) -> torch.Tensor:
+        if isinstance(value, torch.Tensor):
+            return value.detach().to(device=device, dtype=dtype).reshape(())
+        return torch.tensor(value, device=device, dtype=dtype)
+
+    @staticmethod
     def _merge_selection_stats(target: Dict[str, float], source: Dict[str, float]) -> None:
         for key in SELECTION_ACCUMULATOR_KEYS:
             target[key] += float(source.get(key, 0.0))
@@ -152,59 +273,112 @@ class ClassificationPseudoLabelMetricsTracker:
         weight = selection_state["weight"].detach().to(dtype=torch.float64).reshape(-1)
         selected_mask = selection_state["selected_mask"].detach().to(dtype=torch.bool).reshape(-1)
 
-        sample_count = float(max_confidence.numel())
-        selected_count = float(selected_mask.sum().item())
+        self._ensure_epoch_tensors(max_confidence.device)
+        stats = self._epoch_selection_stats_tensor
+        accumulator_index = SELECTION_ACCUMULATOR_INDEX
+
+        sample_count = torch.tensor(float(max_confidence.numel()), device=max_confidence.device, dtype=torch.float64)
+        selected_count = selected_mask.to(dtype=torch.float64).sum()
         rejected_count = sample_count - selected_count
 
-        stats = self.epoch_selection_stats
-        stats["batch_count"] += 1.0
-        stats["sample_count"] += sample_count
-        stats["selected_count"] += selected_count
-        stats["rejected_count"] += rejected_count
-        stats["max_confidence_sum"] += self._tensor_sum(max_confidence)
-        stats["max_confidence_sq_sum"] += self._tensor_sq_sum(max_confidence)
-        stats["scaled_residual_variance_sum"] += self._tensor_sum(scaled_residual_variance)
-        stats["scaled_residual_variance_sq_sum"] += self._tensor_sq_sum(scaled_residual_variance)
-        stats["weight_sum"] += self._tensor_sum(weight)
-        stats["weight_sq_sum"] += self._tensor_sq_sum(weight)
+        stats[accumulator_index["batch_count"]] += 1.0
+        stats[accumulator_index["sample_count"]] += sample_count
+        stats[accumulator_index["selected_count"]] += selected_count
+        stats[accumulator_index["rejected_count"]] += rejected_count
+        stats[accumulator_index["max_confidence_sum"]] += max_confidence.sum()
+        stats[accumulator_index["max_confidence_sq_sum"]] += (max_confidence * max_confidence).sum()
+        stats[accumulator_index["scaled_residual_variance_sum"]] += scaled_residual_variance.sum()
+        stats[accumulator_index["scaled_residual_variance_sq_sum"]] += (
+            scaled_residual_variance * scaled_residual_variance
+        ).sum()
+        stats[accumulator_index["weight_sum"]] += weight.sum()
+        stats[accumulator_index["weight_sq_sum"]] += (weight * weight).sum()
 
         selected_confidence = max_confidence[selected_mask]
         selected_residual_variance = scaled_residual_variance[selected_mask]
         rejected_confidence = max_confidence[~selected_mask]
         rejected_residual_variance = scaled_residual_variance[~selected_mask]
 
-        stats["selected_max_confidence_sum"] += self._tensor_sum(selected_confidence)
-        stats["selected_max_confidence_sq_sum"] += self._tensor_sq_sum(selected_confidence)
-        stats["selected_scaled_residual_variance_sum"] += self._tensor_sum(selected_residual_variance)
-        stats["selected_scaled_residual_variance_sq_sum"] += self._tensor_sq_sum(selected_residual_variance)
-        stats["rejected_max_confidence_sum"] += self._tensor_sum(rejected_confidence)
-        stats["rejected_max_confidence_sq_sum"] += self._tensor_sq_sum(rejected_confidence)
-        stats["rejected_scaled_residual_variance_sum"] += self._tensor_sum(rejected_residual_variance)
-        stats["rejected_scaled_residual_variance_sq_sum"] += self._tensor_sq_sum(rejected_residual_variance)
+        stats[accumulator_index["selected_max_confidence_sum"]] += selected_confidence.sum()
+        stats[accumulator_index["selected_max_confidence_sq_sum"]] += (selected_confidence * selected_confidence).sum()
+        stats[accumulator_index["selected_scaled_residual_variance_sum"]] += selected_residual_variance.sum()
+        stats[accumulator_index["selected_scaled_residual_variance_sq_sum"]] += (
+            selected_residual_variance * selected_residual_variance
+        ).sum()
+        stats[accumulator_index["rejected_max_confidence_sum"]] += rejected_confidence.sum()
+        stats[accumulator_index["rejected_max_confidence_sq_sum"]] += (rejected_confidence * rejected_confidence).sum()
+        stats[accumulator_index["rejected_scaled_residual_variance_sum"]] += rejected_residual_variance.sum()
+        stats[accumulator_index["rejected_scaled_residual_variance_sq_sum"]] += (
+            rejected_residual_variance * rejected_residual_variance
+        ).sum()
 
-        selected_cluster_count = float(selection_state.get("selected_cluster_count", 0.0))
-        if selected_cluster_count > 0:
-            selected_cluster_mean = selection_state["selected_cluster_mean"].detach().to(dtype=torch.float64)
-            selected_cluster_var = selection_state["selected_cluster_var"].detach().to(dtype=torch.float64)
-            selected_cluster_score = self._as_float(selection_state.get("selected_cluster_score", 0.0))
-            stats["selected_cluster_weight"] += selected_cluster_count
-            stats["selected_cluster_conf_mean_sum"] += float(selected_cluster_mean[0].item()) * selected_cluster_count
-            stats["selected_cluster_res_mean_sum"] += float(selected_cluster_mean[1].item()) * selected_cluster_count
-            stats["selected_cluster_conf_var_sum"] += float(selected_cluster_var[0].item()) * selected_cluster_count
-            stats["selected_cluster_res_var_sum"] += float(selected_cluster_var[1].item()) * selected_cluster_count
-            stats["selected_cluster_score_sum"] += selected_cluster_score * selected_cluster_count
+        if "selected_cluster_mean" in selection_state and "selected_cluster_var" in selection_state:
+            selected_cluster_count = self._as_tensor(
+                selection_state.get("selected_cluster_count", 0.0),
+                device=max_confidence.device,
+            )
+            selected_cluster_mean = selection_state["selected_cluster_mean"].detach().to(
+                device=max_confidence.device,
+                dtype=torch.float64,
+            )
+            selected_cluster_var = selection_state["selected_cluster_var"].detach().to(
+                device=max_confidence.device,
+                dtype=torch.float64,
+            )
+            selected_cluster_score = self._as_tensor(
+                selection_state.get("selected_cluster_score", 0.0),
+                device=max_confidence.device,
+            )
+            stats[accumulator_index["selected_cluster_weight"]] += selected_cluster_count
+            stats[accumulator_index["selected_cluster_conf_mean_sum"]] += (
+                selected_cluster_mean[0] * selected_cluster_count
+            )
+            stats[accumulator_index["selected_cluster_res_mean_sum"]] += (
+                selected_cluster_mean[1] * selected_cluster_count
+            )
+            stats[accumulator_index["selected_cluster_conf_var_sum"]] += (
+                selected_cluster_var[0] * selected_cluster_count
+            )
+            stats[accumulator_index["selected_cluster_res_var_sum"]] += (
+                selected_cluster_var[1] * selected_cluster_count
+            )
+            stats[accumulator_index["selected_cluster_score_sum"]] += (
+                selected_cluster_score * selected_cluster_count
+            )
 
-        rejected_cluster_count = float(selection_state.get("rejected_cluster_count", 0.0))
-        if rejected_cluster_count > 0:
-            rejected_cluster_mean = selection_state["rejected_cluster_mean"].detach().to(dtype=torch.float64)
-            rejected_cluster_var = selection_state["rejected_cluster_var"].detach().to(dtype=torch.float64)
-            rejected_cluster_score = self._as_float(selection_state.get("rejected_cluster_score", 0.0))
-            stats["rejected_cluster_weight"] += rejected_cluster_count
-            stats["rejected_cluster_conf_mean_sum"] += float(rejected_cluster_mean[0].item()) * rejected_cluster_count
-            stats["rejected_cluster_res_mean_sum"] += float(rejected_cluster_mean[1].item()) * rejected_cluster_count
-            stats["rejected_cluster_conf_var_sum"] += float(rejected_cluster_var[0].item()) * rejected_cluster_count
-            stats["rejected_cluster_res_var_sum"] += float(rejected_cluster_var[1].item()) * rejected_cluster_count
-            stats["rejected_cluster_score_sum"] += rejected_cluster_score * rejected_cluster_count
+        if "rejected_cluster_mean" in selection_state and "rejected_cluster_var" in selection_state:
+            rejected_cluster_count = self._as_tensor(
+                selection_state.get("rejected_cluster_count", 0.0),
+                device=max_confidence.device,
+            )
+            rejected_cluster_mean = selection_state["rejected_cluster_mean"].detach().to(
+                device=max_confidence.device,
+                dtype=torch.float64,
+            )
+            rejected_cluster_var = selection_state["rejected_cluster_var"].detach().to(
+                device=max_confidence.device,
+                dtype=torch.float64,
+            )
+            rejected_cluster_score = self._as_tensor(
+                selection_state.get("rejected_cluster_score", 0.0),
+                device=max_confidence.device,
+            )
+            stats[accumulator_index["rejected_cluster_weight"]] += rejected_cluster_count
+            stats[accumulator_index["rejected_cluster_conf_mean_sum"]] += (
+                rejected_cluster_mean[0] * rejected_cluster_count
+            )
+            stats[accumulator_index["rejected_cluster_res_mean_sum"]] += (
+                rejected_cluster_mean[1] * rejected_cluster_count
+            )
+            stats[accumulator_index["rejected_cluster_conf_var_sum"]] += (
+                rejected_cluster_var[0] * rejected_cluster_count
+            )
+            stats[accumulator_index["rejected_cluster_res_var_sum"]] += (
+                rejected_cluster_var[1] * rejected_cluster_count
+            )
+            stats[accumulator_index["rejected_cluster_score_sum"]] += (
+                rejected_cluster_score * rejected_cluster_count
+            )
 
     def update_batch(self, targets: torch.Tensor, true_targets: torch.Tensor, selected_mask: torch.Tensor) -> None:
         pseudo_labels = targets.argmax(dim=1)
@@ -217,54 +391,46 @@ class ClassificationPseudoLabelMetricsTracker:
         correct_mask = pseudo_labels.eq(true_labels)
         selected_correct_mask = correct_mask & selected_mask
 
-        total_samples = int(true_labels.numel())
-        selected_samples = int(selected_mask.sum().item())
-        correct_total_samples = int(correct_mask.sum().item())
-        correct_selected_samples = int(selected_correct_mask.sum().item())
-
-        self.epoch_total_samples += total_samples
-        self.epoch_selected_samples += selected_samples
-        self.epoch_correct_total_samples += correct_total_samples
-        self.epoch_correct_selected_samples += correct_selected_samples
+        self._ensure_epoch_tensors(true_labels.device)
+        self._epoch_scalar_counts_tensor[0] += int(true_labels.numel())
+        self._epoch_scalar_counts_tensor[1] += selected_mask.sum(dtype=torch.long)
+        self._epoch_scalar_counts_tensor[2] += correct_mask.sum(dtype=torch.long)
+        self._epoch_scalar_counts_tensor[3] += selected_correct_mask.sum(dtype=torch.long)
 
         total_per_class = torch.bincount(true_labels, minlength=self.num_classes)
         selected_per_class = torch.bincount(true_labels[selected_mask], minlength=self.num_classes)
         correct_selected_per_class = torch.bincount(true_labels[selected_correct_mask], minlength=self.num_classes)
 
-        # Convert once to CPU to avoid many tiny host syncs from repeated .item() calls.
-        total_per_class_list = [int(value) for value in total_per_class.detach().to(device="cpu").tolist()]
-        selected_per_class_list = [int(value) for value in selected_per_class.detach().to(device="cpu").tolist()]
-        correct_selected_per_class_list = [
-            int(value) for value in correct_selected_per_class.detach().to(device="cpu").tolist()
-        ]
-
-        self.epoch_total_samples_per_class = [
-            old + new for old, new in zip(self.epoch_total_samples_per_class, total_per_class_list)
-        ]
-        self.epoch_selected_samples_per_class = [
-            old + new for old, new in zip(self.epoch_selected_samples_per_class, selected_per_class_list)
-        ]
-        self.epoch_correct_selected_samples_per_class = [
-            old + new for old, new in zip(self.epoch_correct_selected_samples_per_class, correct_selected_per_class_list)
-        ]
+        self._epoch_total_samples_per_class_tensor.add_(total_per_class.to(dtype=torch.long))
+        self._epoch_selected_samples_per_class_tensor.add_(selected_per_class.to(dtype=torch.long))
+        self._epoch_correct_selected_samples_per_class_tensor.add_(correct_selected_per_class.to(dtype=torch.long))
 
     def aggregate_scalars(self, values: Sequence[int], device: torch.device) -> List[int]:
-        tensor = torch.tensor(list(values), dtype=torch.long, device=device)
+        if isinstance(values, torch.Tensor):
+            tensor = values.detach().clone().to(device=device, dtype=torch.long)
+        else:
+            tensor = torch.tensor(list(values), dtype=torch.long, device=device)
         if torch.distributed.is_available() and torch.distributed.is_initialized():
             torch.distributed.all_reduce(tensor, op=torch.distributed.ReduceOp.SUM)
-        return [int(value) for value in tensor.tolist()]
+        return [int(value) for value in tensor.to(device="cpu").tolist()]
 
     def aggregate_vector(self, values: Sequence[int], device: torch.device) -> List[int]:
-        tensor = torch.tensor(list(values), dtype=torch.long, device=device)
+        if isinstance(values, torch.Tensor):
+            tensor = values.detach().clone().to(device=device, dtype=torch.long)
+        else:
+            tensor = torch.tensor(list(values), dtype=torch.long, device=device)
         if torch.distributed.is_available() and torch.distributed.is_initialized():
             torch.distributed.all_reduce(tensor, op=torch.distributed.ReduceOp.SUM)
-        return [int(value) for value in tensor.tolist()]
+        return [int(value) for value in tensor.to(device="cpu").tolist()]
 
     def aggregate_float_vector(self, values: Sequence[float], device: torch.device) -> List[float]:
-        tensor = torch.tensor(list(values), dtype=torch.float64, device=device)
+        if isinstance(values, torch.Tensor):
+            tensor = values.detach().clone().to(device=device, dtype=torch.float64)
+        else:
+            tensor = torch.tensor(list(values), dtype=torch.float64, device=device)
         if torch.distributed.is_available() and torch.distributed.is_initialized():
             torch.distributed.all_reduce(tensor, op=torch.distributed.ReduceOp.SUM)
-        return [float(value) for value in tensor.tolist()]
+        return [float(value) for value in tensor.to(device="cpu").tolist()]
 
     def build_metrics(
         self,
@@ -439,28 +605,27 @@ class ClassificationPseudoLabelMetricsTracker:
         return summary_path
 
     def on_epoch_end(self, current_epoch: int, device: torch.device) -> Optional[Path]:
+        self._ensure_epoch_tensors(device)
         (
             epoch_total_samples,
             epoch_selected_samples,
             epoch_correct_total_samples,
             epoch_correct_selected_samples,
         ) = self.aggregate_scalars(
-            [
-                self.epoch_total_samples,
-                self.epoch_selected_samples,
-                self.epoch_correct_total_samples,
-                self.epoch_correct_selected_samples,
-            ],
+            self._epoch_scalar_counts_tensor,
             device=device,
         )
-        epoch_total_samples_per_class = self.aggregate_vector(self.epoch_total_samples_per_class, device=device)
-        epoch_selected_samples_per_class = self.aggregate_vector(self.epoch_selected_samples_per_class, device=device)
+        epoch_total_samples_per_class = self.aggregate_vector(self._epoch_total_samples_per_class_tensor, device=device)
+        epoch_selected_samples_per_class = self.aggregate_vector(
+            self._epoch_selected_samples_per_class_tensor,
+            device=device,
+        )
         epoch_correct_selected_samples_per_class = self.aggregate_vector(
-            self.epoch_correct_selected_samples_per_class,
+            self._epoch_correct_selected_samples_per_class_tensor,
             device=device,
         )
         epoch_selection_stats_values = self.aggregate_float_vector(
-            [self.epoch_selection_stats[key] for key in SELECTION_ACCUMULATOR_KEYS],
+            self._epoch_selection_stats_tensor,
             device=device,
         )
         epoch_selection_stats = {
@@ -504,6 +669,13 @@ class ClassificationPseudoLabelMetricsTracker:
         return summary_path
 
     def state_dict(self) -> Dict[str, Any]:
+        (
+            epoch_total_samples,
+            epoch_selected_samples,
+            epoch_correct_total_samples,
+            epoch_correct_selected_samples,
+        ) = self._get_epoch_scalar_state()
+
         return {
             "save_path": self.save_path,
             "num_classes": self.num_classes,
@@ -521,15 +693,15 @@ class ClassificationPseudoLabelMetricsTracker:
             "total_samples_per_class": list(self.total_samples_per_class),
             "selected_samples_per_class": list(self.selected_samples_per_class),
             "correct_selected_samples_per_class": list(self.correct_selected_samples_per_class),
-            "epoch_total_samples": self.epoch_total_samples,
-            "epoch_selected_samples": self.epoch_selected_samples,
-            "epoch_correct_total_samples": self.epoch_correct_total_samples,
-            "epoch_correct_selected_samples": self.epoch_correct_selected_samples,
-            "epoch_total_samples_per_class": list(self.epoch_total_samples_per_class),
-            "epoch_selected_samples_per_class": list(self.epoch_selected_samples_per_class),
-            "epoch_correct_selected_samples_per_class": list(self.epoch_correct_selected_samples_per_class),
+            "epoch_total_samples": epoch_total_samples,
+            "epoch_selected_samples": epoch_selected_samples,
+            "epoch_correct_total_samples": epoch_correct_total_samples,
+            "epoch_correct_selected_samples": epoch_correct_selected_samples,
+            "epoch_total_samples_per_class": self._get_epoch_total_samples_per_class_state(),
+            "epoch_selected_samples_per_class": self._get_epoch_selected_samples_per_class_state(),
+            "epoch_correct_selected_samples_per_class": self._get_epoch_correct_selected_samples_per_class_state(),
             "total_selection_stats": dict(self.total_selection_stats),
-            "epoch_selection_stats": dict(self.epoch_selection_stats),
+            "epoch_selection_stats": self._get_epoch_selection_stats_state(),
             "per_epoch_metrics": list(self.per_epoch_metrics),
         }
 
@@ -567,6 +739,12 @@ class ClassificationPseudoLabelMetricsTracker:
         self.total_selection_stats = dict(state_dict.get("total_selection_stats", _build_empty_selection_accumulator()))
         self.epoch_selection_stats = dict(state_dict.get("epoch_selection_stats", _build_empty_selection_accumulator()))
         self.per_epoch_metrics = list(state_dict.get("per_epoch_metrics", []))
+
+        self._epoch_scalar_counts_tensor = None
+        self._epoch_total_samples_per_class_tensor = None
+        self._epoch_selected_samples_per_class_tensor = None
+        self._epoch_correct_selected_samples_per_class_tensor = None
+        self._epoch_selection_stats_tensor = None
 
     def load_from_summary_file(self, summary_path: Optional[Path] = None) -> bool:
         if summary_path is None:

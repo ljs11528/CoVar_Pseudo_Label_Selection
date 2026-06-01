@@ -559,6 +559,18 @@ def get_arg_parser() -> argparse.ArgumentParser:
                         default=0,
                         help='node rank for distributed training')
 
+    parser.add_argument('--sync-bn',
+                        dest="sync_bn",
+                        default=True,
+                        action='store_true',
+                        help='Enable SyncBatchNorm conversion in DDP')
+
+    parser.add_argument('--no-sync-bn',
+                        dest="sync_bn",
+                        default=True,
+                        action='store_false',
+                        help='Disable SyncBatchNorm conversion in DDP and keep regular BatchNorm')
+
     # log settings
     parser.add_argument('--log-dir',
                         dest="log_dir",
