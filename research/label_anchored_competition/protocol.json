@@ -1,0 +1,319 @@
+{
+  "schema_version": 1,
+  "study_id": "label_anchored_competition_20261020",
+  "created_date_shanghai": "2026-10-20",
+  "status": "locked_initial_design_before_new_feature_results",
+  "base_commit": "181f1472109f28856c199b08c4b3b12a0e3bcb5d",
+  "branch": "research/label-anchored-competition",
+  "reference": {
+    "latest_topic": "如果按照这个新思路主张：标签锚定的竞争类别验证，我该怎么准备我的实验计划？",
+    "authority": "user-selected research design, not proof of correctness or novelty",
+    "source": "User-referenced discussion and latest experimental plan, adopted on 2026-10-20"
+  },
+  "dataset": {
+    "name": "VOC2012_aug",
+    "setting": "supplied_1_8_1323_labels_not_183_labels",
+    "classes": 21,
+    "ignore_index": 255,
+    "label_budget": 1323,
+    "unlabeled_images": 9259,
+    "diagnostic_images": 1449,
+    "split_sha256": {
+      "labeled": "c5ea9bb095158a137e4c1db739b07d54a89af697de24ffd9e576493a4189653f",
+      "unlabeled": "5246f6e0bec70363a5b898e0d685d37b0afcfab4a71c010e7026555294d9eca9",
+      "validation": "df002e3a730c57678f63aa3e46a4c827a4066f1dc1814e24d0e8b215075e0c6c"
+    }
+  },
+  "partition": {
+    "seed": 20261020,
+    "identity": "image path stem; every view/crop of an image stays together",
+    "method": "sort SHA256(seed|image_id); first round(N*0.1) images are D_rel",
+    "supervised_images": 1191,
+    "verifier_images": 132,
+    "verifier_fraction": 0.1,
+    "verifier_folds": 3,
+    "exclude_rel_from_backbone_supervision": true,
+    "exclude_rel_from_backbone_unlabeled_stream": true,
+    "exclude_rel_from_prototypes": true,
+    "validation_labels_usage": "evaluation only; never fit, tune, construct prototypes, or choose feature definition",
+    "class_coverage_failure": "report and stop; do not cherry-pick another split"
+  },
+  "teacher": {
+    "backbone": "ResNet101",
+    "decoder": "DeepLabV3Plus",
+    "feature_layer": "model.decoder.classifier input, 256 channels, before final 1x1 convolution",
+    "crop_size": 321,
+    "global_batch_size": 16,
+    "epochs_equivalent": 80,
+    "steps_per_epoch_reference": 578,
+    "total_optimizer_steps": 46240,
+    "stage_steps": {
+      "early": 4624,
+      "middle": 23120,
+      "late": 46240
+    },
+    "seed": 42,
+    "confirmation_seed": 43,
+    "initialization": "same permitted pretrained weights as existing VOC MC teacher; not a full-label SSL checkpoint",
+    "mc_threshold": 0.95,
+    "learning_rate": 0.001,
+    "lr_multiplier": 10.0,
+    "precision": "16-mixed training; FP32 frozen export",
+    "gradient_accumulation": "allowed only if logical batch and BN semantics are recorded; do not silently substitute",
+    "bn_verifier_forward": "eval, no gradient, restore previous train/eval state",
+    "unlabeled_loss_coefficients": {
+      "strong_1": 0.25,
+      "strong_2": 0.25,
+      "feature_perturbation": 0.5,
+      "outer_divisor": 2.0
+    },
+    "resume_requirements": [
+      "model",
+      "optimizer",
+      "LR scheduler",
+      "scaler",
+      "global step",
+      "RNG",
+      "sampler state",
+      "worker reproducibility limitation recorded"
+    ]
+  },
+  "prototypes": {
+    "per_class": 1,
+    "source": "D_sup GT only",
+    "frozen_estimator": "normalize equal-image mean of within-image class means of normalized sampled features",
+    "sample_per_image_class": 2048,
+    "feature_sampling": "bilinear at original pixel centers, align_corners=True; normalize after sampling",
+    "online_ema_decay": 0.99,
+    "online_update": "present classes only, detached D_sup features; no D_rel or D_U labels",
+    "missing_class_policy": "report support and invalidate formal comparison; never construct missing classes from hidden labels",
+    "support_ablation_fractions": [
+      1.0,
+      0.5,
+      0.25
+    ]
+  },
+  "scores": {
+    "primary": "e=sum_{k!=a} softmax(z excluding a)_k * relu(s_k-s_a)",
+    "signed": "development-only fallback; new protocol revision before confirmation if chosen",
+    "q_temperature_grid": [
+      0.05,
+      0.1,
+      0.2,
+      0.5,
+      1.0
+    ],
+    "fusion_temperature_selection": "D_rel image CV only; selected once using fusion comparator, shared by all methods and conditional probes",
+    "comparators": [
+      "MC",
+      "entropy",
+      "margin",
+      "residual_entropy",
+      "prototype_support",
+      "prototype_margin",
+      "prototype_disagreement",
+      "probability_prototype_JS",
+      "product_support_original_label",
+      "uniform_competitor",
+      "top2_competitor",
+      "competitor_evidence",
+      "permuted_competitor"
+    ],
+    "permutation_seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "permutation_scope": "each pixel, residual entries only; preserve original a, logits, similarities, MC/entropy/margin/RCV; hash-keyed pixel identity"
+  },
+  "verifier": {
+    "architecture": "padded input -> Linear(16) -> ReLU -> Linear(1) -> sigmoid; no BatchNorm or Dropout",
+    "target": "classifier pseudo-label equals GT",
+    "loss": "inverse-sampling-weighted unbalanced BCE, no artificial class balancing",
+    "optimizer": "Adam",
+    "learning_rate": 0.003,
+    "updates": 500,
+    "batch_pixels": 4096,
+    "l2_grid": [
+      0.0001,
+      0.001,
+      0.01
+    ],
+    "fit_seed": 2027,
+    "preprocessing": "weighted mean/std fitted only inside each training fold; constant std set to 1",
+    "selection": "3-fold image GroupKFold on D_rel, minimum weighted BCE; refit all D_rel; no early stopping on diagnostic validation",
+    "small_comparisons": "MC-only has second input zero; every h(m,score) has two inputs",
+    "conditional_base": [
+      "logit_mc",
+      "margin",
+      "entropy",
+      "residual_entropy",
+      "prototype_support",
+      "prototype_margin",
+      "logit_product_support",
+      "probability_prototype_JS"
+    ],
+    "conditional_added_feature": "competitor_evidence",
+    "conditional_input_width": 9,
+    "online_refresh": "candidate: first warmup at 10%; then every 100 backbone steps refresh 4 cyclic D_rel images and 32 head updates; must freeze before G3-G7 start"
+  },
+  "sampling": {
+    "seed": 0,
+    "primary_per_image": 1024,
+    "sensitivity_per_image": 4096,
+    "primary_is_prefix_of_sensitivity": true,
+    "inverse_probability_weighted": true,
+    "cache_fields": [
+      "image_id",
+      "pixel_coordinates",
+      "sampling_weights",
+      "GT_evaluation_only",
+      "pseudo_label",
+      "correctness",
+      "logits",
+      "sampled_features",
+      "prototype_similarities",
+      "all_scores",
+      "verifier_weights",
+      "checkpoint_hash",
+      "prototype_hash",
+      "split_hash",
+      "source_commit",
+      "environment"
+    ]
+  },
+  "statistics": {
+    "error_positive": true,
+    "primary_metric": "error average precision, not trapezoidal PR area",
+    "primary_scope": "late-stage classifier-prototype conflicts",
+    "secondary_scopes": [
+      "all",
+      "MC>=0.95",
+      "conflict_and_MC>=0.95",
+      "MC bins",
+      "prototype margin bins",
+      "predicted class",
+      "boundary/interior"
+    ],
+    "secondary_metrics": [
+      "AUROC",
+      "error prevalence",
+      "continuous tie-aware AURC",
+      "precision at fixed coverage",
+      "coverage at fixed precision",
+      "Brier",
+      "NLL",
+      "weight mass",
+      "weighted error rate",
+      "ESS"
+    ],
+    "coverage_grid": [
+      0.5,
+      0.7,
+      0.8,
+      0.9,
+      0.95
+    ],
+    "precision_targets": [
+      0.9,
+      0.95,
+      0.98
+    ],
+    "bootstrap_unit": "paired images",
+    "bootstrap_replicates": 2000,
+    "bootstrap_seed": 2027,
+    "primary_contrasts": [
+      "conditional_plus_e minus conditional_base",
+      "h(mc,e) minus h(mc,prototype_margin)",
+      "h(mc,e) minus h(mc,product_support)",
+      "h(mc,e) minus mean AP of separately refitted h(mc,e_permuted)"
+    ],
+    "primary_family_size": 4,
+    "primary_familywise_CI": 0.9875,
+    "secondary_CI": 0.95,
+    "uniform_control": "mandatory descriptive and paired interval; failure to beat uniform weakens mechanism attribution",
+    "minimum_subgroup_support": {
+      "images_with_errors": 20,
+      "sampled_error_pixels": 100,
+      "images_with_correct_pixels": 20,
+      "sampled_correct_pixels": 100
+    },
+    "interpretation": "conditional on fixed teacher/prototypes/fitted verifier; stages and pixels are correlated; no seed-population guarantee"
+  },
+  "gates": {
+    "P0": "no leakage, all source hashes match, every prototype class has image support, implementation invariants pass",
+    "P1": "all four primary late-conflict contrast lower bounds >0 at familywise interval; positive point direction in at least 2/3 fixed stages; no clear all-pixel degradation; uniform control and support limits reported; then seed43 confirmation before broad training",
+    "failed_P1": "stop end-to-end expansion; record negative/inconclusive result, no automatic signed-score switch",
+    "P2": "new weights beat MC-only head and strongest prototype/fusion comparator in trained mIoU before adding seeds/generalization",
+    "decisions_are": "project resource rules, not conference acceptance criteria"
+  },
+  "end_to_end": {
+    "G0": "original MC baseline, full D_L",
+    "G1": "native CSL, full D_L",
+    "G2": "native CoVar, full D_L",
+    "G3": "h(mc), D_sup/D_rel",
+    "G4": "h(mc,prototype_margin), D_sup/D_rel",
+    "G5": "h(mc,product_support), D_sup/D_rel",
+    "G6": "h(mc,uniform_competitor), D_sup/D_rel",
+    "G7": "h(mc,competitor_evidence), D_sup/D_rel",
+    "paired_seeds": [
+      42,
+      43,
+      44
+    ],
+    "schedule": "8 groups seed42, then 5 retained groups plus2 seeds =18 runs, excluding preparation teachers and mass/source ablations",
+    "same_steps": 46240,
+    "new_weights_replace_mc_cutoff": true,
+    "pseudo_label_relabeling": false,
+    "mass_control": "fixed reference rho from MC-only-head development training; compare matched total loss mass as separate ablation",
+    "checkpoint_selection": "final fixed optimizer step as primary; best validation descriptive only"
+  },
+  "robustness": {
+    "equal_coverage_sets": true,
+    "top1_logit_boost_delta": [
+      0,
+      1,
+      2,
+      4
+    ],
+    "global_temperature": [
+      0.5,
+      1,
+      2
+    ],
+    "prototype_origin": "same D_sup images/features, GT assignment versus predicted assignment",
+    "prototype_support_fractions": [
+      1,
+      0.5,
+      0.25
+    ],
+    "batch_regrouping": "freeze model, prototype and head in eval; compare identical pixel identities across regrouped batches",
+    "cost": "complete step time, peak memory and GPU hours incl. prototype/head refresh; microbenchmarks are separate"
+  },
+  "execution": {
+    "order": [
+      "P0_protocol_and_inventory",
+      "P0_implementation_and_data_audit",
+      "P1_formal_teacher_and_caches",
+      "P1_A_complementarity",
+      "P1_B_score_ranking",
+      "P1_C_permutation",
+      "P1_D_conditional_increment",
+      "P1_gate_and_seed43",
+      "P2_eight_group_training",
+      "P3_mechanism_cost",
+      "P4_seeds_generalization"
+    ],
+    "resource_policy": "inspect current allocation; never assume earlier free GPUs remain available",
+    "automatic_broad_training": false,
+    "resume_namespace": "new study path; never overwrite original RCV artifacts",
+    "status_as_of_design": "server proxy DNS unresolved; formal experiments not started"
+  }
+}

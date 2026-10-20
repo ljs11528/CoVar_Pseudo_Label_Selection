@@ -1,0 +1,8 @@
+artifacts/
+cache/
+checkpoints/
+*.npz
+*.pt
+*.pth
+*.ckpt
+__pycache__/

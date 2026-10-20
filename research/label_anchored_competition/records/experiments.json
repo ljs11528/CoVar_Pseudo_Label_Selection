@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "study_id": "label_anchored_competition_20261020",
+  "entries": [
+    {
+      "experiment_id": "P0-DESIGN",
+      "status": "complete",
+      "scope": "reference read and initial design frozen before competitor feature results",
+      "date_shanghai": "2026-10-20"
+    },
+    {
+      "experiment_id": "P0-NETWORK",
+      "status": "blocked",
+      "reason": "server proxy hostname DNS unresolved",
+      "dependency": "current reachable SSH entry or restored proxy network"
+    },
+    {
+      "experiment_id": "P0-DATA",
+      "status": "pending",
+      "scope": "actual labeled split and class-support audit"
+    },
+    {
+      "experiment_id": "P0-CODE",
+      "status": "pending",
+      "scope": "numerical and leakage invariants"
+    },
+    {
+      "experiment_id": "P1-TEACHER-S42",
+      "status": "pending",
+      "requires": [
+        "P0-DATA",
+        "P0-CODE",
+        "P0-NETWORK"
+      ]
+    },
+    {
+      "experiment_id": "P1-ABCD",
+      "status": "pending",
+      "requires": [
+        "P1-TEACHER-S42"
+      ]
+    },
+    {
+      "experiment_id": "P2-G0-G7",
+      "status": "gated",
+      "requires": [
+        "P1_gate_and_seed43"
+      ]
+    }
+  ]
+}
