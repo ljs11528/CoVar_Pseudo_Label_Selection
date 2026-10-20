@@ -73,5 +73,50 @@
     "state": "failed",
     "reason": "macOS sandbox OpenMP shared-memory allocation",
     "research_result": false
+  },
+  "native_controls_extension": {
+    "state": "complete",
+    "integration": {
+      "state": "complete",
+      "scope": "synthetic integration only; not research results",
+      "returncode": 0,
+      "elapsed_seconds": 41.946970249991864,
+      "completed_at_utc": "2026-10-20T02:25:14.788360+00:00",
+      "protocol_sha256": "01736454eacd2a0942af0bb37a0a2715037c657fd414b5df3ab1be04c34db8b0",
+      "tool_sha256": "9792e7235d6fc8a74f9ac15b652b09798d918c4f97e3f68bfb77bd71a985c66a",
+      "source_files_sha256": {
+        "run_selfcheck.py": "c0fd91bb8b28584bc2c994459b87325e87941c742209c32d3d432803379d3e6c",
+        "deploy_release.py": "182be3ca7e39bf3bb47bfe8e6eb6256281e93e183807f1b6e5994c85c5ee098e",
+        "train_teacher.py": "98f6c719f6948b029ae8edeead577705566b9033c303e046273bd704d7f20e99",
+        "collect_status.py": "b1e15d1c5bdd6ae031f5df849d8c45dd127cdf9dbb2960d533b5317759220893",
+        "prepare_data.py": "5cdb90c1db0c8f626ce5e051eb749c8d902ca17ad1f88fe7aaf1e0fb9f5dbe0f",
+        "run_frozen_queue.py": "36a506edb7b0da73510b9b74ac733aa4c9f12f43b31abeb16a8660db1e975318",
+        "diagnostic_tables.py": "0eeec11cfa89a534bb72a6769a956eb87257a0dc7c311342b8a20d10b5ccd317",
+        "analyze_frozen.py": "6bf2416206d0c8429d71eefd5e7131173d97799d15f378adf3dd8ea7df9636b7",
+        "bootstrap_dataset.py": "1abd13cb7c88ea1fc8838e3775250cc06a829efbf6bce711ee699ce60520edee",
+        "__init__.py": "1590de0dd90f9cc8782b10f06288f8278b812923c507557061d06e681456fea4",
+        "core.py": "c2c4e90c807a0a0c05dfe9f02cb01b395df8762a94ce7b9b4a053cd2976b7a2f",
+        "audit_teacher_smoke.py": "044a619a3c82b7fd7dd37fbff2597032dd139083ca464ba5d67b601185cfe249",
+        "cuda_preflight.py": "b62f3e0c8d148e691e60a314b6b20fc2e3ed232b6de500cdd433c292e45d9a71",
+        "integration_smoke.py": "9792e7235d6fc8a74f9ac15b652b09798d918c4f97e3f68bfb77bd71a985c66a",
+        "run_preparation.py": "29729a981dd90ce003e4aa5f990446615e14433ce960fff5105776699a482f33",
+        "analysis_utils.py": "c77dc125ba014bec66e80e19d8e5a017179fbf7406bdf0f6c720ef42e5fd68c9",
+        "download_voc.py": "4d6a1c415cae0cafed7e98e364717b10769b89b4587e5af51e409738186bab9a",
+        "make_release.py": "f9432ba808e83333e66eae79073181a3fcd1c4cb0a52de211c7dfb7985f0d2f3",
+        "gpu_bootstrap.py": "2154ca967de11d8b7039be66d8ef58979332ae88922ddaaf5fa9793a397195c5",
+        "legacy_selectors.py": "eeabbe5635c4e967469f16efc75b069c6370ce1591e0540607ba34c222674ec2",
+        "ranking_metrics.py": "456d1ef175ac70da1ef437f30a70871f1f2719dd7909183fec9fd4f579f670ac",
+        "export_frozen.py": "51b352e394c2fb82af03ca629ffb58c257bc234b6d112ee634a4041d67653b07"
+      }
+    },
+    "assertions": {
+      "ranked_scores": 50,
+      "fitted_heads": 24,
+      "legacy_weights": 2,
+      "primary_contrasts": 4,
+      "paired_image_replicates": 2000,
+      "primary_CI": 0.9875
+    },
+    "scope": "synthetic only; actual full-image teacher export still awaits formal checkpoints"
   }
 }

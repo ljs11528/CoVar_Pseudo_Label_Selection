@@ -1,0 +1,12 @@
+{
+  "covar_commit": "181f1472109f28856c199b08c4b3b12a0e3bcb5d",
+  "csl_commit": "5cac455c1bb76e2449c62025e0bc22d2410b135c",
+  "vendor_files": {
+    "vendor/csl_5cac455c/LICENSE": "a26844afb63e9918d71a17ea7f61b6c5a616655e05ecee7228bee6d208badc0c",
+    "vendor/csl_5cac455c/PCOS.py": "44e5118132eaf382c097265237ba890e39e6772df25d83b1d035d233f2ad0229",
+    "vendor/csl_5cac455c/semi_supervised_train.py": "1537b93150ac5c56b079a58bb5c07dcd34c5f6e8eb841f23cde173daf867a61b",
+    "vendor/covar_181f147/PCOS.py": "36ee4d1e9f51e800a5b6a4e76d0a1723ce66da589ac80065d51340afc0e4d5fa",
+    "vendor/covar_181f147/semi_supervised_train.py": "3a9f52f2ce4f65651f04fa4e2a35ae283d5d662a27bf52775a3b008966c03209"
+  },
+  "scope": "Pinned native weight functions only; not a full retraining reproduction"
+}

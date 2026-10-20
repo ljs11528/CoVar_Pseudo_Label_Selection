@@ -16,6 +16,7 @@ import numpy as np
 import torch
 
 from .core import PrototypeAccumulator, sample_decoder_features, score_prediction
+from .legacy_selectors import Selectors
 from .prepare_data import digest, image_identity, source_revision
 
 
@@ -108,6 +109,11 @@ def main():
         captured["features"] = inputs[0].detach()
     hook = model.decoder.classifier.register_forward_pre_hook(capture)
     datasets = {role:SemiDataset("pascal", str(args.data_root), "val", str(path)) for role, path in supplied.items()}
+    selectors = Selectors()
+    full_ids = set(sorted((image_identity(line) for line in datasets["validation"].ids),
+                         key=lambda value:hashlib.sha256(("full_image|"+value).encode()).digest())[:64])
+    full_folder = args.output / "full_images"
+    full_folder.mkdir(exist_ok=True)
     prototype_file = args.output / "prototypes.npz"
     prototype_meta = args.output / "prototype_manifest.json"
     with torch.no_grad():
@@ -162,7 +168,7 @@ def main():
                         source="D_sup GT only", independent_support_images=bank.image_counts.tolist(),
                         estimator=protocol["prototypes"]["frozen_estimator"]))
         prototype_hash = digest(prototype_file)
-        all_records = []
+        all_records, full_records = [], []
         for role in ("D_rel", "validation"):
             folder = args.output / "samples" / role
             folder.mkdir(parents=True, exist_ok=True)
@@ -171,6 +177,7 @@ def main():
                 line = data.ids[index]
                 identity = image_identity(line)
                 destination = folder / f"{identity}.npz"
+                full_destination = full_folder / f"{identity}.npz" if role == "validation" and identity in full_ids else None
                 if destination.exists():
                     with np.load(destination, allow_pickle=False) as item:
                         if (item["checkpoint_sha256"].item() != checkpoint_hash or
@@ -178,7 +185,7 @@ def main():
                                 item["protocol_sha256"].item() != signature["protocol_sha256"] or
                                 item["image_id"].item() != identity or item["role"].item() != role):
                             raise ValueError("Existing pixel cache belongs to another run")
-                else:
+                if not destination.exists() or (full_destination is not None and not full_destination.exists()):
                     image, mask, _ = data[index]
                     mask_array = mask.numpy()
                     h, w = mask_array.shape
@@ -189,12 +196,19 @@ def main():
                     selected = fixed_rng("diagnostic_pixels", identity).choice(valid, count, replace=False)
                     yx = np.stack((selected//w, selected % w), 1)
                     logits = model(image[None].to(args.device), False)[0]
+                    probabilities = logits[None].softmax(1)
+                    native_weights = {name:selectors.native(probabilities, name)[0] for name in ("csl", "covar")}
+                    for name, value in native_weights.items():
+                        if not bool(torch.isfinite(value).all()) or bool(((value < 0) | (value > 1)).any()):
+                            raise ValueError("Nonfinite/out-of-range pinned native "+name+" weight")
                     features = sample_decoder_features(captured["features"], torch.from_numpy(yx), (h, w))
                     sampled_logits = logits[:, yx[:, 0], yx[:, 1]].T
                     similarities = features@prototypes.T
                     scores = score_prediction(sampled_logits, similarities)
                     ground_truth = mask_array.ravel()[selected].astype(np.int64)
                     values = {"score__"+name:value.cpu().numpy() for name, value in scores.items() if value.ndim == 1}
+                    values.update({"score__legacy_"+name.upper()+"_weight":value[yx[:, 0], yx[:, 1]].cpu().numpy()
+                                   for name, value in native_weights.items()})
                     temporary = destination.with_suffix(".partial.npz")
                     np.savez_compressed(temporary, image_id=np.asarray(identity), role=np.asarray(role),
                         original_size=np.asarray([h, w]), valid_pixel_count=np.asarray(len(valid)),
@@ -205,14 +219,29 @@ def main():
                         checkpoint_sha256=np.asarray(checkpoint_hash), prototype_sha256=np.asarray(prototype_hash),
                         protocol_sha256=np.asarray(signature["protocol_sha256"]), **values)
                     temporary.replace(destination)
+                    if full_destination is not None:
+                        temporary = full_destination.with_suffix(".partial.npz")
+                        np.savez_compressed(temporary, image_id=np.asarray(identity), logits=logits.cpu().numpy(),
+                            native_decoder_features=captured["features"][0].cpu().numpy(), GT=mask_array,
+                            original_size=np.asarray([h, w]), prototype_sha256=np.asarray(prototype_hash),
+                            checkpoint_sha256=np.asarray(checkpoint_hash), protocol_sha256=np.asarray(signature["protocol_sha256"]),
+                            legacy_CSL_weight=native_weights["csl"].cpu().numpy(), legacy_COVAR_weight=native_weights["covar"].cpu().numpy())
+                        temporary.replace(full_destination)
                 all_records.append(dict(role=role, image_id=identity, file=str(destination.relative_to(args.output)),
                                         bytes=destination.stat().st_size, sha256=digest(destination)))
+                if full_destination is not None:
+                    full_records.append(dict(image_id=identity, file=str(full_destination.relative_to(args.output)),
+                        bytes=full_destination.stat().st_size, sha256=digest(full_destination)))
                 if (index+1) % 25 == 0:
                     atomic_json(args.output / "export_status.json", dict(state="running", phase=role+"_cache", images=index+1,
                                 target=len(data), signature=signature, updated_at_utc=dt.datetime.now(dt.timezone.utc).isoformat()))
     hook.remove()
     manifest = dict(signature=signature, prototype_sha256=prototype_hash, images={role:len(datasets[role]) for role in datasets},
-                    files=all_records, torch=torch.__version__, cuda=torch.version.cuda,
+                    files=all_records, full_image_files=full_records,
+                    full_image_selection="first64 SHA256(full_image|image_id), fixed before scores; native feature grid permits exact later pixel sampling",
+                    legacy_sources_sha256=digest(package / "legacy_sources.json"),
+                    legacy_selector_population="all pixels of one original image; GT void excluded only from evaluation, not native partition construction",
+                    torch=torch.__version__, cuda=torch.version.cuda,
                     device=torch.cuda.get_device_name(torch.device(args.device)) if args.device.startswith("cuda") else "cpu",
                     sampling=protocol["sampling"], boundary_definition="different valid GT classes within Manhattan distance 3, ignoring void",
                     role_isolation="only D_sup builds prototypes; only D_rel may fit verifiers; validation GT is evaluation-only")

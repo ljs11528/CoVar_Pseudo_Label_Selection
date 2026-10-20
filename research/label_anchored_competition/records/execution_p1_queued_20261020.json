@@ -1,0 +1,162 @@
+{
+  "captured_at_utc": "2026-10-20T02:20:52.288614+00:00",
+  "snapshot_receipt_sha256": "aba4873c1e9f5c810b7248f261604c8102d8b91863a059a978ee8a1944c5b4e7",
+  "queue": {
+    "state": "running",
+    "phase": "waiting_for_formal_teacher_seed42",
+    "pid": 3660,
+    "source_commit": "ee7cde7510640ac0977b8cb4e7bc224f5abe5079",
+    "protocol_sha256": "01736454eacd2a0942af0bb37a0a2715037c657fd414b5df3ab1be04c34db8b0",
+    "started_at_utc": "2026-10-20T02:20:37.929610+00:00",
+    "updated_at_utc": "2026-10-20T02:20:37.940304+00:00",
+    "scope": "P1 only: same-prediction A/B/C/D, then seed43 only if gate passes; no G0-G7 runs",
+    "completed": []
+  },
+  "teacher_progress": {
+    "state": "running",
+    "global_step": 1300,
+    "target_steps": 46240,
+    "elapsed_wall_seconds": 1426.6135418210179,
+    "seconds_per_step_recent": 1.0960112433321774,
+    "lr": [
+      0.0009746612913308189,
+      0.00974661291330819
+    ],
+    "scheduler_last_epoch": 1300,
+    "peak_allocated_mib": 8988.2529296875,
+    "updated_at_utc": "2026-10-20T02:20:15.196024+00:00"
+  },
+  "immutable_release": {
+    "commit": "ee7cde7510640ac0977b8cb4e7bc224f5abe5079",
+    "files": 94,
+    "archive_sha256": "ff7af9893006497fc1a116cfe6cf1ecd7918111535d6c2a55bf7fbe731496deb",
+    "all_file_checksums_verified_before_launch": true
+  },
+  "server_extended_selfcheck": {
+    "state": "complete",
+    "tests": 26,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "record": "records/selfcheck_p1_server_extended_20261020.json"
+  },
+  "command_template": [
+    "python",
+    "-u",
+    "-m",
+    "research.label_anchored_competition.run_frozen_queue",
+    "--root",
+    "<new-study-root>",
+    "--release",
+    "<new-study-root>/releases/ee7cde7510640ac0977b8cb4e7bc224f5abe5079",
+    "--pretrained",
+    "<original-verified-pretrained>/resnet101.pth",
+    "--device",
+    "cuda:0",
+    "--teacher-devices",
+    "4",
+    "--confirm-if-pass"
+  ],
+  "outputs_relative_to_study_root": [
+    "experiments/voc_Dsup_mc_seed42/progress.json",
+    "experiments/frozen_queue_status.json",
+    "experiments/P1_gate_seed42.json",
+    "experiments/frozen_seed42_<stage>_ee7cde75/analysis_<1024|4096>"
+  ],
+  "result_status": "No formal mechanism result yet; phase waits for the teacher COMPLETE marker",
+  "next_scope": "A/B/C/D for three fixed stages; seed43 only on fixed gate; no G0-G7 matrix",
+  "inputs_outputs": {
+    "data/COMPLETE.json": {
+      "bytes": 986,
+      "sha256": "e524a6469174ff3f5bbb521a66a6f8a9aa99dc39c3e76383c1bd2aa6d114f539"
+    },
+    "downloads/COMPLETE.json": {
+      "bytes": 280,
+      "sha256": "62da450e28bfef435c6e0998b8e21f682cd30c1960b37fb67ad90d1b0bd87133"
+    },
+    "experiments/frozen_queue_status.json": {
+      "bytes": 487,
+      "sha256": "343c25c79302e774d2ba87f2f298b0762908fa5d60861b9f1356b38c2f414d57"
+    },
+    "experiments/preparation_status.json": {
+      "bytes": 10537,
+      "sha256": "4b4c4e703df0b9b2c48dcb9b0f140308f5110f064a9e9d78afb20998e426f089"
+    },
+    "experiments/teacher_smoke_failed_20261020T015547Z/run_manifest.json": {
+      "bytes": 10420,
+      "sha256": "9b7d8667c31e94a7e50f2e009c86e57e329fa6dd0bb0422bb5f6029f82a21bf0"
+    },
+    "experiments/teacher_smoke_seed42/COMPLETE.json": {
+      "bytes": 9935,
+      "sha256": "f95cbea10e7f62ab2852670931cb225b533fe2b1b9e2b7ddcaeb2a342066a59d"
+    },
+    "experiments/teacher_smoke_seed42/progress.json": {
+      "bytes": 350,
+      "sha256": "72a3f14bbf5b5ad7d5f9cb1c7452f84ba65bf6c37bee06956f68467f3407099d"
+    },
+    "experiments/teacher_smoke_seed42/pseudo_label_metrics_summary.json": {
+      "bytes": 18177,
+      "sha256": "fe05ca923a12dfc5f05137937e867273cf9d53f2d3a0eded595d9d4eef641071"
+    },
+    "experiments/teacher_smoke_seed42/run_manifest.json": {
+      "bytes": 10420,
+      "sha256": "2cbccba29b1d61458605fab5b580c94f2b3af48053006b8b216448e0fc1f4707"
+    },
+    "experiments/voc_Dsup_mc_seed42/progress.json": {
+      "bytes": 363,
+      "sha256": "e02675445b093d07dca533e39a16525c3f4eaff087096b85fd805cdfcda1641f"
+    },
+    "experiments/voc_Dsup_mc_seed42/run_manifest.json": {
+      "bytes": 10421,
+      "sha256": "ec3548df49cd19e90fd6c9cf924e57bb2b9a143114a443d068877b387887ab08"
+    },
+    "logs/cuda_preflight.json": {
+      "bytes": 2529,
+      "sha256": "1fc209981c0cd43cbab40ef705a0e201c0b7f159422281ea46f09a7c64c0d68f"
+    },
+    "logs/download_progress.json": {
+      "bytes": 190,
+      "sha256": "27e83d3a3964a6c9564bc840c5a7705177df9ad5751048e27cda5e5a9ce5a4de"
+    },
+    "logs/environment_check.json": {
+      "bytes": 135,
+      "sha256": "926db3656565f91222c719f8285fb2ea03523427b544890c923c817f1e386ef1"
+    },
+    "logs/frozen_queue_launch.json": {
+      "bytes": 877,
+      "sha256": "f10771b039ed5a22c85cbb38be6f77cbbbcd142b79fa8956cf5fa165413063b9"
+    },
+    "logs/p0_launch.json": {
+      "bytes": 389,
+      "sha256": "8195ae22d3b3007713f5e05fcec205457f9f8ac40868f3304e78a1dc55faf8ea"
+    },
+    "logs/preparation_failed_20261020T014909Z.json": {
+      "bytes": 9766,
+      "sha256": "a4bf9f14d1713175e1aad7a5719e25f3132f8329ab420071e576101b7d44f90a"
+    },
+    "logs/preparation_failed_20261020T015547Z.json": {
+      "bytes": 10663,
+      "sha256": "4ffde537aba87ea6ea073f3aa598339c225c90e812dc34e75d85dc24166fd0cc"
+    },
+    "logs/preparation_launch.json": {
+      "bytes": 289,
+      "sha256": "bd2c2e88c632f22a3c79f9d0b311839d5b26217df68c737eb985f49fe8ce23a0"
+    },
+    "logs/preparation_restart_20261020T014909Z.json": {
+      "bytes": 202,
+      "sha256": "5a27b608585c6777a05d2c10cc9ba06a21ac5594553eb90b3da6792cdb92c421"
+    },
+    "logs/selfcheck_p1_extended.json": {
+      "bytes": 5579,
+      "sha256": "b8d4c3840c1b7b5020d601b688a37da3d89ee745e3b86bc0343a26dad19fd074"
+    },
+    "logs/selfcheck_server_cpu.json": {
+      "bytes": 3712,
+      "sha256": "2698e51b8870cbb32aa81a02788c1c43af4c01dd78515cfd7b27a3c52e3340a8"
+    },
+    "logs/teacher_smoke_audit.json": {
+      "bytes": 1179,
+      "sha256": "dc819f5cd2e6bd97b829718428b85dac83f3e4972915dae6e2bca7014f5ed348"
+    }
+  }
+}

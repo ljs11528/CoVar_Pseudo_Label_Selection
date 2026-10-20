@@ -20,7 +20,7 @@ def main():
     content = {}
     for name in filter(None, tracked):
         path = root / name
-        if path.suffix in (".py", ".yaml", ".yml", ".md", ".json", ".csv") or path.name == ".gitignore":
+        if path.suffix in (".py", ".yaml", ".yml", ".md", ".json", ".csv") or path.name in (".gitignore", "LICENSE"):
             # Read the commit itself, never a possibly modified working copy.
             content["repo/"+name] = subprocess.check_output(["git", "show", f"{commit}:{name}"], cwd=root)
     source_identity = dict(commit=commit, created_at_utc=dt.datetime.now(dt.timezone.utc).isoformat(),

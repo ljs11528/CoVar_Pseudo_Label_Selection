@@ -44,12 +44,15 @@
       "experiment_id": "P0-CODE",
       "status": "complete",
       "scope": "numerical and leakage invariants",
-      "cpu_tests": 26,
+      "cpu_tests": 28,
       "cpu_state": "complete",
       "cuda_preflight": "complete:4/4",
       "real_model_smoke": "complete:2 actual SGD updates",
-      "record": "records/selfcheck_extended_cpu_20261020.json",
-      "server_initial_cpu_tests": 16
+      "record": "records/selfcheck_legacy_cpu_20261020.json",
+      "server_initial_cpu_tests": 16,
+      "server_extended_cpu_tests": 26,
+      "server_extended_record": "records/selfcheck_p1_server_extended_20261020.json",
+      "server_native_extension": "pending deployment"
     },
     {
       "experiment_id": "P1-TEACHER-S42",
@@ -63,27 +66,31 @@
       "started_at_utc": "2026-10-20T01:56:22.239536+00:00",
       "last_observed_progress": {
         "state": "running",
-        "global_step": 900,
+        "global_step": 1300,
         "target_steps": 46240,
-        "elapsed_wall_seconds": 977.455080198124,
-        "seconds_per_step_recent": 1.0797626748867333,
+        "elapsed_wall_seconds": 1426.6135418210179,
+        "seconds_per_step_recent": 1.0960112433321774,
         "lr": [
-          0.0009824655284942517,
-          0.009824655284942517
+          0.0009746612913308189,
+          0.00974661291330819
         ],
-        "scheduler_last_epoch": 900,
+        "scheduler_last_epoch": 1300,
         "peak_allocated_mib": 8988.2529296875,
-        "updated_at_utc": "2026-10-20T02:12:46.037494+00:00"
+        "updated_at_utc": "2026-10-20T02:20:15.196024+00:00"
       },
       "record": "records/server_preflight_20261020.json"
     },
     {
       "experiment_id": "P1-ABCD",
-      "status": "ready_to_queue",
+      "status": "queued",
       "requires": [
         "P1-TEACHER-S42"
       ],
-      "scope": "24 fitted heads,48 rankings; main 1024-pixel paired-image intervals plus4096-pixel sensitivity; no formal mechanism results yet"
+      "scope": "24 fitted heads,50 rankings including2 pinned native weights; main1024-pixel paired-image intervals plus4096-pixel sensitivity; no formal result yet",
+      "queue_state": "running",
+      "phase": "waiting_for_formal_teacher_seed42",
+      "source_commit": "ee7cde7510640ac0977b8cb4e7bc224f5abe5079",
+      "record": "records/execution_p1_queued_20261020.json"
     },
     {
       "experiment_id": "P2-G0-G7",
@@ -115,17 +122,25 @@
     },
     {
       "experiment_id": "P1-LEGACY-EXPORT",
-      "status": "pending",
+      "status": "ready_to_queue",
       "requires": [
         "P1-TEACHER-S42"
       ],
-      "scope": "native CSL/CoVar same-frozen-prediction export; not implemented by the A/B/C/D queue, must not be marked complete from it"
+      "scope": "pinned native CSL/CoVar weights on the same full-image frozen predictions; ranking and image intervals implemented"
     },
     {
       "experiment_id": "P3-FULL-IMAGE-EXAMPLES",
       "status": "pending",
       "scope": "at most64 deterministically chosen full-image visualizations; never evidence in place of primary tests"
+    },
+    {
+      "experiment_id": "P1-FULL-IMAGE-CACHE",
+      "status": "ready_to_queue",
+      "requires": [
+        "P1-TEACHER-S42"
+      ],
+      "scope": "deterministic64 validation images per checkpoint; logits/native feature grid/GT/native weights; rendering remainsP3"
     }
   ],
-  "updated_at_utc": "2026-10-20T02:13:18.874292+00:00"
+  "updated_at_utc": "2026-10-20T02:20:52.288614+00:00"
 }

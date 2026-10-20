@@ -95,9 +95,14 @@ def main():
     if bool(manifest.get("synthetic", False)) != args.synthetic_smoke:
         raise ValueError("Synthetic caches require an explicit smoke flag; never mix them with formal results")
     if not args.synthetic_smoke:
+        completed_export = json.loads((export / "COMPLETE.json").read_text())
+        if completed_export.get("manifest_sha256") != digest(export / "manifest.json"):
+            raise ValueError("Completed export manifest was modified")
         expected = dict(D_sup=protocol["partition"]["supervised_images"], D_rel=protocol["partition"]["verifier_images"], validation=protocol["dataset"]["diagnostic_images"])
         if manifest["images"] != expected:
             raise ValueError("Formal export image counts differ from the locked protocol")
+        if len(manifest.get("full_image_files", [])) != 64:
+            raise ValueError("The deterministic full-image diagnostic subset is incomplete")
     if manifest["signature"]["protocol_sha256"] != digest(package / "protocol.json"):
         raise ValueError("Export and analysis protocols differ")
     replicates = (protocol["statistics"]["bootstrap_replicates"] if args.cap == 1024 else 0)
@@ -143,10 +148,17 @@ def main():
             "raw_strict_conflict":test["strict_conflict"].astype(float),
             "raw_JS":test_fusion["probability_prototype_JS"], "raw_product":-test_fusion["product_support_original_label"],
             "raw_uniform":test["uniform_competitor"], "raw_top2":test["top2_competitor"], "raw_e":test["competitor_evidence"]}
+    for method in ("legacy_CSL_weight", "legacy_COVAR_weight"):
+        if method not in test:
+            raise ValueError("Pinned native same-prediction weight missing: "+method)
+        risk[method] = -test[method]
     cv, calibration_rows = [], []
     models = output / "heads"
     models.mkdir(exist_ok=True)
     probabilities, dev_predictions = {"raw_MC":test["mc"]}, {"raw_MC":train["mc"]}
+    for method in ("legacy_CSL_weight", "legacy_COVAR_weight"):
+        probabilities[method] = test[method]
+        dev_predictions[method] = train[method]
     phases = [("B_score_controls", ["h_MC", "h_entropy", "h_margin", "h_prototype_support", "h_prototype_margin", "h_JS", "h_product", "h_uniform", "h_top2", "h_e"]),
               ("C_competitor_identity_permutation", [f"h_permutation_{seed}" for seed in protocol["scores"]["permutation_seeds"]]),
               ("D_conditional_increment", ["F_base", "F_plus", "F_simple_base", "F_simple_plus"])]
@@ -184,6 +196,7 @@ def main():
     bootstrap_methods = ["raw_MC", "raw_entropy", "raw_margin", "raw_prototype_margin", "raw_product", "raw_e",
                          "h_MC", "h_prototype_margin", "h_product", "h_uniform", "h_e", "F_base", "F_plus", "F_simple_base", "F_simple_plus"]
     bootstrap_methods += [f"h_permutation_{seed}" for seed in protocol["scores"]["permutation_seeds"]]
+    bootstrap_methods += ["legacy_CSL_weight", "legacy_COVAR_weight"]
     for scope, selected in scopes.items():
         info = support(test, selected, protocol["statistics"]["minimum_subgroup_support"])
         support_rows.append(dict(scope=scope, **info))
@@ -202,7 +215,7 @@ def main():
                            test_curve_coverage=coverage_at_precision(e, value, w, target),
                            test_curve_scope="descriptive test-GT curve; not a deployable threshold")
                 if name in dev_predictions:
-                    dev_risk = -dev_predictions[name] if name == "raw_MC" else 1-dev_predictions[name]
+                    dev_risk = -dev_predictions[name] if name == "raw_MC" or name.startswith("legacy_") else 1-dev_predictions[name]
                     cutoff = Ranking(train["error"], dev_risk).threshold_at_precision(train["sampling_weight"], target)
                     if cutoff:
                         summary = selection_summary(e, value <= cutoff["threshold"], w)
@@ -259,12 +272,12 @@ def main():
         primary_familywise_CI=protocol["statistics"]["primary_familywise_CI"], secondary_CI=.95,
         limitation="CIs conditional on fixed teacher, prototypes and fitted verifiers; no training-seed population guarantee"))
     complete = dict(state="complete", signature=signature, completed_at_utc=dt.datetime.now(dt.timezone.utc).isoformat(),
-                    methods=len(risk), heads=len(probabilities)-1, primary_contrasts=primary_rows,
+                    methods=len(risk), heads=sum(len(methods) for _, methods in phases), legacy_weights=2, primary_contrasts=primary_rows,
                     files={str(p.relative_to(output)):dict(bytes=p.stat().st_size, sha256=digest(p))
                            for p in sorted(output.iterdir()) if p.is_file() and p.name not in ("analysis_status.json", "COMPLETE.json")})
     atomic_json(output / "COMPLETE.json", complete)
     atomic_json(status_file, complete)
-    print(json.dumps(dict(state="complete", cap=args.cap, heads=len(probabilities)-1)), flush=True)
+    print(json.dumps(dict(state="complete", cap=args.cap, heads=complete["heads"], legacy_weights=2)), flush=True)
 
 
 if __name__ == "__main__":

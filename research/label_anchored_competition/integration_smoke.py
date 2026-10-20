@@ -16,6 +16,7 @@ import torch
 from torch.nn import functional as F
 
 from .core import score_prediction
+from .legacy_selectors import Selectors
 from .prepare_data import digest, source_revision
 
 
@@ -35,6 +36,7 @@ def main():
     torch.set_num_threads(2)
     torch.manual_seed(2027)
     prototypes = F.normalize(torch.randn(21, 256), dim=1)
+    selectors = Selectors()
     files = []
     for role, count in [("D_rel", 6), ("validation", args.test_images)]:
         folder = args.output / "samples" / role
@@ -45,6 +47,9 @@ def main():
             logits = torch.randn(64, 21)*3
             similarities = features@prototypes.T
             score = score_prediction(logits, similarities)
+            p = logits.T.reshape(1, 21, 8, 8).softmax(1)
+            legacy = {"score__legacy_"+name.upper()+"_weight":selectors.native(p, name)[0].reshape(-1).numpy()
+                      for name in ("csl", "covar")}
             a = score["pseudo_label"].numpy()
             correct = rng.random(64) > .35
             GT = np.where(correct, a, (a+1) % 21)
@@ -52,7 +57,7 @@ def main():
             np.savez_compressed(path, image_id=np.asarray(identity), role=np.asarray(role), valid_pixel_count=np.asarray(64),
                 pixel_indices=np.arange(64), GT=GT, correct=correct, boundary=np.arange(64) % 2 == 0,
                 logits=logits.numpy(), prototype_similarities=similarities.numpy(),
-                **{"score__"+key:value.numpy() for key, value in score.items() if value.ndim == 1})
+                **legacy, **{"score__"+key:value.numpy() for key, value in score.items() if value.ndim == 1})
             files.append(dict(role=role, image_id=identity, file=str(path.relative_to(args.output)), bytes=path.stat().st_size, sha256=digest(path)))
     (args.output / "manifest.json").write_text(json.dumps(dict(synthetic=True, signature=signature, images=dict(D_sup=0, D_rel=6, validation=args.test_images), files=files), indent=2)+"\n")
     (args.output / "COMPLETE.json").write_text(json.dumps(dict(state="complete", synthetic=True, signature=signature))+"\n")
