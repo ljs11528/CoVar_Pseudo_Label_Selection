@@ -19,6 +19,13 @@ import time
 from .prepare_data import digest, disjoint_partitions, image_identity
 
 
+def training_precision(specification):
+    mode = specification.split()[0]
+    if mode not in ("16-mixed", "bf16-mixed", "32-true"):
+        raise ValueError("Unsupported locked training precision")
+    return mode
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--upstream", required=True, type=Path)
@@ -257,7 +264,7 @@ def main():
     trainer = pl.Trainer(accelerator="gpu", devices=args.devices,
                          strategy="ddp" if args.devices > 1 else "auto",
                          max_epochs=-1, max_steps=2 if args.smoke else total_steps,
-                         precision=spec["precision"], sync_batchnorm=args.devices > 1,
+                         precision=training_precision(spec["precision"]), sync_batchnorm=args.devices > 1,
                          logger=CSVLogger(str(args.output), name="csv"), callbacks=[callback],
                          enable_checkpointing=False, use_distributed_sampler=False,
                          num_sanity_val_steps=0, enable_progress_bar=False,
