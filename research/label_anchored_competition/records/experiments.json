@@ -11,11 +11,11 @@
     {
       "experiment_id": "P0-NETWORK",
       "status": "complete",
-      "reason": "server proxy hostname DNS unresolved",
       "dependency": "current reachable SSH entry or restored proxy network",
       "resolution": "same entry reconnected on user retry",
       "gpu_type": "RTX 4090",
-      "available_gpus_at_audit": 4
+      "available_gpus_at_audit": 4,
+      "original_failure": "server proxy hostname DNS unresolved"
     },
     {
       "experiment_id": "P0-DATA",
@@ -50,9 +50,9 @@
       "real_model_smoke": "complete:2 actual SGD updates",
       "record": "records/selfcheck_legacy_cpu_20261020.json",
       "server_initial_cpu_tests": 16,
-      "server_extended_cpu_tests": 26,
-      "server_extended_record": "records/selfcheck_p1_server_extended_20261020.json",
-      "server_native_extension": "pending deployment"
+      "server_extended_cpu_tests": 28,
+      "server_extended_record": "records/selfcheck_p1_native_server_20261020.json",
+      "server_native_extension": "complete"
     },
     {
       "experiment_id": "P1-TEACHER-S42",
@@ -66,17 +66,17 @@
       "started_at_utc": "2026-10-20T01:56:22.239536+00:00",
       "last_observed_progress": {
         "state": "running",
-        "global_step": 1300,
+        "global_step": 1700,
         "target_steps": 46240,
-        "elapsed_wall_seconds": 1426.6135418210179,
-        "seconds_per_step_recent": 1.0960112433321774,
+        "elapsed_wall_seconds": 1859.2443979606032,
+        "seconds_per_step_recent": 1.0837666457146407,
         "lr": [
-          0.0009746612913308189,
-          0.00974661291330819
+          0.0009668501046171648,
+          0.009668501046171648
         ],
-        "scheduler_last_epoch": 1300,
+        "scheduler_last_epoch": 1700,
         "peak_allocated_mib": 8988.2529296875,
-        "updated_at_utc": "2026-10-20T02:20:15.196024+00:00"
+        "updated_at_utc": "2026-10-20T02:27:27.826806+00:00"
       },
       "record": "records/server_preflight_20261020.json"
     },
@@ -89,8 +89,8 @@
       "scope": "24 fitted heads,50 rankings including2 pinned native weights; main1024-pixel paired-image intervals plus4096-pixel sensitivity; no formal result yet",
       "queue_state": "running",
       "phase": "waiting_for_formal_teacher_seed42",
-      "source_commit": "ee7cde7510640ac0977b8cb4e7bc224f5abe5079",
-      "record": "records/execution_p1_queued_20261020.json"
+      "source_commit": "7c4c5c09f3f7be1943a2760a00c563251d41d5a8",
+      "record": "records/execution_p1_native_queued_20261020.json"
     },
     {
       "experiment_id": "P2-G0-G7",
@@ -122,11 +122,15 @@
     },
     {
       "experiment_id": "P1-LEGACY-EXPORT",
-      "status": "ready_to_queue",
+      "status": "queued",
       "requires": [
         "P1-TEACHER-S42"
       ],
-      "scope": "pinned native CSL/CoVar weights on the same full-image frozen predictions; ranking and image intervals implemented"
+      "scope": "pinned native CSL/CoVar weights on the same full-image frozen predictions; ranking and image intervals implemented",
+      "queue_state": "running",
+      "phase": "waiting_for_formal_teacher_seed42",
+      "source_commit": "7c4c5c09f3f7be1943a2760a00c563251d41d5a8",
+      "record": "records/execution_p1_native_queued_20261020.json"
     },
     {
       "experiment_id": "P3-FULL-IMAGE-EXAMPLES",
@@ -135,12 +139,16 @@
     },
     {
       "experiment_id": "P1-FULL-IMAGE-CACHE",
-      "status": "ready_to_queue",
+      "status": "queued",
       "requires": [
         "P1-TEACHER-S42"
       ],
-      "scope": "deterministic64 validation images per checkpoint; logits/native feature grid/GT/native weights; rendering remainsP3"
+      "scope": "deterministic64 validation images per checkpoint; logits/native feature grid/GT/native weights; rendering remainsP3",
+      "queue_state": "running",
+      "phase": "waiting_for_formal_teacher_seed42",
+      "source_commit": "7c4c5c09f3f7be1943a2760a00c563251d41d5a8",
+      "record": "records/execution_p1_native_queued_20261020.json"
     }
   ],
-  "updated_at_utc": "2026-10-20T02:20:52.288614+00:00"
+  "updated_at_utc": "2026-10-20T02:28:12.542628+00:00"
 }
