@@ -1,0 +1,39 @@
+{
+  "scope": "Synthetic numerical, alignment, image-isolation and gradient tests; no empirical benefit claim",
+  "completed_at_utc": "2026-10-20T01:36:40.681551+00:00",
+  "state": "complete",
+  "tests": 16,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "environment": {
+    "python": "3.10.14",
+    "platform": "Linux-5.15.0-94-generic-x86_64-with-glibc2.35",
+    "torch": "2.2.2",
+    "numpy": "1.24.2",
+    "cuda_available": true
+  },
+  "source_commit_before_check": "4b1192bc38c10b816fd8fa6404905360ac3377fe",
+  "source_files_sha256": {
+    "__init__.py": "1590de0dd90f9cc8782b10f06288f8278b812923c507557061d06e681456fea4",
+    "audit_teacher_smoke.py": "044a619a3c82b7fd7dd37fbff2597032dd139083ca464ba5d67b601185cfe249",
+    "bootstrap_dataset.py": "1abd13cb7c88ea1fc8838e3775250cc06a829efbf6bce711ee699ce60520edee",
+    "core.py": "c2c4e90c807a0a0c05dfe9f02cb01b395df8762a94ce7b9b4a053cd2976b7a2f",
+    "cuda_preflight.py": "b62f3e0c8d148e691e60a314b6b20fc2e3ed232b6de500cdd433c292e45d9a71",
+    "download_voc.py": "4d6a1c415cae0cafed7e98e364717b10769b89b4587e5af51e409738186bab9a",
+    "gpu_bootstrap.py": "0ea6083ab34b995c619c3e29de20592eeb44363b274a6d8d4fe9d4bb6605c0a8",
+    "make_release.py": "a138ddc1899a9c66cc970b91ad83e2307d09e9ac5a1086b924fc01b49a5f97bd",
+    "prepare_data.py": "5cdb90c1db0c8f626ce5e051eb749c8d902ca17ad1f88fe7aaf1e0fb9f5dbe0f",
+    "ranking_metrics.py": "456d1ef175ac70da1ef437f30a70871f1f2719dd7909183fec9fd4f579f670ac",
+    "run_preparation.py": "29729a981dd90ce003e4aa5f990446615e14433ce960fff5105776699a482f33",
+    "run_selfcheck.py": "c0fd91bb8b28584bc2c994459b87325e87941c742209c32d3d432803379d3e6c",
+    "tests/__init__.py": "df8f5252c5b7519345edf85970c7a8d1f23b6d7bea0812fea452fd68db5ce08a",
+    "tests/test_core.py": "9a8068fa42638e8ac63b234dda7d587eb63b5803a8afd5805ed16d4b41d9b0b0",
+    "train_teacher.py": "0204c62b7c48744c0cb60130961045863da1880322c548d8bffaec1b2b970edf"
+  },
+  "protocol_sha256": "01736454eacd2a0942af0bb37a0a2715037c657fd414b5df3ab1be04c34db8b0",
+  "output": "test_competitor_identity_changes_e_when_shape_signals_identical (test_core.CompetitorInvariants) ... ok\ntest_exact_prototype_ties_are_not_strict_conflicts (test_core.CompetitorInvariants) ... ok\ntest_extreme_confidence_does_not_divide_by_zero (test_core.CompetitorInvariants) ... ok\ntest_feature_alignment_matches_full_interpolation (test_core.CompetitorInvariants) ... ok\ntest_head_training_cannot_change_main_features (test_core.CompetitorInvariants) ... ok\ntest_head_weights_batch_regrouping_invariant (test_core.CompetitorInvariants) ... ok\ntest_keyed_permutations_are_chunk_and_batch_invariant (test_core.CompetitorInvariants) ... ok\ntest_missing_and_degenerate_prototypes_fail (test_core.CompetitorInvariants) ... ok\ntest_numpy_reference_and_original_pseudo_label (test_core.CompetitorInvariants) ... ok\ntest_permutation_expectation_equals_uniform_evidence (test_core.CompetitorInvariants) ... ok\ntest_permutation_is_read_only (test_core.CompetitorInvariants) ... ok\ntest_prototypes_equal_image_weight_and_role_isolation (test_core.CompetitorInvariants) ... ok\ntest_reject_nonfinite_or_noncosine_inputs (test_core.CompetitorInvariants) ... ok\ntest_split_is_order_invariant_and_image_leakage_fails (test_core.CompetitorInvariants) ... ok\ntest_top1_boost_preserves_evidence_but_changes_confidence (test_core.CompetitorInvariants) ... ok\ntest_unsupervised_loss_denominator_and_detached_weights (test_core.CompetitorInvariants) ... ok\n\n----------------------------------------------------------------------\nRan 16 tests in 0.408s\n\nOK\n",
+  "limitations": [
+    "Local CPU environment; formal server CUDA preflight and real-model smoke remain required."
+  ]
+}

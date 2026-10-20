@@ -1,0 +1,27 @@
+{
+  "state": "complete",
+  "completed_at_utc": "2026-10-20T01:42:29.931019+00:00",
+  "archive_bytes": 1999639040,
+  "archive_md5": "6cd6e144f989b92b3379bac3b3de84fd",
+  "augmented_mask_sha256": "06a7befb7565fe998c18d4d6b2d5e9cb4967f1bea4cb89321eee107eef1c99d1",
+  "role_counts": {
+    "D_sup": 1191,
+    "D_rel": 132,
+    "D_U": 9259,
+    "validation": 1449
+  },
+  "overlaps": {
+    "D_sup__D_rel": 0,
+    "D_sup__D_U": 0,
+    "D_sup__validation": 0,
+    "D_rel__D_U": 0,
+    "D_rel__validation": 0,
+    "D_U__validation": 0
+  },
+  "jpeg_images": 17125,
+  "validation_masks": "restored from verified official archive before diagnostics",
+  "validation_mask_identity_sha256": "d6df19989115ff98ba7a64bea037f97bf4842eea2ce81688b0cd48a4e3b7cf22",
+  "partition_receipt_sha256": "6a340e693ea39f4932092f2eeb0ee15bea7bd761f5055246ed6c5aacce9f833a",
+  "tool_sha256": "1abd13cb7c88ea1fc8838e3775250cc06a829efbf6bce711ee699ce60520edee",
+  "scope": "data preparation only, no method performance"
+}

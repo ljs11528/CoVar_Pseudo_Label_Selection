@@ -1,0 +1,48 @@
+{
+  "scope": "Synthetic numerical, alignment, image-isolation and gradient tests; no empirical benefit claim",
+  "completed_at_utc": "2026-10-20T02:07:33.215691+00:00",
+  "state": "complete",
+  "tests": 26,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "environment": {
+    "python": "3.12.14",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "torch": "2.5.1",
+    "numpy": "1.26.4",
+    "cuda_available": false
+  },
+  "source_commit_before_check": "b75c0e6d858172ccad4040fff70c274a18ae00da",
+  "source_files_sha256": {
+    "__init__.py": "1590de0dd90f9cc8782b10f06288f8278b812923c507557061d06e681456fea4",
+    "analysis_utils.py": "c77dc125ba014bec66e80e19d8e5a017179fbf7406bdf0f6c720ef42e5fd68c9",
+    "analyze_frozen.py": "4024d63a928a514569ecfeee37718f468f6100e601d8d25ade16fd80895b13b2",
+    "audit_teacher_smoke.py": "044a619a3c82b7fd7dd37fbff2597032dd139083ca464ba5d67b601185cfe249",
+    "bootstrap_dataset.py": "1abd13cb7c88ea1fc8838e3775250cc06a829efbf6bce711ee699ce60520edee",
+    "core.py": "c2c4e90c807a0a0c05dfe9f02cb01b395df8762a94ce7b9b4a053cd2976b7a2f",
+    "cuda_preflight.py": "b62f3e0c8d148e691e60a314b6b20fc2e3ed232b6de500cdd433c292e45d9a71",
+    "deploy_release.py": "182be3ca7e39bf3bb47bfe8e6eb6256281e93e183807f1b6e5994c85c5ee098e",
+    "diagnostic_tables.py": "0eeec11cfa89a534bb72a6769a956eb87257a0dc7c311342b8a20d10b5ccd317",
+    "download_voc.py": "4d6a1c415cae0cafed7e98e364717b10769b89b4587e5af51e409738186bab9a",
+    "export_frozen.py": "570daede729c1e294adb3368ed8da256438840813518fe33960fa13169955a80",
+    "gpu_bootstrap.py": "2154ca967de11d8b7039be66d8ef58979332ae88922ddaaf5fa9793a397195c5",
+    "integration_smoke.py": "3ad2e0f6620a5e47d8bbd6980e01d252bf15b5d0efaa43def30eefec6cc00836",
+    "make_release.py": "414f4be2ae7c1772356872986b0c570dbfa395aed295a33fb700026975238972",
+    "prepare_data.py": "5cdb90c1db0c8f626ce5e051eb749c8d902ca17ad1f88fe7aaf1e0fb9f5dbe0f",
+    "ranking_metrics.py": "456d1ef175ac70da1ef437f30a70871f1f2719dd7909183fec9fd4f579f670ac",
+    "run_frozen_queue.py": "36a506edb7b0da73510b9b74ac733aa4c9f12f43b31abeb16a8660db1e975318",
+    "run_preparation.py": "29729a981dd90ce003e4aa5f990446615e14433ce960fff5105776699a482f33",
+    "run_selfcheck.py": "c0fd91bb8b28584bc2c994459b87325e87941c742209c32d3d432803379d3e6c",
+    "tests/__init__.py": "df8f5252c5b7519345edf85970c7a8d1f23b6d7bea0812fea452fd68db5ce08a",
+    "tests/test_core.py": "9a8068fa42638e8ac63b234dda7d587eb63b5803a8afd5805ed16d4b41d9b0b0",
+    "tests/test_gate.py": "9430976e9a03e6ad1cecfb6e56356b38766e0916161bf8018e50adc55e1bba76",
+    "tests/test_statistics.py": "ed9d9eda1fb9472dd3017b986ed77671b5ec37e5702639a9cafba0aead3a756c",
+    "train_teacher.py": "98f6c719f6948b029ae8edeead577705566b9033c303e046273bd704d7f20e99"
+  },
+  "protocol_sha256": "01736454eacd2a0942af0bb37a0a2715037c657fd414b5df3ab1be04c34db8b0",
+  "output": "test_competitor_identity_changes_e_when_shape_signals_identical (test_core.CompetitorInvariants.test_competitor_identity_changes_e_when_shape_signals_identical) ... ok\ntest_exact_prototype_ties_are_not_strict_conflicts (test_core.CompetitorInvariants.test_exact_prototype_ties_are_not_strict_conflicts) ... ok\ntest_extreme_confidence_does_not_divide_by_zero (test_core.CompetitorInvariants.test_extreme_confidence_does_not_divide_by_zero) ... ok\ntest_feature_alignment_matches_full_interpolation (test_core.CompetitorInvariants.test_feature_alignment_matches_full_interpolation) ... ok\ntest_head_training_cannot_change_main_features (test_core.CompetitorInvariants.test_head_training_cannot_change_main_features) ... ok\ntest_head_weights_batch_regrouping_invariant (test_core.CompetitorInvariants.test_head_weights_batch_regrouping_invariant) ... ok\ntest_keyed_permutations_are_chunk_and_batch_invariant (test_core.CompetitorInvariants.test_keyed_permutations_are_chunk_and_batch_invariant) ... ok\ntest_missing_and_degenerate_prototypes_fail (test_core.CompetitorInvariants.test_missing_and_degenerate_prototypes_fail) ... ok\ntest_numpy_reference_and_original_pseudo_label (test_core.CompetitorInvariants.test_numpy_reference_and_original_pseudo_label) ... ok\ntest_permutation_expectation_equals_uniform_evidence (test_core.CompetitorInvariants.test_permutation_expectation_equals_uniform_evidence) ... ok\ntest_permutation_is_read_only (test_core.CompetitorInvariants.test_permutation_is_read_only) ... ok\ntest_prototypes_equal_image_weight_and_role_isolation (test_core.CompetitorInvariants.test_prototypes_equal_image_weight_and_role_isolation) ... ok\ntest_reject_nonfinite_or_noncosine_inputs (test_core.CompetitorInvariants.test_reject_nonfinite_or_noncosine_inputs) ... ok\ntest_split_is_order_invariant_and_image_leakage_fails (test_core.CompetitorInvariants.test_split_is_order_invariant_and_image_leakage_fails) ... ok\ntest_top1_boost_preserves_evidence_but_changes_confidence (test_core.CompetitorInvariants.test_top1_boost_preserves_evidence_but_changes_confidence) ... ok\ntest_unsupervised_loss_denominator_and_detached_weights (test_core.CompetitorInvariants.test_unsupervised_loss_denominator_and_detached_weights) ... ok\ntest_all_required_evidence_allows_only_confirmation (test_gate.ResearchGate.test_all_required_evidence_allows_only_confirmation) ... ok\ntest_global_harm_cannot_be_hidden_by_conflict_improvement (test_gate.ResearchGate.test_global_harm_cannot_be_hidden_by_conflict_improvement) ... ok\ntest_missing_intervals_are_inconclusive (test_gate.ResearchGate.test_missing_intervals_are_inconclusive) ... ok\ntest_one_uncertain_primary_contrast_stops_expansion (test_gate.ResearchGate.test_one_uncertain_primary_contrast_stops_expansion) ... ok\ntest_calibration_bootstrap_uses_images_and_preserves_pairing (test_statistics.StatisticalInvariants.test_calibration_bootstrap_uses_images_and_preserves_pairing) ... ok\ntest_fp64_bootstrap_reductions_match_CPU_including_empty_images (test_statistics.StatisticalInvariants.test_fp64_bootstrap_reductions_match_CPU_including_empty_images) ... ok\ntest_precision_target_handles_fractional_ties (test_statistics.StatisticalInvariants.test_precision_target_handles_fractional_ties) ... ok\ntest_test_role_cannot_fit_a_head (test_statistics.StatisticalInvariants.test_test_role_cannot_fit_a_head) ... ok\ntest_training_precision_parses_locked_description (test_statistics.StatisticalInvariants.test_training_precision_parses_locked_description) ... ok\ntest_weighted_tied_AP_and_AUROC_match_sklearn (test_statistics.StatisticalInvariants.test_weighted_tied_AP_and_AUROC_match_sklearn) ... ok\n\n----------------------------------------------------------------------\nRan 26 tests in 0.058s\n\nOK\n",
+  "limitations": [
+    "Local CPU environment; formal server CUDA preflight and real-model smoke remain required."
+  ]
+}

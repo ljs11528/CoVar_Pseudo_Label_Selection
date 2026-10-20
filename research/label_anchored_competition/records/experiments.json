@@ -42,29 +42,48 @@
     },
     {
       "experiment_id": "P0-CODE",
-      "status": "partial",
+      "status": "complete",
       "scope": "numerical and leakage invariants",
-      "cpu_tests": 16,
+      "cpu_tests": 26,
       "cpu_state": "complete",
-      "cuda_preflight": "pending",
-      "real_model_smoke": "pending",
-      "record": "records/selfcheck_cpu_20261020.json"
+      "cuda_preflight": "complete:4/4",
+      "real_model_smoke": "complete:2 actual SGD updates",
+      "record": "records/selfcheck_extended_cpu_20261020.json",
+      "server_initial_cpu_tests": 16
     },
     {
       "experiment_id": "P1-TEACHER-S42",
-      "status": "pending",
+      "status": "running",
       "requires": [
         "P0-DATA",
         "P0-CODE",
         "P0-NETWORK"
-      ]
+      ],
+      "source_commit": "b75c0e6d858172ccad4040fff70c274a18ae00da",
+      "started_at_utc": "2026-10-20T01:56:22.239536+00:00",
+      "last_observed_progress": {
+        "state": "running",
+        "global_step": 900,
+        "target_steps": 46240,
+        "elapsed_wall_seconds": 977.455080198124,
+        "seconds_per_step_recent": 1.0797626748867333,
+        "lr": [
+          0.0009824655284942517,
+          0.009824655284942517
+        ],
+        "scheduler_last_epoch": 900,
+        "peak_allocated_mib": 8988.2529296875,
+        "updated_at_utc": "2026-10-20T02:12:46.037494+00:00"
+      },
+      "record": "records/server_preflight_20261020.json"
     },
     {
       "experiment_id": "P1-ABCD",
-      "status": "pending",
+      "status": "ready_to_queue",
       "requires": [
         "P1-TEACHER-S42"
-      ]
+      ],
+      "scope": "24 fitted heads,48 rankings; main 1024-pixel paired-image intervals plus4096-pixel sensitivity; no formal mechanism results yet"
     },
     {
       "experiment_id": "P2-G0-G7",
@@ -82,8 +101,31 @@
     },
     {
       "experiment_id": "P0-SERVER-ASSETS",
-      "status": "running",
-      "scope": "isolated environment and official VOC download; checksum verified before use"
+      "status": "complete",
+      "scope": "isolated environment, checksum-verified official VOC images and augmented masks; role and dimensions checked",
+      "record": "records/server_dataset_20261020.json"
+    },
+    {
+      "experiment_id": "P1-TEACHER-S43",
+      "status": "gated",
+      "requires": [
+        "positive preregistered seed42 gate"
+      ],
+      "scope": "independent fixed-seed teacher and A/B/C/D only"
+    },
+    {
+      "experiment_id": "P1-LEGACY-EXPORT",
+      "status": "pending",
+      "requires": [
+        "P1-TEACHER-S42"
+      ],
+      "scope": "native CSL/CoVar same-frozen-prediction export; not implemented by the A/B/C/D queue, must not be marked complete from it"
+    },
+    {
+      "experiment_id": "P3-FULL-IMAGE-EXAMPLES",
+      "status": "pending",
+      "scope": "at most64 deterministically chosen full-image visualizations; never evidence in place of primary tests"
     }
-  ]
+  ],
+  "updated_at_utc": "2026-10-20T02:13:18.874292+00:00"
 }

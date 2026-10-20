@@ -1,0 +1,17 @@
+{
+  "scope": "audited previous-study statistic implementations reused without treating their old results as new evidence",
+  "ranking_metrics": {
+    "sha256": "456d1ef175ac70da1ef437f30a70871f1f2719dd7909183fec9fd4f579f670ac",
+    "source": "previous study cvpr_diagnostics/metrics.py",
+    "unchanged": true
+  },
+  "gpu_bootstrap": {
+    "sha256": "2154ca967de11d8b7039be66d8ef58979332ae88922ddaaf5fa9793a397195c5",
+    "source_sha256": "753da3cc8d7e7d734672caeb3f794b9e7f6d97d4f2d77aea5554a6153271e281",
+    "changes": [
+      "package-relative imports",
+      "optional full-pool image count, preserving images with zero subgroup contribution"
+    ],
+    "validation": "CPU reference comparison, exact tied metrics and empty-image multiplicities"
+  }
+}

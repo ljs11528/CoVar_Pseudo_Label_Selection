@@ -1,0 +1,141 @@
+{
+  "captured_at_utc": "2026-10-20T02:13:18.874292+00:00",
+  "snapshot_receipt_sha256": "0e74a07a4c6dd9ac82cc3cac9a4df09f73380a6ef91c947b13ee32c5a8893170",
+  "scope": "real data and engineering preflight only; teacher running, no new-mechanism result",
+  "teacher": {
+    "status": "running",
+    "run_id": "voc_Dsup_mc_seed42",
+    "signature": {
+      "protocol_sha256": "01736454eacd2a0942af0bb37a0a2715037c657fd414b5df3ab1be04c34db8b0",
+      "partition_receipt_sha256": "6a340e693ea39f4932092f2eeb0ee15bea7bd761f5055246ed6c5aacce9f833a",
+      "seed": 42,
+      "devices": 4,
+      "global_batch_size": 16,
+      "total_steps": 46240,
+      "stage_steps": {
+        "early": 4624,
+        "middle": 23120,
+        "late": 46240
+      },
+      "smoke": false,
+      "backbone_pretrained_sha256": "d25b500a332e97a7bcbc11dc1153ec07c2f5c8334fbac2b36d882fe78a01af98",
+      "config_sha256": "28ff077a63e4d4ebfaa2acd4a813c26e659a5b26c7718e177540b7d8bba6666d",
+      "source_commit": "b75c0e6d858172ccad4040fff70c274a18ae00da"
+    },
+    "started_at_utc": "2026-10-20T01:56:22.239536+00:00",
+    "torch": "2.2.2",
+    "lightning": "2.0.9",
+    "numpy": "1.24.2",
+    "cuda": "12.1",
+    "gpu_names": [
+      "NVIDIA GeForce RTX 4090",
+      "NVIDIA GeForce RTX 4090",
+      "NVIDIA GeForce RTX 4090",
+      "NVIDIA GeForce RTX 4090"
+    ],
+    "role_counts": {
+      "D_sup": 1191,
+      "D_rel": 132,
+      "D_U": 9259,
+      "validation": 1449
+    },
+    "worker_resume_limitation": "RNG saved per rank; random augmentation worker states not serialized, no bitwise claim",
+    "progress": {
+      "state": "running",
+      "global_step": 900,
+      "target_steps": 46240,
+      "elapsed_wall_seconds": 977.455080198124,
+      "seconds_per_step_recent": 1.0797626748867333,
+      "lr": [
+        0.0009824655284942517,
+        0.009824655284942517
+      ],
+      "scheduler_last_epoch": 900,
+      "peak_allocated_mib": 8988.2529296875,
+      "updated_at_utc": "2026-10-20T02:12:46.037494+00:00"
+    }
+  },
+  "gpu_at_snapshot": "0, NVIDIA GeForce RTX 4090, 10226 MiB, 54 %\n1, NVIDIA GeForce RTX 4090, 10222 MiB, 70 %\n2, NVIDIA GeForce RTX 4090, 10226 MiB, 53 %\n3, NVIDIA GeForce RTX 4090, 10222 MiB, 98 %\n",
+  "inputs_outputs": {
+    "data/COMPLETE.json": {
+      "bytes": 986,
+      "sha256": "e524a6469174ff3f5bbb521a66a6f8a9aa99dc39c3e76383c1bd2aa6d114f539"
+    },
+    "downloads/COMPLETE.json": {
+      "bytes": 280,
+      "sha256": "62da450e28bfef435c6e0998b8e21f682cd30c1960b37fb67ad90d1b0bd87133"
+    },
+    "experiments/preparation_status.json": {
+      "bytes": 10537,
+      "sha256": "4b4c4e703df0b9b2c48dcb9b0f140308f5110f064a9e9d78afb20998e426f089"
+    },
+    "experiments/teacher_smoke_failed_20261020T015547Z/run_manifest.json": {
+      "bytes": 10420,
+      "sha256": "9b7d8667c31e94a7e50f2e009c86e57e329fa6dd0bb0422bb5f6029f82a21bf0"
+    },
+    "experiments/teacher_smoke_seed42/COMPLETE.json": {
+      "bytes": 9935,
+      "sha256": "f95cbea10e7f62ab2852670931cb225b533fe2b1b9e2b7ddcaeb2a342066a59d"
+    },
+    "experiments/teacher_smoke_seed42/progress.json": {
+      "bytes": 350,
+      "sha256": "72a3f14bbf5b5ad7d5f9cb1c7452f84ba65bf6c37bee06956f68467f3407099d"
+    },
+    "experiments/teacher_smoke_seed42/pseudo_label_metrics_summary.json": {
+      "bytes": 18177,
+      "sha256": "fe05ca923a12dfc5f05137937e867273cf9d53f2d3a0eded595d9d4eef641071"
+    },
+    "experiments/teacher_smoke_seed42/run_manifest.json": {
+      "bytes": 10420,
+      "sha256": "2cbccba29b1d61458605fab5b580c94f2b3af48053006b8b216448e0fc1f4707"
+    },
+    "experiments/voc_Dsup_mc_seed42/progress.json": {
+      "bytes": 360,
+      "sha256": "92c0fbbe203ccb6a130f3d5c990ce74a9f82b899878ef1fef7fbc838805d640b"
+    },
+    "experiments/voc_Dsup_mc_seed42/run_manifest.json": {
+      "bytes": 10421,
+      "sha256": "ec3548df49cd19e90fd6c9cf924e57bb2b9a143114a443d068877b387887ab08"
+    },
+    "logs/cuda_preflight.json": {
+      "bytes": 2529,
+      "sha256": "1fc209981c0cd43cbab40ef705a0e201c0b7f159422281ea46f09a7c64c0d68f"
+    },
+    "logs/download_progress.json": {
+      "bytes": 190,
+      "sha256": "27e83d3a3964a6c9564bc840c5a7705177df9ad5751048e27cda5e5a9ce5a4de"
+    },
+    "logs/environment_check.json": {
+      "bytes": 135,
+      "sha256": "926db3656565f91222c719f8285fb2ea03523427b544890c923c817f1e386ef1"
+    },
+    "logs/p0_launch.json": {
+      "bytes": 389,
+      "sha256": "8195ae22d3b3007713f5e05fcec205457f9f8ac40868f3304e78a1dc55faf8ea"
+    },
+    "logs/preparation_failed_20261020T014909Z.json": {
+      "bytes": 9766,
+      "sha256": "a4bf9f14d1713175e1aad7a5719e25f3132f8329ab420071e576101b7d44f90a"
+    },
+    "logs/preparation_failed_20261020T015547Z.json": {
+      "bytes": 10663,
+      "sha256": "4ffde537aba87ea6ea073f3aa598339c225c90e812dc34e75d85dc24166fd0cc"
+    },
+    "logs/preparation_launch.json": {
+      "bytes": 289,
+      "sha256": "bd2c2e88c632f22a3c79f9d0b311839d5b26217df68c737eb985f49fe8ce23a0"
+    },
+    "logs/preparation_restart_20261020T014909Z.json": {
+      "bytes": 202,
+      "sha256": "5a27b608585c6777a05d2c10cc9ba06a21ac5594553eb90b3da6792cdb92c421"
+    },
+    "logs/selfcheck_server_cpu.json": {
+      "bytes": 3712,
+      "sha256": "2698e51b8870cbb32aa81a02788c1c43af4c01dd78515cfd7b27a3c52e3340a8"
+    },
+    "logs/teacher_smoke_audit.json": {
+      "bytes": 1179,
+      "sha256": "dc819f5cd2e6bd97b829718428b85dac83f3e4972915dae6e2bca7014f5ed348"
+    }
+  }
+}

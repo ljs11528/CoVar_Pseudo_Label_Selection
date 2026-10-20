@@ -1,0 +1,71 @@
+{
+  "state": "complete",
+  "completed_at_utc": "2026-10-20T01:34:11.397864+00:00",
+  "scope": "synthetic numerical CUDA preflight; no empirical method performance",
+  "torch": "2.2.2",
+  "cuda": "12.1",
+  "devices": [
+    {
+      "device": 0,
+      "name": "NVIDIA GeForce RTX 4090",
+      "max_absolute_differences": {
+        "logit_mc": 1.9073486328125e-06,
+        "entropy": 2.384185791015625e-07,
+        "residual_entropy": 3.5762786865234375e-07,
+        "competitor_evidence": 3.5762786865234375e-07,
+        "logit_product_support": 3.814697265625e-06,
+        "probability_prototype_JS": 1.7881393432617188e-07
+      },
+      "permutations_bitwise_equal": true,
+      "detached_weights": true,
+      "extreme_confidence_finite": true
+    },
+    {
+      "device": 1,
+      "name": "NVIDIA GeForce RTX 4090",
+      "max_absolute_differences": {
+        "logit_mc": 1.9073486328125e-06,
+        "entropy": 2.384185791015625e-07,
+        "residual_entropy": 3.5762786865234375e-07,
+        "competitor_evidence": 3.5762786865234375e-07,
+        "logit_product_support": 3.814697265625e-06,
+        "probability_prototype_JS": 1.7881393432617188e-07
+      },
+      "permutations_bitwise_equal": true,
+      "detached_weights": true,
+      "extreme_confidence_finite": true
+    },
+    {
+      "device": 2,
+      "name": "NVIDIA GeForce RTX 4090",
+      "max_absolute_differences": {
+        "logit_mc": 1.9073486328125e-06,
+        "entropy": 2.384185791015625e-07,
+        "residual_entropy": 3.5762786865234375e-07,
+        "competitor_evidence": 3.5762786865234375e-07,
+        "logit_product_support": 3.814697265625e-06,
+        "probability_prototype_JS": 1.7881393432617188e-07
+      },
+      "permutations_bitwise_equal": true,
+      "detached_weights": true,
+      "extreme_confidence_finite": true
+    },
+    {
+      "device": 3,
+      "name": "NVIDIA GeForce RTX 4090",
+      "max_absolute_differences": {
+        "logit_mc": 1.9073486328125e-06,
+        "entropy": 2.384185791015625e-07,
+        "residual_entropy": 3.5762786865234375e-07,
+        "competitor_evidence": 3.5762786865234375e-07,
+        "logit_product_support": 3.814697265625e-06,
+        "probability_prototype_JS": 1.7881393432617188e-07
+      },
+      "permutations_bitwise_equal": true,
+      "detached_weights": true,
+      "extreme_confidence_finite": true
+    }
+  ],
+  "core_sha256": "c2c4e90c807a0a0c05dfe9f02cb01b395df8762a94ce7b9b4a053cd2976b7a2f",
+  "tool_sha256": "b62f3e0c8d148e691e60a314b6b20fc2e3ed232b6de500cdd433c292e45d9a71"
+}

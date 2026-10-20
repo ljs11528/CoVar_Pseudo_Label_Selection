@@ -1,0 +1,46 @@
+{
+  "state": "complete",
+  "scope": "real D_sup two-step smoke; discarded initialization, no research benefit claim",
+  "completed_at_utc": "2026-10-20T01:56:13.381110+00:00",
+  "global_step": 2,
+  "SGD_momentum_tensors": 347,
+  "backbone_max_absolute_change": 0.13552051782608032,
+  "saved_lr": 0.0009999610725801732,
+  "expected_lr": 0.0009999610725801732,
+  "scheduler_state_restorable": true,
+  "strict_model_reload": true,
+  "feature_checks": [
+    {
+      "image_id": "JPEGImages/2007_000032.jpg SegmentationClass/2007_000032.png",
+      "logits_shape": [
+        21,
+        281,
+        500
+      ],
+      "feature_shape": [
+        1,
+        256,
+        71,
+        125
+      ],
+      "score_finite": true
+    },
+    {
+      "image_id": "JPEGImages/2007_000250.jpg SegmentationClass/2007_000250.png",
+      "logits_shape": [
+        21,
+        375,
+        500
+      ],
+      "feature_shape": [
+        1,
+        256,
+        94,
+        125
+      ],
+      "score_finite": true
+    }
+  ],
+  "checkpoint_sha256": "4622f09eeb36ee90ddfa277d7fd7a8e7c62d2144acf79edcb8665bd5c774ee7b",
+  "tool_sha256": "044a619a3c82b7fd7dd37fbff2597032dd139083ca464ba5d67b601185cfe249"
+}

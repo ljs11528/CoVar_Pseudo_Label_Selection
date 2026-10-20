@@ -64,11 +64,17 @@ class GPURanking:
 
 def paired_image_bootstrap_gpu(error, risks, weight, image_index, replicates=1000, seed=0,
                                baseline="MC", coverages=(.5, .7, .9, .95), comparators=(),
-                               device="cuda:0", return_samples=False):
+                               device="cuda:0", return_samples=False, all_images=None):
     if baseline not in risks or replicates < 1:
         raise ValueError("Missing baseline or invalid bootstrap count")
-    _, groups = np.unique(image_index, return_inverse=True)
-    n_images = int(groups.max()) + 1
+    if all_images is None:
+        _, groups = np.unique(image_index, return_inverse=True)
+        n_images = int(groups.max()) + 1
+    else:
+        groups = np.asarray(image_index, dtype=np.int64)
+        n_images = int(all_images)
+        if (groups < 0).any() or (groups >= n_images).any():
+            raise ValueError("Image indices outside the full evaluation pool")
     if n_images < 2:
         raise ValueError("Image bootstrap needs at least two images")
     rng = np.random.default_rng(seed)
