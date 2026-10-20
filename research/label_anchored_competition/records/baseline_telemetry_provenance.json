@@ -1,0 +1,9 @@
+{
+  "reason": "GitHub base SemiModule imports two telemetry modules absent from its tracked tree. Restored from the previously audited runtime.",
+  "files_sha256": {
+    "pseudo_label_artifacts.py": "87cfd2c343c802a5d2d91c765ef016faff87b7cc0877c8b38fe8d41b5e1bc46b",
+    "pseudo_label_metrics.py": "1e2a5abb77e2e7b8e42e53ab953ae00387656127a089bd3f4b2c0b4bfc5f0de2"
+  },
+  "same_hashes_verified_on_previous_server_source": true,
+  "effect": "restore imports; no model/loss/selection change"
+}

@@ -15,16 +15,14 @@ def main():
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
-    dirty = subprocess.check_output(["git", "status", "--porcelain", "--", "research", "CSL+CoVar"], cwd=root, text=True)
-    if dirty.strip():
-        raise ValueError("Commit research source before constructing a release")
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
-    tracked = subprocess.check_output(["git", "ls-files", "-z", "research", "CSL+CoVar"], cwd=root).decode().split("\0")
+    tracked = subprocess.check_output(["git", "ls-tree", "-r", "--name-only", "-z", commit, "--", "research", "CSL+CoVar"], cwd=root).decode().split("\0")
     content = {}
     for name in filter(None, tracked):
         path = root / name
         if path.suffix in (".py", ".yaml", ".yml", ".md", ".json", ".csv") or path.name == ".gitignore":
-            content["repo/"+name] = path.read_bytes()
+            # Read the commit itself, never a possibly modified working copy.
+            content["repo/"+name] = subprocess.check_output(["git", "show", f"{commit}:{name}"], cwd=root)
     source_identity = dict(commit=commit, created_at_utc=dt.datetime.now(dt.timezone.utc).isoformat(),
                            files={name.removeprefix("repo/"):hashlib.sha256(data).hexdigest()
                                   for name, data in sorted(content.items())})
