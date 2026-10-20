@@ -13,6 +13,8 @@ import unittest
 import numpy as np
 import torch
 
+from .prepare_data import source_revision
+
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -30,7 +32,7 @@ def main():
         failures=len(result.failures), errors=len(result.errors), skipped=len(result.skipped),
         environment=dict(python=platform.python_version(), platform=platform.platform(),
                          torch=torch.__version__, numpy=np.__version__, cuda_available=torch.cuda.is_available()),
-        source_commit_before_check=subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip(),
+        source_commit_before_check=source_revision(root),
         source_files_sha256={str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
                              for p in sorted(root.rglob("*.py")) if "artifacts" not in p.relative_to(root).parts},
         protocol_sha256=hashlib.sha256((root / "protocol.json").read_bytes()).hexdigest(),

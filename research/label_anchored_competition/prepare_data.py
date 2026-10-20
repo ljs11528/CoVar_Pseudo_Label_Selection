@@ -27,6 +27,18 @@ def digest(path):
     return hasher.hexdigest()
 
 
+def source_revision(directory):
+    """Resolve either a checked-out Git tree or an immutable deployed release."""
+    directory = Path(directory).resolve()
+    for candidate in (directory, *directory.parents):
+        manifest = candidate / "source_manifest.json"
+        if manifest.exists():
+            return json.loads(manifest.read_text())["commit"]
+        if (candidate / ".git").exists():
+            return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=candidate, text=True).strip()
+    raise ValueError("No Git checkout or verified source release manifest")
+
+
 def image_identity(line):
     parts = line.split()
     if len(parts) != 2:
@@ -145,7 +157,7 @@ def main():
         writer = csv.DictWriter(stream, fieldnames=["partition", "class_id", "images", "pixels"])
         writer.writeheader()
         writer.writerows(support)
-    commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=Path(__file__).parent, text=True).strip()
+    commit = source_revision(Path(__file__).parent)
     audit = dict(state="complete", scope="data isolation and labeled-mask support; no model or method performance",
                  completed_at_utc=dt.datetime.now(dt.timezone.utc).isoformat(),
                  source_commit=commit, tool_sha256=digest(__file__), protocol_sha256=digest(args.protocol),
