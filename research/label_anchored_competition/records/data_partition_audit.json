@@ -1,0 +1,315 @@
+{
+  "state": "complete",
+  "scope": "data isolation and labeled-mask support; no model or method performance",
+  "completed_at_utc": "2026-10-20T01:12:23.129347+00:00",
+  "source_commit": "aa2d3effdfc5d522e75f232cecedadb4a4b3a8c5",
+  "tool_sha256": "61258a1613d13d2a0aef73e2d0e85eb6499f67e17ecbbc294cb460bba13862a4",
+  "protocol_sha256": "01736454eacd2a0942af0bb37a0a2715037c657fd414b5df3ab1be04c34db8b0",
+  "original_split_sha256": {
+    "labeled": "c5ea9bb095158a137e4c1db739b07d54a89af697de24ffd9e576493a4189653f",
+    "unlabeled": "5246f6e0bec70363a5b898e0d685d37b0afcfab4a71c010e7026555294d9eca9",
+    "validation": "df002e3a730c57678f63aa3e46a4c827a4066f1dc1814e24d0e8b215075e0c6c"
+  },
+  "counts": {
+    "D_sup": 1191,
+    "D_rel": 132,
+    "D_U": 9259,
+    "validation": 1449
+  },
+  "overlaps": {
+    "D_sup__D_rel": 0,
+    "D_sup__D_U": 0,
+    "D_sup__validation": 0,
+    "D_rel__D_U": 0,
+    "D_rel__validation": 0,
+    "D_U__validation": 0
+  },
+  "mask_archive_sha256": "06a7befb7565fe998c18d4d6b2d5e9cb4967f1bea4cb89321eee107eef1c99d1",
+  "classes_with_supervised_support": 21,
+  "class_support": [
+    {
+      "partition": "D_sup",
+      "class_id": 0,
+      "images": 1191,
+      "pixels": 148093585
+    },
+    {
+      "partition": "D_sup",
+      "class_id": 1,
+      "images": 65,
+      "pixels": 2147911
+    },
+    {
+      "partition": "D_sup",
+      "class_id": 2,
+      "images": 60,
+      "pixels": 1755391
+    },
+    {
+      "partition": "D_sup",
+      "class_id": 3,
+      "images": 71,
+      "pixels": 1458292
+    },
+    {
+      "partition": "D_sup",
+      "class_id": 4,
+      "images": 51,
+      "pixels": 1340305
+    },
+    {
+      "partition": "D_sup",
+      "class_id": 5,
+      "images": 86,
+      "pixels": 920295
+    },
+    {
+      "partition": "D_sup",
+      "class_id": 6,
+      "images": 43,
+      "pixels": 2640044
+    },
+    {
+      "partition": "D_sup",
+      "class_id": 7,
+      "images": 113,
+      "pixels": 3617622
+    },
+    {
+      "partition": "D_sup",
+      "class_id": 8,
+      "images": 109,
+      "pixels": 6962247
+    },
+    {
+      "partition": "D_sup",
+      "class_id": 9,
+      "images": 130,
+      "pixels": 2791458
+    },
+    {
+      "partition": "D_sup",
+      "class_id": 10,
+      "images": 23,
+      "pixels": 899458
+    },
+    {
+      "partition": "D_sup",
+      "class_id": 11,
+      "images": 66,
+      "pixels": 2183313
+    },
+    {
+      "partition": "D_sup",
+      "class_id": 12,
+      "images": 132,
+      "pixels": 5814326
+    },
+    {
+      "partition": "D_sup",
+      "class_id": 13,
+      "images": 50,
+      "pixels": 2028919
+    },
+    {
+      "partition": "D_sup",
+      "class_id": 14,
+      "images": 55,
+      "pixels": 2209530
+    },
+    {
+      "partition": "D_sup",
+      "class_id": 15,
+      "images": 466,
+      "pixels": 16343124
+    },
+    {
+      "partition": "D_sup",
+      "class_id": 16,
+      "images": 69,
+      "pixels": 1524279
+    },
+    {
+      "partition": "D_sup",
+      "class_id": 17,
+      "images": 32,
+      "pixels": 1422567
+    },
+    {
+      "partition": "D_sup",
+      "class_id": 18,
+      "images": 66,
+      "pixels": 3309329
+    },
+    {
+      "partition": "D_sup",
+      "class_id": 19,
+      "images": 57,
+      "pixels": 3438332
+    },
+    {
+      "partition": "D_sup",
+      "class_id": 20,
+      "images": 66,
+      "pixels": 1666962
+    },
+    {
+      "partition": "D_rel",
+      "class_id": 0,
+      "images": 132,
+      "pixels": 16845668
+    },
+    {
+      "partition": "D_rel",
+      "class_id": 1,
+      "images": 8,
+      "pixels": 247515
+    },
+    {
+      "partition": "D_rel",
+      "class_id": 2,
+      "images": 4,
+      "pixels": 29081
+    },
+    {
+      "partition": "D_rel",
+      "class_id": 3,
+      "images": 2,
+      "pixels": 32581
+    },
+    {
+      "partition": "D_rel",
+      "class_id": 4,
+      "images": 4,
+      "pixels": 20055
+    },
+    {
+      "partition": "D_rel",
+      "class_id": 5,
+      "images": 8,
+      "pixels": 66092
+    },
+    {
+      "partition": "D_rel",
+      "class_id": 6,
+      "images": 4,
+      "pixels": 261519
+    },
+    {
+      "partition": "D_rel",
+      "class_id": 7,
+      "images": 13,
+      "pixels": 332437
+    },
+    {
+      "partition": "D_rel",
+      "class_id": 8,
+      "images": 16,
+      "pixels": 742628
+    },
+    {
+      "partition": "D_rel",
+      "class_id": 9,
+      "images": 9,
+      "pixels": 192023
+    },
+    {
+      "partition": "D_rel",
+      "class_id": 10,
+      "images": 9,
+      "pixels": 313242
+    },
+    {
+      "partition": "D_rel",
+      "class_id": 11,
+      "images": 4,
+      "pixels": 196909
+    },
+    {
+      "partition": "D_rel",
+      "class_id": 12,
+      "images": 15,
+      "pixels": 807543
+    },
+    {
+      "partition": "D_rel",
+      "class_id": 13,
+      "images": 5,
+      "pixels": 188022
+    },
+    {
+      "partition": "D_rel",
+      "class_id": 14,
+      "images": 11,
+      "pixels": 481881
+    },
+    {
+      "partition": "D_rel",
+      "class_id": 15,
+      "images": 59,
+      "pixels": 1755115
+    },
+    {
+      "partition": "D_rel",
+      "class_id": 16,
+      "images": 2,
+      "pixels": 115125
+    },
+    {
+      "partition": "D_rel",
+      "class_id": 17,
+      "images": 3,
+      "pixels": 113157
+    },
+    {
+      "partition": "D_rel",
+      "class_id": 18,
+      "images": 5,
+      "pixels": 165762
+    },
+    {
+      "partition": "D_rel",
+      "class_id": 19,
+      "images": 6,
+      "pixels": 286028
+    },
+    {
+      "partition": "D_rel",
+      "class_id": 20,
+      "images": 8,
+      "pixels": 212647
+    }
+  ],
+  "labeled_image_support_min": 23,
+  "outputs": {
+    "class_support.csv": {
+      "sha256": "4c93d990a401595d7a3667fdc2e079658899b7f58e645c6dacc028757c42b1c3",
+      "bytes": 868
+    },
+    "partitions.json": {
+      "sha256": "a2f469d13429368e7075d656d272b1dc48d9a20a64faaa953c248e53f51c6c3b",
+      "bytes": 195370
+    },
+    "splits/1_8/labeled.txt": {
+      "sha256": "fc603591ce380adf328a67f07dd5e34eb068d6a1f6a8fcb346dbb86264f8d484",
+      "bytes": 72651
+    },
+    "splits/1_8/unlabeled.txt": {
+      "sha256": "5246f6e0bec70363a5b898e0d685d37b0afcfab4a71c010e7026555294d9eca9",
+      "bytes": 564799
+    },
+    "splits/rel.txt": {
+      "sha256": "d4a49323eb25013faea11a4ea17c7626faa2d4b694f49301fa1d6c5cc8cb18a7",
+      "bytes": 8052
+    },
+    "splits/val.txt": {
+      "sha256": "df002e3a730c57678f63aa3e46a4c827a4066f1dc1814e24d0e8b215075e0c6c",
+      "bytes": 88389
+    }
+  },
+  "limitations": [
+    "Training images and backbone features not read or verified here.",
+    "Validation mask provenance must be audited before formal export.",
+    "Class support is a labeled data inventory, not prototype quality."
+  ]
+}

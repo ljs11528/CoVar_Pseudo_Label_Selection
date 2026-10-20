@@ -1,0 +1,30 @@
+{
+  "scope": "Synthetic numerical, alignment, image-isolation and gradient tests; no empirical benefit claim",
+  "completed_at_utc": "2026-10-20T01:15:30.251097+00:00",
+  "state": "complete",
+  "tests": 16,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "environment": {
+    "python": "3.12.14",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "torch": "2.5.1",
+    "numpy": "2.3.5",
+    "cuda_available": false
+  },
+  "source_commit_before_check": "aa2d3effdfc5d522e75f232cecedadb4a4b3a8c5",
+  "source_files_sha256": {
+    "__init__.py": "1590de0dd90f9cc8782b10f06288f8278b812923c507557061d06e681456fea4",
+    "core.py": "c2c4e90c807a0a0c05dfe9f02cb01b395df8762a94ce7b9b4a053cd2976b7a2f",
+    "prepare_data.py": "61258a1613d13d2a0aef73e2d0e85eb6499f67e17ecbbc294cb460bba13862a4",
+    "run_selfcheck.py": "5a468125f1e0d64c64ceb07d2f88442a6e7769862e88a237a392e3ea4932cf62",
+    "tests/__init__.py": "df8f5252c5b7519345edf85970c7a8d1f23b6d7bea0812fea452fd68db5ce08a",
+    "tests/test_core.py": "9a8068fa42638e8ac63b234dda7d587eb63b5803a8afd5805ed16d4b41d9b0b0"
+  },
+  "protocol_sha256": "01736454eacd2a0942af0bb37a0a2715037c657fd414b5df3ab1be04c34db8b0",
+  "output": "test_competitor_identity_changes_e_when_shape_signals_identical (test_core.CompetitorInvariants.test_competitor_identity_changes_e_when_shape_signals_identical) ... ok\ntest_exact_prototype_ties_are_not_strict_conflicts (test_core.CompetitorInvariants.test_exact_prototype_ties_are_not_strict_conflicts) ... ok\ntest_extreme_confidence_does_not_divide_by_zero (test_core.CompetitorInvariants.test_extreme_confidence_does_not_divide_by_zero) ... ok\ntest_feature_alignment_matches_full_interpolation (test_core.CompetitorInvariants.test_feature_alignment_matches_full_interpolation) ... ok\ntest_head_training_cannot_change_main_features (test_core.CompetitorInvariants.test_head_training_cannot_change_main_features) ... ok\ntest_head_weights_batch_regrouping_invariant (test_core.CompetitorInvariants.test_head_weights_batch_regrouping_invariant) ... ok\ntest_keyed_permutations_are_chunk_and_batch_invariant (test_core.CompetitorInvariants.test_keyed_permutations_are_chunk_and_batch_invariant) ... ok\ntest_missing_and_degenerate_prototypes_fail (test_core.CompetitorInvariants.test_missing_and_degenerate_prototypes_fail) ... ok\ntest_numpy_reference_and_original_pseudo_label (test_core.CompetitorInvariants.test_numpy_reference_and_original_pseudo_label) ... ok\ntest_permutation_expectation_equals_uniform_evidence (test_core.CompetitorInvariants.test_permutation_expectation_equals_uniform_evidence) ... ok\ntest_permutation_is_read_only (test_core.CompetitorInvariants.test_permutation_is_read_only) ... ok\ntest_prototypes_equal_image_weight_and_role_isolation (test_core.CompetitorInvariants.test_prototypes_equal_image_weight_and_role_isolation) ... ok\ntest_reject_nonfinite_or_noncosine_inputs (test_core.CompetitorInvariants.test_reject_nonfinite_or_noncosine_inputs) ... ok\ntest_split_is_order_invariant_and_image_leakage_fails (test_core.CompetitorInvariants.test_split_is_order_invariant_and_image_leakage_fails) ... ok\ntest_top1_boost_preserves_evidence_but_changes_confidence (test_core.CompetitorInvariants.test_top1_boost_preserves_evidence_but_changes_confidence) ... ok\ntest_unsupervised_loss_denominator_and_detached_weights (test_core.CompetitorInvariants.test_unsupervised_loss_denominator_and_detached_weights) ... ok\n\n----------------------------------------------------------------------\nRan 16 tests in 0.067s\n\nOK\n",
+  "limitations": [
+    "Local CPU environment; formal server CUDA preflight and real-model smoke remain required."
+  ]
+}

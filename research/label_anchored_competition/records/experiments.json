@@ -10,19 +10,45 @@
     },
     {
       "experiment_id": "P0-NETWORK",
-      "status": "blocked",
+      "status": "complete",
       "reason": "server proxy hostname DNS unresolved",
-      "dependency": "current reachable SSH entry or restored proxy network"
+      "dependency": "current reachable SSH entry or restored proxy network",
+      "resolution": "same entry reconnected on user retry",
+      "gpu_type": "RTX 4090",
+      "available_gpus_at_audit": 4
     },
     {
       "experiment_id": "P0-DATA",
-      "status": "pending",
-      "scope": "actual labeled split and class-support audit"
+      "status": "complete",
+      "scope": "actual labeled split and class-support audit",
+      "counts": {
+        "D_sup": 1191,
+        "D_rel": 132,
+        "D_U": 9259,
+        "validation": 1449
+      },
+      "overlaps": {
+        "D_sup__D_rel": 0,
+        "D_sup__D_U": 0,
+        "D_sup__validation": 0,
+        "D_rel__D_U": 0,
+        "D_rel__validation": 0,
+        "D_U__validation": 0
+      },
+      "classes_with_D_sup_support": 21,
+      "min_D_sup_class_images": 23,
+      "min_D_rel_class_images": 2,
+      "record": "records/data_partition_audit.json"
     },
     {
       "experiment_id": "P0-CODE",
-      "status": "pending",
-      "scope": "numerical and leakage invariants"
+      "status": "partial",
+      "scope": "numerical and leakage invariants",
+      "cpu_tests": 16,
+      "cpu_state": "complete",
+      "cuda_preflight": "pending",
+      "real_model_smoke": "pending",
+      "record": "records/selfcheck_cpu_20261020.json"
     },
     {
       "experiment_id": "P1-TEACHER-S42",
@@ -46,6 +72,18 @@
       "requires": [
         "P1_gate_and_seed43"
       ]
+    },
+    {
+      "experiment_id": "P0-DESIGN-SYNC",
+      "status": "complete",
+      "commit": "aa2d3eff",
+      "branch": "research/label-anchored-competition",
+      "scope": "plan and protocol pushed before data audit and core selfcheck"
+    },
+    {
+      "experiment_id": "P0-SERVER-ASSETS",
+      "status": "running",
+      "scope": "isolated environment and official VOC download; checksum verified before use"
     }
   ]
 }
