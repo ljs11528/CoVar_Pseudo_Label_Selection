@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 import random
 import sys
+import time
 
 from .prepare_data import digest, disjoint_partitions, image_identity
 
@@ -167,8 +168,8 @@ def main():
                 state = states[self.global_rank]
                 random.setstate(state["python"])
                 np.random.set_state(state["numpy"])
-                torch.set_rng_state(state["torch"])
-                torch.cuda.set_rng_state(state["cuda"], self.device)
+                torch.set_rng_state(state["torch"].cpu())
+                torch.cuda.set_rng_state(state["cuda"].cpu(), self.device)
 
     stage_steps = set(spec["stage_steps"].values())
     source_file = repo / "source_manifest.json"
@@ -176,6 +177,11 @@ def main():
         training_tool_sha256=digest(__file__), note="source bundle manifest absent; local development only")
 
     class StepCheckpoints(pl.Callback):
+        def on_train_start(self, trainer, module):
+            self.started_wall = time.monotonic()
+            self.last_wall = self.started_wall
+            self.last_step = trainer.global_step
+
         def state_dict(self):
             return dict(saved_steps=sorted(getattr(self, "saved_steps", set())))
 
@@ -202,6 +208,20 @@ def main():
 
         def on_train_batch_end(self, trainer, module, outputs, batch, batch_idx):
             step = trainer.global_step
+            if trainer.is_global_zero and (step <= 30 or step % 100 == 0):
+                torch.cuda.synchronize(module.device)
+                now = time.monotonic()
+                progress = dict(state="running", global_step=step, target_steps=2 if args.smoke else total_steps,
+                                elapsed_wall_seconds=now-self.started_wall,
+                                seconds_per_step_recent=(now-self.last_wall)/max(1, step-self.last_step),
+                                lr=[group["lr"] for group in module.optimizer.param_groups],
+                                scheduler_last_epoch=module.scheduler.last_epoch,
+                                peak_allocated_mib=torch.cuda.max_memory_allocated(module.device)/2**20,
+                                updated_at_utc=dt.datetime.now(dt.timezone.utc).isoformat())
+                temporary = args.output / "progress.partial.json"
+                temporary.write_text(json.dumps(progress, indent=2)+"\n")
+                temporary.replace(args.output / "progress.json")
+                self.last_wall, self.last_step = now, step
             if args.smoke:
                 return
             saved = getattr(self, "saved_steps", set())
