@@ -1,0 +1,148 @@
+{
+  "state": "complete",
+  "checked_at_utc": "2026-10-21T08:44:02.221904+00:00",
+  "teacher": {
+    "started_at_utc": "2026-10-20T01:56:22.239536+00:00",
+    "completed_at_utc": "2026-10-20T17:08:52.277685+00:00",
+    "global_step": 46240,
+    "complete_marker_sha256": "cf8d742cf776313f3a5c2932bee9a155a1989bd429705ec38238caf9cec18073"
+  },
+  "queue": {
+    "state": "complete",
+    "phase": "P1_seed42_gate_ready",
+    "source_commit": "7c4c5c09f3f7be1943a2760a00c563251d41d5a8",
+    "completed_at_utc": "2026-10-20T19:33:53.194827+00:00",
+    "completed": [
+      "seed42_early_export",
+      "seed42_early_analysis_1024",
+      "seed42_early_analysis_4096",
+      "seed42_middle_export",
+      "seed42_middle_analysis_1024",
+      "seed42_middle_analysis_4096",
+      "seed42_late_export",
+      "seed42_late_analysis_1024",
+      "seed42_late_analysis_4096"
+    ]
+  },
+  "gate": {
+    "state": "no_go_or_inconclusive",
+    "pass_to_confirmation": false,
+    "primary_late_all_corrected_lower_bounds_positive": false,
+    "positive_point_stages_by_contrast": {
+      "conditional_plus_e_minus_base": 1,
+      "e_head_minus_prototype_margin": 0,
+      "e_head_minus_product_fusion": 0,
+      "e_head_minus_mean_permuted_AP": 0
+    },
+    "clear_all_pixel_AP_degradation_stages": [
+      "early",
+      "late"
+    ],
+    "late_uniform_control_95_CI": {
+      "ci_low": -0.02555847815742207,
+      "ci_high": -0.0046717159875336554
+    },
+    "uniform_control_supported": false,
+    "sensitivity_4096_conflict_increment": {
+      "early": 0.008117331478135092,
+      "middle": -0.004283307414152504,
+      "late": -0.0052397876652177655
+    },
+    "sensitivity_has_no_separate_CI": true,
+    "limitations": "One fixed training seed; image CIs condition on fitted models; this is a project gate, not a reliability theorem or seed-population guarantee",
+    "next_action": "Preserve all results; stop expansion and interpret the failed/uncertain controls before changing the design",
+    "seed": 42,
+    "outputs": {
+      "early": "frozen_seed42_early_7c4c5c09",
+      "middle": "frozen_seed42_middle_7c4c5c09",
+      "late": "frozen_seed42_late_7c4c5c09"
+    },
+    "source_commit": "7c4c5c09f3f7be1943a2760a00c563251d41d5a8",
+    "completed_at_utc": "2026-10-20T19:33:53.175987+00:00"
+  },
+  "stages": {
+    "early": {
+      "export_completed_at_utc": "2026-10-20T17:24:49.391454+00:00",
+      "export_manifest_sha256": "149030a3a94c5e5e021ca4c8fad972bbdd354217dceb8982727d77cddc307f6c",
+      "cache_shards": 1581,
+      "full_image_files": 64,
+      "analyses": {
+        "1024": {
+          "state": "complete",
+          "completed_at_utc": "2026-10-20T17:38:22.035200+00:00",
+          "methods": 50,
+          "heads": 24,
+          "verified_summary_files": 13,
+          "complete_marker_sha256": "6e65e9ad26b0a22b1c6bfe6714d29e6c19824de8cdb42a206f9dc0f2ae9a5b5d"
+        },
+        "4096": {
+          "state": "complete",
+          "completed_at_utc": "2026-10-20T17:56:50.769846+00:00",
+          "methods": 50,
+          "heads": 24,
+          "verified_summary_files": 10,
+          "complete_marker_sha256": "583bfcd514ffa72f6c8863ca2756bbd2551361a662bdeacc4273fddcd0a2074b"
+        }
+      }
+    },
+    "middle": {
+      "export_completed_at_utc": "2026-10-20T18:13:23.580765+00:00",
+      "export_manifest_sha256": "da8052e8d7a97bfb62c7f47fd20ab80d76bbfa4c1766cfda7f43eb8ffef521d9",
+      "cache_shards": 1581,
+      "full_image_files": 64,
+      "analyses": {
+        "1024": {
+          "state": "complete",
+          "completed_at_utc": "2026-10-20T18:26:56.009776+00:00",
+          "methods": 50,
+          "heads": 24,
+          "verified_summary_files": 13,
+          "complete_marker_sha256": "df2366af8f06f8e64187efa57d2bfd69649d51d7a223a865ee50976377f871d9"
+        },
+        "4096": {
+          "state": "complete",
+          "completed_at_utc": "2026-10-20T18:45:24.728857+00:00",
+          "methods": 50,
+          "heads": 24,
+          "verified_summary_files": 10,
+          "complete_marker_sha256": "c899f310811fc8e41db5bcbdb28a44f146a915734a8befc41369808e2f5036a4"
+        }
+      }
+    },
+    "late": {
+      "export_completed_at_utc": "2026-10-20T19:02:12.786327+00:00",
+      "export_manifest_sha256": "0d8169252904e8c56c0fcc016ba130f67a0963a1663b071c7c43d3027b266b8d",
+      "cache_shards": 1581,
+      "full_image_files": 64,
+      "analyses": {
+        "1024": {
+          "state": "complete",
+          "completed_at_utc": "2026-10-20T19:15:39.810277+00:00",
+          "methods": 50,
+          "heads": 24,
+          "verified_summary_files": 13,
+          "complete_marker_sha256": "52f3a88856d3c7cb70e192632da21c6b3aeb73f0d037a9967eaa6f7a181fbd5c"
+        },
+        "4096": {
+          "state": "complete",
+          "completed_at_utc": "2026-10-20T19:33:50.290006+00:00",
+          "methods": 50,
+          "heads": 24,
+          "verified_summary_files": 10,
+          "complete_marker_sha256": "19ce35c95db9b37c307d3790aa2823e2b8b6bd9366fd4a9f8e0f3f19fd1009e8"
+        }
+      }
+    }
+  },
+  "scope": "completion and declared CSV/JSON summary checksum verification; full pixel/feature/prediction tensors are not rehashed in this ETA audit",
+  "snapshot_receipt_sha256": "275580a4042c24bfe5fb1cf92db3ea2598acdcbb9efa66c5edacbb93c87dc239",
+  "actual_wall_seconds": {
+    "teacher": 54750.038149,
+    "diagnostics_after_teacher": 8700.917142,
+    "teacher_and_diagnostics": 63450.955291
+  },
+  "remaining_first_seed_compute_seconds": 0,
+  "confirmation_seed43_started": false,
+  "seed43_reason": "preregistered seed42 continuation gate did not pass",
+  "later_scope": "P3 interventions/figure rendering and P2 training matrix are outside this completed seed42 A/B/C/D queue"
+}

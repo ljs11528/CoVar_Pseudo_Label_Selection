@@ -56,7 +56,7 @@
     },
     {
       "experiment_id": "P1-TEACHER-S42",
-      "status": "running",
+      "status": "complete",
       "requires": [
         "P0-DATA",
         "P0-CODE",
@@ -65,39 +65,38 @@
       "source_commit": "b75c0e6d858172ccad4040fff70c274a18ae00da",
       "started_at_utc": "2026-10-20T01:56:22.239536+00:00",
       "last_observed_progress": {
-        "state": "running",
-        "global_step": 1700,
+        "state": "complete",
+        "global_step": 46240,
         "target_steps": 46240,
-        "elapsed_wall_seconds": 1859.2443979606032,
-        "seconds_per_step_recent": 1.0837666457146407,
-        "lr": [
-          0.0009668501046171648,
-          0.009668501046171648
-        ],
-        "scheduler_last_epoch": 1700,
-        "peak_allocated_mib": 8988.2529296875,
-        "updated_at_utc": "2026-10-20T02:27:27.826806+00:00"
+        "source": "COMPLETE.json; periodic progress.json is stale at46200",
+        "updated_at_utc": "2026-10-20T17:08:52.277685+00:00"
       },
-      "record": "records/server_preflight_20261020.json"
+      "record": "records/completion_20261021.json",
+      "completed_at_utc": "2026-10-20T17:08:52.277685+00:00",
+      "global_step": 46240,
+      "actual_wall_seconds": 54750.038149
     },
     {
       "experiment_id": "P1-ABCD",
-      "status": "queued",
+      "status": "complete",
       "requires": [
         "P1-TEACHER-S42"
       ],
-      "scope": "24 fitted heads,50 rankings including2 pinned native weights; main1024-pixel paired-image intervals plus4096-pixel sensitivity; no formal result yet",
-      "queue_state": "running",
-      "phase": "waiting_for_formal_teacher_seed42",
+      "scope": "seed42 three stages,24 fitted heads and50 rankings per stage;1024-pixel primary analyses with2000 paired-image replicates and4096-pixel refit sensitivity completed",
+      "queue_state": "complete",
+      "phase": "P1_seed42_gate_ready",
       "source_commit": "7c4c5c09f3f7be1943a2760a00c563251d41d5a8",
-      "record": "records/execution_p1_native_queued_20261020.json"
+      "record": "records/completion_20261021.json",
+      "completed_at_utc": "2026-10-20T19:33:53.194827+00:00",
+      "continuation_gate": "not passed; no seed43 or P2 expansion"
     },
     {
       "experiment_id": "P2-G0-G7",
       "status": "gated",
       "requires": [
         "P1_gate_and_seed43"
-      ]
+      ],
+      "reason": "not started: seed42 mechanism gate failed; confirmation seed43 not triggered"
     },
     {
       "experiment_id": "P0-DESIGN-SYNC",
@@ -118,19 +117,21 @@
       "requires": [
         "positive preregistered seed42 gate"
       ],
-      "scope": "independent fixed-seed teacher and A/B/C/D only"
+      "scope": "independent fixed-seed teacher and A/B/C/D only",
+      "reason": "not started: preregistered seed42 continuation gate did not pass"
     },
     {
       "experiment_id": "P1-LEGACY-EXPORT",
-      "status": "queued",
+      "status": "complete",
       "requires": [
         "P1-TEACHER-S42"
       ],
       "scope": "pinned native CSL/CoVar weights on the same full-image frozen predictions; ranking and image intervals implemented",
-      "queue_state": "running",
-      "phase": "waiting_for_formal_teacher_seed42",
+      "queue_state": "complete",
+      "phase": "P1_seed42_gate_ready",
       "source_commit": "7c4c5c09f3f7be1943a2760a00c563251d41d5a8",
-      "record": "records/execution_p1_native_queued_20261020.json"
+      "record": "records/completion_20261021.json",
+      "completed_at_utc": "2026-10-20T19:33:53.194827+00:00"
     },
     {
       "experiment_id": "P3-FULL-IMAGE-EXAMPLES",
@@ -139,16 +140,17 @@
     },
     {
       "experiment_id": "P1-FULL-IMAGE-CACHE",
-      "status": "queued",
+      "status": "complete",
       "requires": [
         "P1-TEACHER-S42"
       ],
       "scope": "deterministic64 validation images per checkpoint; logits/native feature grid/GT/native weights; rendering remainsP3",
-      "queue_state": "running",
-      "phase": "waiting_for_formal_teacher_seed42",
+      "queue_state": "complete",
+      "phase": "P1_seed42_gate_ready",
       "source_commit": "7c4c5c09f3f7be1943a2760a00c563251d41d5a8",
-      "record": "records/execution_p1_native_queued_20261020.json"
+      "record": "records/completion_20261021.json",
+      "completed_at_utc": "2026-10-20T19:33:53.194827+00:00"
     }
   ],
-  "updated_at_utc": "2026-10-20T02:28:12.542628+00:00"
+  "updated_at_utc": "2026-10-21T08:42:30.208555+00:00"
 }

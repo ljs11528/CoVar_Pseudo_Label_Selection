@@ -11,7 +11,9 @@ The first implementation keeps the classifier pseudo-label unchanged. It tests w
 
 The first formal teacher must exclude the verifier images from backbone supervision and prototype construction. Existing full-label teachers are exploratory only. Full training comparisons follow the offline mechanism gate; they are not queued unconditionally.
 
-As of 2026-10-20, the 1,323-label VOC split is fixed at 1,191 backbone/prototype images and 132 verifier-only images. Dataset checks, the four-device CUDA preflight and the two-update real-model smoke passed. The fresh seed42 teacher is training on four RTX 4090 devices. There are no formal results for the new mechanism yet.
+As of 2026-10-21, the formal seed42 teacher and all three stages of A/B/C/D plus sampling sensitivity are complete. Teacher training took 15 hours 12 minutes; the subsequent diagnostic queue took 2 hours 25 minutes. The continuation gate did not pass, so seed43 and the end-to-end matrix were not started. See the [verified runtime and status](docs/P1_RUNTIME_AND_STATUS.md).
+
+The 1,323-label VOC split remains fixed at 1,191 backbone/prototype images and 132 verifier-only images. Dataset checks, the four-device CUDA preflight and the two-update real-model smoke passed. Formal outputs are available; the current implementation did not establish the proposed mechanism's incremental benefit.
 
 Run the numerical/statistical checks with:
 
