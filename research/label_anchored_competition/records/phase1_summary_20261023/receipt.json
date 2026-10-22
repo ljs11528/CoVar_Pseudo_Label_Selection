@@ -1,0 +1,53 @@
+{
+  "source_tool_sha256": "773eb82c60d9518d712f265d4068c33b82729d99c9cbf13007ca7583494ea4a4",
+  "files": {
+    "calibration.csv": {
+      "bytes": 40773,
+      "sha256": "7794605865880233638c3a201d24f77093e21019a339dbba80ee66e8e03dc4ef"
+    },
+    "complementarity.csv": {
+      "bytes": 4948,
+      "sha256": "43d53ac1afc6c6a0408dc21a34032207b2cf7c96835147fe29456e257a2099e7"
+    },
+    "conditional_selected.csv": {
+      "bytes": 339259,
+      "sha256": "9a211e8b65f976a073664ae9791ff5be15916293041e8a7f838021f615006915"
+    },
+    "head_cv.csv": {
+      "bytes": 9571,
+      "sha256": "7d51feadff19645745982c9a09f8d955be54013ec928c2457e80def319ee3430"
+    },
+    "phase1_primary.png": {
+      "bytes": 167702,
+      "sha256": "8114f2a4314953b97a897f8404e60a9a2939e136daec3d6afc0b907188b034cc"
+    },
+    "phase1_primary.svg": {
+      "bytes": 30127,
+      "sha256": "c18021aae7dfe300fc81c270aefe7882e83626ded67e74ed41f5ddc6ca6c705f"
+    },
+    "phase1_raw_vs_head.png": {
+      "bytes": 134136,
+      "sha256": "b2f32cc42679d5d4a93d410bc579719514c0168c7b4a512ecbc5a82c508524be"
+    },
+    "phase1_raw_vs_head.svg": {
+      "bytes": 28051,
+      "sha256": "fc7d84ce346c64adad34ce19f40e13cb4bf322bdf2a807e71db6d78bb39f17fe"
+    },
+    "precision_targets.csv": {
+      "bytes": 283947,
+      "sha256": "17f733aa6ea029528edf09dac9f98eace22be73eabb5aa455e7b07c6a9be5a8a"
+    },
+    "primary_contrasts.csv": {
+      "bytes": 2458,
+      "sha256": "9641b52cc380c87ec777ae5181b9e5707ffada2bf412bf38f970540abae68e06"
+    },
+    "ranking.csv": {
+      "bytes": 300205,
+      "sha256": "51dd01dbd97b84e71cbfd38c1bf08192f50fb0b450d9f4b2de3cfbb98df76195"
+    },
+    "summary.json": {
+      "bytes": 1506973,
+      "sha256": "7f669f2a4a796e541aa411f6343e5ba32e8609ec40f253099b98f293bc9c410c"
+    }
+  }
+}

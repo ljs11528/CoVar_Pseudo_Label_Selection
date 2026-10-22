@@ -6,6 +6,7 @@ Research branch for the 2026-10-20 change of direction. This is a candidate mech
 - [Machine-readable frozen protocol](protocol.json)
 - [Execution log](docs/EXECUTION_LOG.md)
 - [Experiment ledger](records/experiments.json)
+- [Detailed P1 results, BN audit and next-step decision (Chinese)](docs/PHASE1_RESULTS_AND_AUDIT_20261023.md)
 
 The first implementation keeps the classifier pseudo-label unchanged. It tests whether residual class probabilities aligned with label-supported prototype evidence add useful information beyond ordinary uncertainty, prototype disagreement, and probability–prototype fusion.
 
@@ -14,6 +15,10 @@ The first formal teacher must exclude the verifier images from backbone supervis
 As of 2026-10-21, the formal seed42 teacher and all three stages of A/B/C/D plus sampling sensitivity are complete. Teacher training took 15 hours 12 minutes; the subsequent diagnostic queue took 2 hours 25 minutes. The continuation gate did not pass, so seed43 and the end-to-end matrix were not started. See the [verified runtime and status](docs/P1_RUNTIME_AND_STATUS.md).
 
 The 1,323-label VOC split remains fixed at 1,191 backbone/prototype images and 132 verifier-only images. Dataset checks, the four-device CUDA preflight and the two-update real-model smoke passed. Formal outputs are available; the current implementation did not establish the proposed mechanism's incremental benefit.
+
+The 2026-10-23 audit found and repaired a deferred-BN-restoration checkpoint bug. All three old checkpoints were reevaluated on the complete validation set in FP32 and FP16. Reloaded FP16 mIoU differed from the training logs by +0.050, -0.063 and +0.064 points. Eight cached images per stage reproduced FP32 logits exactly. These checks preserve the old paired negative results; they do not prove that corrected BN snapshots would yield identical error rankings. The repaired saver has serialization regression tests and refuses to silently resume an old-policy checkpoint as a repaired run. No corrected full teacher or new-method training has been started.
+
+The [summary data and figures](records/phase1_summary_20261023/) retain all 50 rankings at both sampling caps. Reproduce them with `summarize_phase1 --help`. Current evidence supports stopping expansion of the original evidence formula, with bounded MC-preserving probe and prototype-quality audits before another full teacher.
 
 Run the numerical/statistical checks with:
 

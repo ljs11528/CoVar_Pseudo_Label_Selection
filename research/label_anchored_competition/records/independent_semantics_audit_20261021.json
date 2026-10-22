@@ -1,0 +1,40 @@
+{
+  "scope": "synthetic independent semantics audit; not an estimate of the trained VOC checkpoint impact",
+  "checked_at_utc": "2026-10-21T15:06:59.613423+00:00",
+  "torch": "2.5.1",
+  "bn": {
+    "pending_rollback_modules": 1,
+    "rollback_in_state_dict": false,
+    "running_mean_max_diff": 0.887499988079071,
+    "running_var_max_diff": 1.998387098312378,
+    "eval_output_max_absolute_diff": 0.935025691986084,
+    "pending_after_flush": 0
+  },
+  "product_fusion_identity": [
+    {
+      "T": 0.05,
+      "float64_identity_max_absolute_error": 1.4210854715202004e-14,
+      "torch_FP32_max_absolute_error": 4.4313453457789365e-06
+    },
+    {
+      "T": 0.1,
+      "float64_identity_max_absolute_error": 5.329070518200751e-15,
+      "torch_FP32_max_absolute_error": 2.9734668807179787e-06
+    },
+    {
+      "T": 0.2,
+      "float64_identity_max_absolute_error": 3.552713678800501e-15,
+      "torch_FP32_max_absolute_error": 1.848675420745849e-06
+    },
+    {
+      "T": 0.5,
+      "float64_identity_max_absolute_error": 2.220446049250313e-15,
+      "torch_FP32_max_absolute_error": 1.724866219632304e-06
+    },
+    {
+      "T": 1.0,
+      "float64_identity_max_absolute_error": 3.552713678800501e-15,
+      "torch_FP32_max_absolute_error": 1.6578977355408142e-06
+    }
+  ]
+}

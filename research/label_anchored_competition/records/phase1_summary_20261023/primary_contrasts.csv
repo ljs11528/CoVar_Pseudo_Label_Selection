@@ -1,0 +1,13 @@
+contrast,scope,stage,delta_error_ap,ci_low,ci_high,confidence,valid_replicates,family_size,interpretation
+conditional_plus_e_minus_base,conflict,early,6.066298180024132e-05,-0.003143859425089491,0.0032088445782703654,0.9875,2000,4,late stage is primary; earlier stages are stage-consistency diagnostics
+e_head_minus_prototype_margin,conflict,early,-0.034919772236479685,-0.042163911718325814,-0.027880199318452193,0.9875,2000,4,late stage is primary; earlier stages are stage-consistency diagnostics
+e_head_minus_product_fusion,conflict,early,-0.048626927638358686,-0.0641143630574464,-0.031925899697929874,0.9875,2000,4,late stage is primary; earlier stages are stage-consistency diagnostics
+e_head_minus_mean_permuted_AP,conflict,early,-0.035297738827252456,-0.051933682917182665,-0.017511923991752616,0.9875,2000,4,late stage is primary; earlier stages are stage-consistency diagnostics
+conditional_plus_e_minus_base,conflict,middle,-0.005484601646280618,-0.009507826470124459,-0.001283361022169144,0.9875,2000,4,late stage is primary; earlier stages are stage-consistency diagnostics
+e_head_minus_prototype_margin,conflict,middle,-0.022211181815116943,-0.030469605673911142,-0.013745909109704524,0.9875,2000,4,late stage is primary; earlier stages are stage-consistency diagnostics
+e_head_minus_product_fusion,conflict,middle,-0.018702827121495402,-0.040550047497286405,0.004301622957305668,0.9875,2000,4,late stage is primary; earlier stages are stage-consistency diagnostics
+e_head_minus_mean_permuted_AP,conflict,middle,-0.019406293789338946,-0.03774834028815818,0.0008657119104237387,0.9875,2000,4,late stage is primary; earlier stages are stage-consistency diagnostics
+conditional_plus_e_minus_base,conflict,late,-0.007817553424461277,-0.011409214257250276,-0.004375091375706641,0.9875,2000,4,late stage is primary; earlier stages are stage-consistency diagnostics
+e_head_minus_prototype_margin,conflict,late,-0.015284011586563895,-0.022158660093955545,-0.008960670646559164,0.9875,2000,4,late stage is primary; earlier stages are stage-consistency diagnostics
+e_head_minus_product_fusion,conflict,late,-0.023309085754824155,-0.03410436929610756,-0.011695096266253728,0.9875,2000,4,late stage is primary; earlier stages are stage-consistency diagnostics
+e_head_minus_mean_permuted_AP,conflict,late,-0.020914425456168118,-0.03683360230255627,-0.005146061392011563,0.9875,2000,4,late stage is primary; earlier stages are stage-consistency diagnostics

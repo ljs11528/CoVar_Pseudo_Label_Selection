@@ -17,6 +17,7 @@ import sys
 import time
 
 from .prepare_data import digest, disjoint_partitions, image_identity
+from .checkpoint_state import BN_SNAPSHOT_POLICY, flush_pending_bn_statistics, require_flushed_checkpoint
 
 
 def training_precision(specification):
@@ -156,15 +157,19 @@ def main():
             return [self.logging_callback]
 
         def on_save_checkpoint(self, checkpoint):
+            if self.model.saved_bn_stats:
+                raise RuntimeError("Checkpoint capture attempted before pending BN restoration")
             checkpoint["label_anchored_study"] = dict(
                 protocol_sha256=digest(args.protocol), partition_receipt_sha256=digest(args.prepared_partition / "COMPLETE.json"),
                 role_counts=audit["counts"], formal_supervision="D_sup only", seed=args.seed,
+                bn_snapshot_policy=BN_SNAPSHOT_POLICY,
                 source_identity=source_identity,
                 rng_by_rank=getattr(self, "_rng_by_rank", None),
                 worker_limitation="Original random augmentation workers are not serialized; resumption is not claimed bitwise identical.")
 
         def on_load_checkpoint(self, checkpoint):
             stored = checkpoint.get("label_anchored_study", {})
+            require_flushed_checkpoint(stored)
             if stored.get("protocol_sha256") != digest(args.protocol) or stored.get("partition_receipt_sha256") != digest(args.prepared_partition / "COMPLETE.json"):
                 raise ValueError("Resume checkpoint belongs to another protocol/data partition")
             self._restored_rng = stored.get("rng_by_rank")
@@ -196,6 +201,9 @@ def main():
             self.saved_steps = set(state_dict["saved_steps"])
 
         def save(self, trainer, module, name):
+            # The last strong-view forward leaves a Python-only BN rollback
+            # list. state_dict alone would persist its temporary running stats.
+            flush_pending_bn_statistics(module.model)
             local = dict(python=random.getstate(), numpy=np.random.get_state(), torch=torch.get_rng_state(),
                          cuda=torch.cuda.get_rng_state(module.device))
             if torch.distributed.is_initialized():
@@ -244,6 +252,7 @@ def main():
                            enable_visual_artifacts=False, monitor_thresholds=[]))
     run_signature = dict(protocol_sha256=digest(args.protocol), partition_receipt_sha256=digest(args.prepared_partition / "COMPLETE.json"),
                          seed=args.seed, devices=args.devices, global_batch_size=spec["global_batch_size"],
+                         bn_snapshot_policy=BN_SNAPSHOT_POLICY,
                          total_steps=total_steps, stage_steps=spec["stage_steps"], smoke=args.smoke,
                          backbone_pretrained_sha256=digest(args.pretrained), config_sha256=digest(config_path),
                          source_identity=source_identity)

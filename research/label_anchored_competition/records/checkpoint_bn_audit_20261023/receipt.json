@@ -1,0 +1,22 @@
+{
+  "scope": "completed checkpoint evaluation outputs",
+  "recorded_at_utc": "2026-10-22T23:09:08.710565+00:00",
+  "files": {
+    "early.json": {
+      "sha256": "860297102446ebdec3c38660ff80a8ebb903d4ae3ce7c53338d7dd4560d4fe21",
+      "bytes": 17427
+    },
+    "middle.json": {
+      "sha256": "4bd2a19e8e566ec43a3813e68305c6b0f4351226a84a24607f16f96740bf1dd1",
+      "bytes": 17264
+    },
+    "late.json": {
+      "sha256": "8ce7fc76e534899d40875036d9c3ec6cff05f0b813dabab6d481cd17d735fc26",
+      "bytes": 17272
+    },
+    "audit_checkpoint_eval.py": {
+      "sha256": "8d6ed5c3aa00bb3afa6d81bd8c6307d0e664445b3763c8fe125611fc7e739769",
+      "bytes": 7005
+    }
+  }
+}

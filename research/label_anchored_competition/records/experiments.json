@@ -150,7 +150,27 @@
       "source_commit": "7c4c5c09f3f7be1943a2760a00c563251d41d5a8",
       "record": "records/completion_20261021.json",
       "completed_at_utc": "2026-10-20T19:33:53.194827+00:00"
+    },
+    {
+      "experiment_id": "P1-AUDIT-LOCAL-20261023",
+      "status": "complete",
+      "scope": "117 checksummed summaries; all stages/rankings/workpoints and local BN serialization regressions",
+      "record": "records/local_result_audit_20261023.json"
+    },
+    {
+      "experiment_id": "P1-AUDIT-CHECKPOINT-20261023",
+      "status": "complete",
+      "scope": "Three old checkpoints; FP32 and FP16 full1449-image validation; eight exact FP32 cache matches per stage; no fitting",
+      "record": "records/checkpoint_bn_audit_20261023/receipt.json",
+      "new_teacher_trained": false
+    },
+    {
+      "experiment_id": "P1-BN-SAVER-FIX",
+      "status": "complete",
+      "scope": "Flush pending BN before state_dict capture, record policy, reject silent old-policy training resume;31 local tests passed",
+      "record": "records/selfcheck_bn_serialization_20261023.json",
+      "corrected_full_teacher_trained": false
     }
   ],
-  "updated_at_utc": "2026-10-21T08:42:30.208555+00:00"
+  "updated_at_utc": "2026-10-22T23:15:58.361604+00:00"
 }

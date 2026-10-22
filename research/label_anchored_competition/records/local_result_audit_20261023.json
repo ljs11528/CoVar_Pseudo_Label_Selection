@@ -1,0 +1,64 @@
+{
+  "checked_at_utc": "2026-10-22T23:15:58.361604+00:00",
+  "state": "complete",
+  "snapshot_verified_files": 117,
+  "original_analysis_source_matches": {
+    "core.py": true,
+    "export_frozen.py": true,
+    "analysis_utils.py": true,
+    "analyze_frozen.py": true,
+    "gpu_bootstrap.py": true,
+    "ranking_metrics.py": true
+  },
+  "checkpoint_output_sha256_verified": true,
+  "checkpoint_confusion_metrics_recomputed": [
+    {
+      "stage": "early",
+      "mode": "FP32",
+      "mIoU": 74.11453714835305,
+      "valid_pixels": 244886857,
+      "delta_vs_log": 0.05235714835305316
+    },
+    {
+      "stage": "early",
+      "mode": "FP16",
+      "mIoU": 74.11242782285649,
+      "valid_pixels": 244886857,
+      "delta_vs_log": 0.0502478228564911
+    },
+    {
+      "stage": "middle",
+      "mode": "FP32",
+      "mIoU": 77.07758807363231,
+      "valid_pixels": 244886857,
+      "delta_vs_log": -0.059275926367689635
+    },
+    {
+      "stage": "middle",
+      "mode": "FP16",
+      "mIoU": 77.07419919966611,
+      "valid_pixels": 244886857,
+      "delta_vs_log": -0.06266480033389144
+    },
+    {
+      "stage": "late",
+      "mode": "FP32",
+      "mIoU": 78.5692569438767,
+      "valid_pixels": 244886857,
+      "delta_vs_log": 0.06856994387669602
+    },
+    {
+      "stage": "late",
+      "mode": "FP16",
+      "mIoU": 78.5651342460339,
+      "valid_pixels": 244886857,
+      "delta_vs_log": 0.06444724603390739
+    }
+  ],
+  "full_image_cache_comparisons": 24,
+  "cache_logits_max_diff": 0,
+  "cache_GT_equal": true,
+  "BN_fix_tests": "records/selfcheck_bn_serialization_20261023.json",
+  "scope": "Local summary checks, actual loaded checkpoint evaluation and future saver repair; no corrected teacher rankings or new-method training",
+  "limitation": "No causal estimate of the effect of lost BN backups on AP; fixed checkpoint negative results retained"
+}
