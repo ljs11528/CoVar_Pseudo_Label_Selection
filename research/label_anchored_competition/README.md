@@ -7,6 +7,8 @@ Research branch for the 2026-10-20 change of direction. This is a candidate mech
 - [Execution log](docs/EXECUTION_LOG.md)
 - [Experiment ledger](records/experiments.json)
 - [Detailed P1 results, BN audit and next-step decision (Chinese)](docs/PHASE1_RESULTS_AND_AUDIT_20261023.md)
+- [Bounded MC-preserving audit plan (Chinese)](docs/BOUNDED_SCORE_AUDIT_PLAN_20261023.md)
+- [Fixed post-hoc scoring audit protocol](score_audit_protocol.json)
 
 The first implementation keeps the classifier pseudo-label unchanged. It tests whether residual class probabilities aligned with label-supported prototype evidence add useful information beyond ordinary uncertainty, prototype disagreement, and probability–prototype fusion.
 
