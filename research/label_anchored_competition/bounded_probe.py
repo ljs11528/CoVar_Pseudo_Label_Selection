@@ -97,7 +97,7 @@ def fit_basis(features, weights, form, quantiles, role="D_rel"):
     scale = np.sqrt(np.average((x-mean)**2, weights=w, axis=0))
     scale = np.where(scale > 1e-10, scale, 1.)
     z = (x-mean)/scale
-    columns = []
+    columns, normalized_columns = [], []
     for j in range(x.shape[1]):
         specifications = [(j, None)]
         if form == "additive":
@@ -107,7 +107,14 @@ def fit_basis(features, weights, form, quantiles, role="D_rel"):
             center = float(np.average(raw, weights=w))
             std = float(np.sqrt(np.average((raw-center)**2, weights=w)))
             if std > 1e-10:
+                normalized = (raw-center)/std
+                # A hinge at the minimum duplicates the linear term. Cross-input
+                # duplicates also alter effective ridge strength if kept twice.
+                if any(np.allclose(normalized, previous, atol=1e-10, rtol=1e-10)
+                       for previous in normalized_columns):
+                    continue
                 columns.append(dict(column=column, knot=knot, mean=center, scale=std))
+                normalized_columns.append(normalized)
     return dict(mean=mean.tolist(), scale=scale.tolist(), columns=columns, form=form)
 
 

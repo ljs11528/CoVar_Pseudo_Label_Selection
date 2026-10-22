@@ -31,8 +31,11 @@ for stage in ['early','middle','late']:
   verified[str(path.relative_to(runs))]=meta
   if path.suffix in ['.json','.csv']:files[str(path.relative_to(runs))]=path
  files[str((folder/'COMPLETE.json').relative_to(runs))]=folder/'COMPLETE.json'
-for name in ['launch_1db8146c.json','device_smoke_1db8146c.json']:
+tag=runs.name.removeprefix('runs_')
+for name in ['launch_'+tag+'.json','device_smoke_'+tag+'.json']:
  files[name]=root/name
+for path in root.glob('runs_*/seed42_*/ABORTED_IMPLEMENTATION.json'):
+ files['aborted_attempts/'+path.parent.parent.name+'/'+path.parent.name+'.json']=path
 receipt=dict(captured_at_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),root=str(runs),files={},
  scope='All completed artifacts hash-verified on server; only CSV/JSON transported; tensors remain remote',verified_remote_files=verified)
 with tarfile.open(fileobj=sys.stdout.buffer,mode='w|gz') as archive:

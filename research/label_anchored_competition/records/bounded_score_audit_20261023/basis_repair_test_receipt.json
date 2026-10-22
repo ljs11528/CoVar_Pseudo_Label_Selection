@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-23 Asia/Shanghai",
+  "change": "Remove numerically identical normalized basis columns, including a minimum hinge duplicating the linear term, as already specified by the locked protocol.",
+  "equality_tolerance": {"absolute": 1e-10, "relative": 1e-10},
+  "protocol_changed": false,
+  "scientific_effect_results_inspected_before_fix": false,
+  "previous_attempt": "runs_1db8146c; three incomplete jobs terminated after checking PID, command and release cwd; outputs preserved with ABORTED_IMPLEMENTATION.json",
+  "command": "OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 research/label_anchored_competition/artifacts/audit_env_20261021/bin/python -m unittest discover -s research/label_anchored_competition/tests -v",
+  "result": "41 tests passed",
+  "duration_seconds": 0.752,
+  "new_regression": "A nonnegative input with 80% zeros and a duplicated input yields exactly one basis column when all fixed hinge quantiles equal the minimum."
+}

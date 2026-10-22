@@ -91,6 +91,15 @@ class BoundedProbeInvariants(unittest.TestCase):
         np.testing.assert_allclose(weighted_midrank(x,w),[.2,.2,.9,.6])
         self.assertAlmostEqual(weighted_correlation(x,x,w),1.)
 
+    def test_sparse_positive_hinges_do_not_duplicate_linear_basis(self):
+        x=np.r_[np.zeros(80),np.arange(1,21)].reshape(-1,1)
+        basis=fit_basis(np.repeat(x,2,axis=1),np.ones(100),'additive',[.25,.5,.75])
+        # All three quantiles are zero. Both the minimum hinge and second
+        # identical input must be removed, preserving the intended penalty.
+        self.assertEqual(len(basis['columns']),1)
+        value=transform_basis(basis,np.repeat(x,2,axis=1))
+        np.testing.assert_allclose(value[:,0],((x-x.mean())/x.std()).ravel(),atol=1e-7)
+
     def test_nested_pipeline_round_trip_and_frozen_mc(self):
         spec=specification()
         spec["correction"].update(budgets=[4,12], curve_updates=[0,4,12], batch_pixels=32)
