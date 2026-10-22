@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-23 Asia/Shanghai",
+  "protocol_commit_before_fitting": "52111ff7",
+  "command": "OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 research/label_anchored_competition/artifacts/audit_env_20261021/bin/python -m unittest discover -s research/label_anchored_competition/tests -v",
+  "result": "37 tests passed",
+  "test_duration_seconds": 0.791,
+  "new_tests": 6,
+  "existing_regressions": 31,
+  "checks": [
+    "FP64 constrained MC Newton objective matches independent SciPy L-BFGS-B to 10 decimal places",
+    "MC monotonicity, constant/extreme inputs and negative-slope active-bound cases",
+    "validation role rejected by all fitting entry points",
+    "zero correction restores the exact MC logits",
+    "image fold identity stability and nested isolation",
+    "short update budget is an identical prefix of the longer path",
+    "nested fit and serialized model round trip; all correction models share frozen MC",
+    "constant signal selects zero inside every outer fold",
+    "weighted tied midranks and prior weighted ranking/bootstrap regressions"
+  ],
+  "limitation": "Synthetic and local numerical tests only; no new scientific probe results were used in these checks."
+}
