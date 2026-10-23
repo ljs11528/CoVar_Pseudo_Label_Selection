@@ -1,0 +1,9 @@
+{
+  "state": "passed",
+  "scope": "Synthetic selected-model checker validation only; not research evidence",
+  "replays": 180,
+  "gradient_checks": 240,
+  "max_replay_error": 4.440892098500626e-16,
+  "max_projected_gradient": 3.2803494916586315e-08,
+  "source_sha256": "18148a8f2bca4af84fba5a67e726c44fdadb63d087adefe2fd452582e8d86267"
+}
