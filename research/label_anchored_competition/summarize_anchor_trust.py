@@ -137,7 +137,7 @@ def draw(ranking,support,intervals,spec,output):
     for ext in ("png","svg"):
         fig.savefig(output/("fold_metrics."+ext),dpi=180,bbox_inches="tight",metadata={"Date":None} if ext=="svg" else None)
     plt.close(fig)
-    fig,axes=plt.subplots(1,2,figsize=(10.5,4.1),sharey=True)
+    fig,axes=plt.subplots(1,2,figsize=(10.5,4.5),sharey=True)
     outcomes=[("teacher_wrong_proto_correct","Teacher wrong, anchor correct","#0072B2"),
               ("teacher_correct_proto_wrong","Teacher correct, anchor wrong","#E69F00"),
               ("both_wrong","Both wrong","#CC6677")]
@@ -148,14 +148,15 @@ def draw(ranking,support,intervals,spec,output):
             values=np.array([row.get(key,0) or 0 for row in rows])*100
             ax.bar(range(3),values,bottom=bottom,label=label,color=color,width=.65)
             bottom+=values
-        ax.set_xticks(range(3),[f"{label}\nE/C images: {int(row['error_images'])}/{int(row['correct_images'])}" for label,row in zip(("<50","50–199","≥200"),rows)])
-        ax.set_xlabel("Independent D_sup images supporting the winning prototype")
+        ax.set_xticks(range(3),[f"{label}{'' if row['adequate_support'] else '*'}\n{int(row['error_images'])} / {int(row['correct_images'])}" for label,row in zip(("<50","50–199","≥200"),rows)])
+        ax.set_xlabel("Prototype support (independent D_sup images)")
         ax.set_title("D_rel (development)" if role=="D_rel" else "Validation (previously inspected)")
         ax.set_ylim(0,105);ax.set_ylabel("Conflict pixel mass (%)")
     handles,labels=axes[0].get_legend_handles_labels()
-    fig.legend(handles,labels,loc="lower center",ncol=3,frameon=False,bbox_to_anchor=(.5,-.05))
+    fig.legend(handles,labels,loc="lower center",ncol=3,frameon=False,bbox_to_anchor=(.5,.035),fontsize=9)
+    fig.text(.5,.01,"Counts under bins: images with teacher errors / correct predictions.  * Below the registered support minimum.",ha="center",fontsize=8)
     fig.suptitle("Late stage · fixed support bands · associations, not a causal sample-size effect",fontsize=11)
-    fig.tight_layout(rect=(0,.09,1,.96))
+    fig.tight_layout(rect=(0,.14,1,.96))
     for ext in ("png","svg"):
         fig.savefig(output/("support_conflicts."+ext),dpi=180,bbox_inches="tight",metadata={"Date":None} if ext=="svg" else None)
     plt.close(fig)

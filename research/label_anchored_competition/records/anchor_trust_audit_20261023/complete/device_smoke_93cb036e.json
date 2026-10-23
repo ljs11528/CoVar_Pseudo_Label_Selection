@@ -1,0 +1,15 @@
+{
+  "state": "passed",
+  "scope": "synthetic engineering check only",
+  "device": "cuda:0",
+  "models": 20,
+  "ranking_rows": 600,
+  "interval_rows": 130,
+  "support_rows": 274,
+  "conditional_rows": 1010,
+  "curve_rows": 7000,
+  "metric_max_abs_diff": 9.992007221626409e-16,
+  "torch": "2.2.2",
+  "numpy": "1.26.4",
+  "source_commit": "93cb036e56c8c522e1d02f2a8a68ae1b4e667193"
+}

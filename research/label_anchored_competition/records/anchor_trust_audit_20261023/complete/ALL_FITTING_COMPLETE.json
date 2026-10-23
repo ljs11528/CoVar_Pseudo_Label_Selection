@@ -1,0 +1,13 @@
+{
+  "signature": {
+    "source_commit": "93cb036e56c8c522e1d02f2a8a68ae1b4e667193",
+    "protocol_sha256": "3bf4fd8b73044a1553f62d4eca40768677224ff20a6096bac2ca7a2b63483f6d",
+    "scope": "old-BN existing-cache development; no teacher updates"
+  },
+  "stage_models": {
+    "early": "326eb8078c88d89ce2d77a4ac89d154c25cfff4b153eab597b286ea15cc2388e",
+    "middle": "c94002650a8e6a5119308156d140f0b95933ed3e50c07ebebb7fd19ed189ce38",
+    "late": "2d630da6676ec02b543e9b97b53fb070abe6cce99f6d45e8298763320036e698"
+  },
+  "completed_at_utc": "2026-10-23T04:50:28.631783+00:00"
+}

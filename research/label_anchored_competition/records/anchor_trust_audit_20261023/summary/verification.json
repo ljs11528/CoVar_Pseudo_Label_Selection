@@ -1,0 +1,24 @@
+{
+  "aggregate_files_verified": 68,
+  "replays": [
+    {
+      "stage": "early",
+      "replays": 57,
+      "maximum_error": 0.0
+    },
+    {
+      "stage": "middle",
+      "replays": 57,
+      "maximum_error": 0.0
+    },
+    {
+      "stage": "late",
+      "replays": 57,
+      "maximum_error": 0.0
+    }
+  ],
+  "fold_means_independently_recomputed": true,
+  "resource_gate_matches_server": true,
+  "conflict_outcome_partition_verified": true,
+  "scope": "independent aggregate arithmetic and transport integrity; not independent training repetition"
+}

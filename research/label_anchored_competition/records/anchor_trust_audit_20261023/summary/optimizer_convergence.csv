@@ -1,0 +1,4 @@
+stage,fits,max_iterations,median_iterations,max_final_gradient,converged
+early,260,4.0,4.0,8.941148312583075e-08,True
+middle,260,5.0,4.0,8.922880731173938e-08,True
+late,260,5.0,4.0,9.684249677090889e-08,True

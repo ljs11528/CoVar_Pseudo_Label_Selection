@@ -1,0 +1,196 @@
+{
+  "passed": false,
+  "checks": [
+    {
+      "check": "late_CI_T_minus_MM",
+      "passed": false,
+      "role": "D_rel",
+      "scope": "conflict",
+      "estimator": "within_fold_mean",
+      "method": "T",
+      "comparator": "MM",
+      "metric": "error_ap",
+      "delta": -0.03395914591497362,
+      "confidence": 0.9875,
+      "ci_low": -0.08140104208330196,
+      "ci_high": 0.009519040031076842,
+      "valid_replicates": 2000,
+      "images": 132
+    },
+    {
+      "check": "stage_consistency_T_minus_MM",
+      "passed": false,
+      "deltas": [
+        -0.013628135163787858,
+        -0.05124110198481435,
+        -0.03395914591497362
+      ]
+    },
+    {
+      "check": "late_CI_T_minus_G",
+      "passed": false,
+      "role": "D_rel",
+      "scope": "conflict",
+      "estimator": "within_fold_mean",
+      "method": "T",
+      "comparator": "G",
+      "metric": "error_ap",
+      "delta": -0.01103517428364681,
+      "confidence": 0.9875,
+      "ci_low": -0.03553684412184277,
+      "ci_high": 0.0156329471946517,
+      "valid_replicates": 2000,
+      "images": 132
+    },
+    {
+      "check": "stage_consistency_T_minus_G",
+      "passed": false,
+      "deltas": [
+        -0.0013869869326579298,
+        -0.01041007133851507,
+        -0.01103517428364681
+      ]
+    },
+    {
+      "check": "late_CI_T_minus_S",
+      "passed": false,
+      "role": "D_rel",
+      "scope": "conflict",
+      "estimator": "within_fold_mean",
+      "method": "T",
+      "comparator": "S",
+      "metric": "error_ap",
+      "delta": 0.0,
+      "confidence": 0.9875,
+      "ci_low": 0.0,
+      "ci_high": 0.0,
+      "valid_replicates": 2000,
+      "images": 132
+    },
+    {
+      "check": "stage_consistency_T_minus_S",
+      "passed": false,
+      "deltas": [
+        -0.00195862781005407,
+        -0.0014460455496880242,
+        0.0
+      ]
+    },
+    {
+      "check": "late_CI_T_minus_sham_mean",
+      "passed": false,
+      "role": "D_rel",
+      "scope": "conflict",
+      "estimator": "within_fold_mean",
+      "method": "T",
+      "comparator": "sham_mean",
+      "metric": "error_ap",
+      "delta": 0.0021433196048583625,
+      "confidence": 0.9875,
+      "ci_low": -0.010217956056634416,
+      "ci_high": 0.013959789776970644,
+      "valid_replicates": 2000,
+      "images": 132
+    },
+    {
+      "check": "stage_consistency_T_minus_sham_mean",
+      "passed": false,
+      "deltas": [
+        -0.002663778042756637,
+        -0.00316698785093783,
+        0.0021433196048583625
+      ]
+    },
+    {
+      "check": "late_practical_AP_gain",
+      "passed": false,
+      "delta": -0.03395914591497362
+    },
+    {
+      "check": "late_beats_shuffle_301",
+      "passed": true,
+      "delta": 0.0019846194161509123
+    },
+    {
+      "check": "late_beats_shuffle_302",
+      "passed": true,
+      "delta": 0.002107495281148841
+    },
+    {
+      "check": "late_beats_shuffle_303",
+      "passed": true,
+      "delta": 0.0015782360400641293
+    },
+    {
+      "check": "late_beats_shuffle_304",
+      "passed": true,
+      "delta": 0.0034368853929922505
+    },
+    {
+      "check": "late_beats_shuffle_305",
+      "passed": true,
+      "delta": 0.001609361893935679
+    },
+    {
+      "check": "early_overall_noninferiority_MM",
+      "passed": false,
+      "ci_low": -0.017914924577907124
+    },
+    {
+      "check": "early_overall_noninferiority_MC",
+      "passed": false,
+      "ci_low": -0.017606527124769993
+    },
+    {
+      "check": "middle_overall_noninferiority_MM",
+      "passed": false,
+      "ci_low": -0.038054402890002344
+    },
+    {
+      "check": "middle_overall_noninferiority_MC",
+      "passed": false,
+      "ci_low": -0.03543623450731198
+    },
+    {
+      "check": "late_overall_noninferiority_MM",
+      "passed": false,
+      "ci_low": -0.03629611993057007
+    },
+    {
+      "check": "late_overall_noninferiority_MC",
+      "passed": false,
+      "ci_low": -0.03532957218209418
+    },
+    {
+      "check": "late_workpoint_precision_at_0.9",
+      "passed": false,
+      "delta": -0.00443135418047047
+    },
+    {
+      "check": "late_workpoint_coverage_at_precision_0.95",
+      "passed": false,
+      "delta": -0.017196443829386232
+    },
+    {
+      "check": "late_support_fold0",
+      "passed": true,
+      "error_images": 42,
+      "correct_images": 44
+    },
+    {
+      "check": "late_support_fold1",
+      "passed": true,
+      "error_images": 40,
+      "correct_images": 44
+    },
+    {
+      "check": "late_support_fold2",
+      "passed": true,
+      "error_images": 42,
+      "correct_images": 44
+    }
+  ],
+  "teacher_training_authorized": false,
+  "scope": "fixed development resource decision; validation excluded; old-BN single teacher",
+  "decision": "stop_this_fixed_support_conditioned_scorer"
+}

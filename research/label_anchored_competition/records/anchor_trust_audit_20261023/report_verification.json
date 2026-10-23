@@ -1,0 +1,341 @@
+{
+  "state": "passed",
+  "numerical_claims_checked": 55,
+  "checks": [
+    {
+      "claim": "early conflict MC",
+      "actual": 39.5670457406503,
+      "reported": 39.567,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "middle conflict MC",
+      "actual": 41.56793677338222,
+      "reported": 41.568,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late conflict MC",
+      "actual": 39.40528974344546,
+      "reported": 39.405,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "early conflict MM",
+      "actual": 39.78210007128729,
+      "reported": 39.782,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "middle conflict MM",
+      "actual": 42.28972469312484,
+      "reported": 42.29,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late conflict MM",
+      "actual": 39.76544157460207,
+      "reported": 39.765,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "early conflict G",
+      "actual": 38.55798524817429,
+      "reported": 38.558,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "middle conflict G",
+      "actual": 38.20662162849491,
+      "reported": 38.207,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late conflict G",
+      "actual": 37.47304441146939,
+      "reported": 37.473,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "early conflict S",
+      "actual": 38.615149335913905,
+      "reported": 38.615,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "middle conflict S",
+      "actual": 37.3102190496122,
+      "reported": 37.31,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late conflict S",
+      "actual": 36.36952698310471,
+      "reported": 36.37,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "early conflict T",
+      "actual": 38.4192865549085,
+      "reported": 38.419,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "middle conflict T",
+      "actual": 37.1656144946434,
+      "reported": 37.166,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late conflict T",
+      "actual": 36.36952698310471,
+      "reported": 36.37,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late T-MM delta",
+      "actual": -3.395914591497362,
+      "reported": -3.396,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late T-MM ci_low",
+      "actual": -8.140104208330195,
+      "reported": -8.14,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late T-MM ci_high",
+      "actual": 0.9519040031076842,
+      "reported": 0.952,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late T-G delta",
+      "actual": -1.103517428364681,
+      "reported": -1.104,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late T-G ci_low",
+      "actual": -3.553684412184277,
+      "reported": -3.554,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late T-G ci_high",
+      "actual": 1.5632947194651698,
+      "reported": 1.563,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late T-S delta",
+      "actual": 0.0,
+      "reported": 0,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late T-S ci_low",
+      "actual": 0.0,
+      "reported": 0,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late T-S ci_high",
+      "actual": 0.0,
+      "reported": 0,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late T-sham_mean delta",
+      "actual": 0.21433196048583625,
+      "reported": 0.214,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late T-sham_mean ci_low",
+      "actual": -1.0217956056634416,
+      "reported": -1.022,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late T-sham_mean ci_high",
+      "actual": 1.3959789776970644,
+      "reported": 1.396,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "early validation MM all",
+      "actual": 40.19781519846136,
+      "reported": 40.198,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "early validation T all",
+      "actual": 38.36138586059392,
+      "reported": 38.361,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "early validation MM conflict",
+      "actual": 41.245569366809335,
+      "reported": 41.246,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "early validation T conflict",
+      "actual": 40.5091343504642,
+      "reported": 40.509,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "middle validation MM all",
+      "actual": 37.79069499489328,
+      "reported": 37.791,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "middle validation T all",
+      "actual": 37.79069499489328,
+      "reported": 37.791,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "middle validation MM conflict",
+      "actual": 40.83813573576091,
+      "reported": 40.838,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "middle validation T conflict",
+      "actual": 40.83813573576091,
+      "reported": 40.838,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late validation MM all",
+      "actual": 36.486904859028144,
+      "reported": 36.487,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late validation T all",
+      "actual": 36.486904859028144,
+      "reported": 36.487,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late validation MM conflict",
+      "actual": 39.57294565984678,
+      "reported": 39.573,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late validation T conflict",
+      "actual": 39.57294565984678,
+      "reported": 39.573,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "MM late precision_at_0.9",
+      "actual": 90.33442880430367,
+      "reported": 90.334,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "T late precision_at_0.9",
+      "actual": 89.89129338625662,
+      "reported": 89.891,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "MM late coverage_at_precision_0.95",
+      "actual": 70.10800990994967,
+      "reported": 70.108,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "T late coverage_at_precision_0.95",
+      "actual": 68.38836552701105,
+      "reported": 68.388,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late fold 0 T-MM",
+      "actual": -1.9069805453921895,
+      "reported": -1.907,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late fold 1 T-MM",
+      "actual": -0.2116842940321828,
+      "reported": -0.212,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "late fold 2 T-MM",
+      "actual": -8.069078935067719,
+      "reported": -8.069,
+      "tolerance": 0.00051
+    },
+    {
+      "claim": "support 0 teacher_wrong_proto_correct",
+      "actual": 11.540098202843406,
+      "reported": 11.54,
+      "tolerance": 0.0051
+    },
+    {
+      "claim": "support 0 teacher_correct_proto_wrong",
+      "actual": 86.91072125864837,
+      "reported": 86.91,
+      "tolerance": 0.0051
+    },
+    {
+      "claim": "support 0 both_wrong",
+      "actual": 1.5491805385082313,
+      "reported": 1.55,
+      "tolerance": 0.0051
+    },
+    {
+      "claim": "support 1 teacher_wrong_proto_correct",
+      "actual": 8.680388414098713,
+      "reported": 8.68,
+      "tolerance": 0.0051
+    },
+    {
+      "claim": "support 1 teacher_correct_proto_wrong",
+      "actual": 87.64471090060707,
+      "reported": 87.64,
+      "tolerance": 0.0051
+    },
+    {
+      "claim": "support 1 both_wrong",
+      "actual": 3.6749006852942148,
+      "reported": 3.67,
+      "tolerance": 0.0051
+    },
+    {
+      "claim": "support 2 teacher_wrong_proto_correct",
+      "actual": 24.805142263432188,
+      "reported": 24.81,
+      "tolerance": 0.0051
+    },
+    {
+      "claim": "support 2 teacher_correct_proto_wrong",
+      "actual": 74.43280679872196,
+      "reported": 74.43,
+      "tolerance": 0.0051
+    },
+    {
+      "claim": "support 2 both_wrong",
+      "actual": 0.7620509378458548,
+      "reported": 0.76,
+      "tolerance": 0.0051
+    }
+  ],
+  "formal_source_commit": "93cb036e56c8c522e1d02f2a8a68ae1b4e667193",
+  "protocol_sha256": "3bf4fd8b73044a1553f62d4eca40768677224ff20a6096bac2ca7a2b63483f6d",
+  "report_sha256": "b6ea27a97d9fc8cab4927e19613635b9a5e7dc2dd6f2489b1a26050e8b27ae7c",
+  "gate": "failed; no teacher training",
+  "verified_at_utc": "2026-10-23T05:28:18.201495+00:00"
+}

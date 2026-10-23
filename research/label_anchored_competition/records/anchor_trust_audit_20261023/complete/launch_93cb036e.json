@@ -1,0 +1,23 @@
+{
+  "started_at_utc": "2026-10-23T04:48:59.049153+00:00",
+  "source_commit": "93cb036e56c8c522e1d02f2a8a68ae1b4e667193",
+  "pid": 1580,
+  "command": [
+    "/usr/bin/timeout",
+    "21600",
+    "/opt/conda/bin/python",
+    "-u",
+    "-m",
+    "research.label_anchored_competition.run_anchor_trust",
+    "--root",
+    "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020",
+    "--output",
+    "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/audits/anchor_trust_20261023/runs_93cb036e",
+    "--device",
+    "cuda:0"
+  ],
+  "output": "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/audits/anchor_trust_20261023/runs_93cb036e",
+  "log": "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/audits/anchor_trust_20261023/run_93cb036e.log",
+  "gpu": 0,
+  "scope": "fixed cache-only audit; sequential stages; no teacher training"
+}

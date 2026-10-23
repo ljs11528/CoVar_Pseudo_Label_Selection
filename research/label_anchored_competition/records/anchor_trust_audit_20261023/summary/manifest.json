@@ -1,0 +1,62 @@
+{
+  "all_ranking.csv": {
+    "bytes": 803255,
+    "sha256": "7eaf48cc81df7582f799ccd416bf7aa972128643270278f4b087cb03510235ef"
+  },
+  "cache_checks.json": {
+    "bytes": 4150,
+    "sha256": "257b2b00957f585e07558cdef12dbc276f3d09594ed3b21dd3806bbf285672e4"
+  },
+  "conditional_ranking.csv": {
+    "bytes": 642665,
+    "sha256": "35992ddc9e8ac71bfb3eb8ef6354d28db4733e6e8a96f9134d259ee982c7e128"
+  },
+  "fold_metrics.png": {
+    "bytes": 182488,
+    "sha256": "d1742e31c852b7077676abf334e02bcab8e27b9ae6bb121a5b08fa9ee82b1194"
+  },
+  "fold_metrics.svg": {
+    "bytes": 65880,
+    "sha256": "284038b531a1bef8f0a22e2eabf136825b7f94c046f960197ebe9a5c7a69025b"
+  },
+  "gate.json": {
+    "bytes": 4779,
+    "sha256": "3d2b8286df9ba7a27f232fbd233c75d7cb14414452565c57e53e65df42dd9e99"
+  },
+  "intervals.csv": {
+    "bytes": 50747,
+    "sha256": "d1eee4795432ae2cf0ed488415731b934c38ce4892d44a0e13fea903a3aea9e5"
+  },
+  "optimizer_convergence.csv": {
+    "bytes": 208,
+    "sha256": "814990409efb0115849234361415e2cbf21df2d017899ae23e5c856616dc0244"
+  },
+  "primary_ranking.csv": {
+    "bytes": 193535,
+    "sha256": "907948ceca6dd10d3dd60970f03d39c7f9c233df359aa4ba444fd5c878a1793b"
+  },
+  "risk_coverage.csv": {
+    "bytes": 1428813,
+    "sha256": "5772f18d2ba04e665cf433000d0f82e6608ba2485d27ba4aa01c0b0ce8a3a2a4"
+  },
+  "selections.csv": {
+    "bytes": 36165,
+    "sha256": "e3d6a4d4072beb2a06e0fc28954982fd27c38901151bbc826629b52f0a9d6e4c"
+  },
+  "support.csv": {
+    "bytes": 411851,
+    "sha256": "b242f2eeea81c19ce3e955357be22727d5d0d84802afe280590abf5f1fa7b254"
+  },
+  "support_conflicts.png": {
+    "bytes": 88620,
+    "sha256": "ac1d71c2c3e5b92acd2d16cea648dbb4864e7a7689e545dcc571163087aa1f3f"
+  },
+  "support_conflicts.svg": {
+    "bytes": 74087,
+    "sha256": "d724349ee448f23fedb3d6858cf205d517770bba290caed4764d8864752ed590"
+  },
+  "verification.json": {
+    "bytes": 553,
+    "sha256": "21a62cf24020181b2d851570c31ca7c261106a5500f778bcdadeeaa3589f1df0"
+  }
+}

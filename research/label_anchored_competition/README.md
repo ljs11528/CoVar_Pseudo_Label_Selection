@@ -12,6 +12,7 @@ Research branch for the 2026-10-20 change of direction. This is a candidate mech
 - [Completed MC-preserving audit, selection limitations and stopping decision (Chinese)](docs/BOUNDED_SCORE_AUDIT_RESULTS_20261023.md)
 - [Bounded anchor-objection trust plan (Chinese)](docs/ANCHOR_TRUST_AUDIT_PLAN_20261023.md)
 - [Fixed anchor-trust protocol](anchor_trust_protocol.json)
+- [Completed anchor-trust audit and stopping decision (Chinese)](docs/ANCHOR_TRUST_AUDIT_RESULTS_20261023.md)
 
 The first implementation keeps the classifier pseudo-label unchanged. It tests whether residual class probabilities aligned with label-supported prototype evidence add useful information beyond ordinary uncertainty, prototype disagreement, and probability–prototype fusion.
 
@@ -26,6 +27,8 @@ The 2026-10-23 audit found and repaired a deferred-BN-restoration checkpoint bug
 The [summary data and figures](records/phase1_summary_20261023/) retain all 50 rankings at both sampling caps. Reproduce them with `summarize_phase1 --help`. Current evidence supports stopping expansion of the original evidence formula, with bounded MC-preserving probe and prototype-quality audits before another full teacher.
 
 The bounded audit is now complete for all three existing-cache stages. It used image-nested D_rel CV, frozen MC offsets, an exact zero fallback, 500/2,000 updates, and two fixed minibatch seeds. The D_rel-only resource gate failed; no repaired teacher was started. Early/middle development gains did not establish stable incremental utility. Late final e models selected zero under all four budget/seed settings. The large pooled late OOF loss must not be interpreted as uniform within-fold harm: fold-specific score scales and selected forms matter. Read the [full report](docs/BOUNDED_SCORE_AUDIT_RESULTS_20261023.md) before interpreting the negative gate as absence of conditional information. Sparse e also reduced the registered additive basis to a linear one. All selections, curves, fixed strata, cache checks, and read-only model replays are retained in [audit records](records/bounded_score_audit_20261023/).
+
+The subsequent [anchor-objection trust audit](docs/ANCHOR_TRUST_AUDIT_RESULTS_20261023.md) is also complete. It adds MC+margin controls, five independently refitted correspondence shuffles, and fixed prototype-support main effects/interactions. Its primary estimator averages within-fold metrics. The support-conditioned strategy did not pass the development gate: conflict AP changes versus MC+margin were -1.363/-5.124/-3.396 points across stages; final models selected no new interaction in any stage. Coarse support associations remain descriptive, and frozen-input shuffling is distinguished from refitted controls. All 780 correction fits converged; independent NumPy replay and gradients passed. No teacher was retrained. [Records and figures](records/anchor_trust_audit_20261023/) include the full fixed comparison and stopping decision.
 
 Run the numerical/statistical checks with:
 

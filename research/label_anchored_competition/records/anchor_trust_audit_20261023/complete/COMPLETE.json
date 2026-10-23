@@ -1,0 +1,18 @@
+{
+  "state": "complete",
+  "signature": {
+    "source_commit": "93cb036e56c8c522e1d02f2a8a68ae1b4e667193",
+    "protocol_sha256": "3bf4fd8b73044a1553f62d4eca40768677224ff20a6096bac2ca7a2b63483f6d",
+    "scope": "old-BN existing-cache development; no teacher updates"
+  },
+  "elapsed_seconds": 1445.6316333627328,
+  "completed_at_utc": "2026-10-23T05:13:05.860745+00:00",
+  "torch": "2.2.2",
+  "numpy": "1.26.4",
+  "gate": "stop_this_fixed_support_conditioned_scorer",
+  "stage_receipts": {
+    "early": "eb02d16ca157ce163da0a3b725e4e1ed3a13e889d46953e5cfcea486f44ce4cc",
+    "middle": "17d4048b4c2dd5218a201cd600e4e4cca8c71a98b4552f12cf5c054bebace739",
+    "late": "a9010ccba7b6022e4a838b9ed90aa6184e9177bf969fe0cc20ed19d0a080fcba"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "source_commit": "93cb036e56c8c522e1d02f2a8a68ae1b4e667193",
+  "protocol_sha256": "3bf4fd8b73044a1553f62d4eca40768677224ff20a6096bac2ca7a2b63483f6d",
+  "scope": "old-BN existing-cache development; no teacher updates",
+  "stage": "early",
+  "export_manifest_sha256": "149030a3a94c5e5e021ca4c8fad972bbdd354217dceb8982727d77cddc307f6c",
+  "prototype_sha256": "bab101cf1812228736f6c0f052b79e5c8c99755d1e3668b197fe0b61a0f31560"
+}
