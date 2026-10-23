@@ -1,0 +1,14 @@
+{
+  "state": "passed",
+  "scope": "synthetic engineering check only",
+  "device": "cpu",
+  "models": 20,
+  "ranking_rows": 600,
+  "interval_rows": 130,
+  "support_rows": 274,
+  "conditional_rows": 1010,
+  "curve_rows": 7000,
+  "metric_max_abs_diff": 6.661338147750939e-16,
+  "torch": "2.5.1",
+  "numpy": "1.26.4"
+}

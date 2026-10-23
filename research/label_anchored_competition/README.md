@@ -10,6 +10,8 @@ Research branch for the 2026-10-20 change of direction. This is a candidate mech
 - [Bounded MC-preserving audit plan (Chinese)](docs/BOUNDED_SCORE_AUDIT_PLAN_20261023.md)
 - [Fixed post-hoc scoring audit protocol](score_audit_protocol.json)
 - [Completed MC-preserving audit, selection limitations and stopping decision (Chinese)](docs/BOUNDED_SCORE_AUDIT_RESULTS_20261023.md)
+- [Bounded anchor-objection trust plan (Chinese)](docs/ANCHOR_TRUST_AUDIT_PLAN_20261023.md)
+- [Fixed anchor-trust protocol](anchor_trust_protocol.json)
 
 The first implementation keeps the classifier pseudo-label unchanged. It tests whether residual class probabilities aligned with label-supported prototype evidence add useful information beyond ordinary uncertainty, prototype disagreement, and probability–prototype fusion.
 

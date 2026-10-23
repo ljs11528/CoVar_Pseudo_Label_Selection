@@ -1,0 +1,15 @@
+{
+  "state": "passed",
+  "tests": 7,
+  "failures": 0,
+  "scope": "synthetic unit checks, no real outcomes",
+  "command": "python -m unittest research.label_anchored_competition.tests.test_anchor_trust -v",
+  "source_sha256": {
+    "anchor_trust.py": "a8d081934002b9fa62f58f2c27d30e02ddc8ea7b822c79ef50924b0cb25ae206",
+    "anchor_trust_analysis.py": "43cae0cc2cf25bb1b08951f63f42934d1294bc6aa136809603074aff2e6be42b",
+    "run_anchor_trust.py": "b858b9b71cabb92eb7f26de535d1fd0e7acfd31a0cc3e88387228b6f7cc2a97c",
+    "tests/test_anchor_trust.py": "8b081ef86af278a1e93ebf5ac53bd4ca4a972aa5ed4429a2c0f21138fdd330a8"
+  },
+  "verified_at_utc": "2026-10-23T04:45:46.267917+00:00",
+  "engineering_fix": "Initial synthetic curve export included empty high-MC scope curves; restricted curves to registered all/conflict scopes, reran full smoke successfully. No real fits had run."
+}
