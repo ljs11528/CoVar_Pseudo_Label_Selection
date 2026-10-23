@@ -1,0 +1,24 @@
+{
+  "source_commit": "6be5ec0e73ce865af3346184e094037292baef1e",
+  "pid": 1907,
+  "hostname": "szu-a21606883506647040259011",
+  "launched_at_utc": "2026-10-23T14:08:48.175415+00:00",
+  "command": [
+    "/opt/conda/bin/python",
+    "-B",
+    "-m",
+    "research.label_anchored_competition.run_history_screen",
+    "--root",
+    "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020",
+    "--output",
+    "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/audits/historical_competition_20261023/runs_6be5ec0e"
+  ],
+  "cwd": "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/releases/6be5ec0e73ce865af3346184e094037292baef1e/repo",
+  "output": "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/audits/historical_competition_20261023/runs_6be5ec0e",
+  "log": "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/audits/historical_competition_20261023/screen_6be5ec0e.log",
+  "screen_hours_limit": 2,
+  "no_teacher_updates": true,
+  "device": "CPU",
+  "thread_limit": 4,
+  "smoke_sha256": "f59977038bd5a5c65385e929b880f1ccd25a458b0bca3c41f24e94d4bbd3b424"
+}

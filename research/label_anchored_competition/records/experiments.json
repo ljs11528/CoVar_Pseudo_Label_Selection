@@ -195,7 +195,28 @@
         "Sparse evidence collapses fixed additive hinges to linear",
         "Final late e selects zero under all fixed budgets/seeds"
       ]
+    },
+    {
+      "experiment_id": "P1-HISTORY-COMPETITOR-SCREEN-20261023",
+      "status": "complete",
+      "source_commit": "6be5ec0e73ce865af3346184e094037292baef1e",
+      "protocol_commit": "dc277d2b",
+      "protocol_sha256": "4677f64c6c2da7ebc75d60cf6558e708c9e6f94a56ecc8d00adb7d8c93560120",
+      "scope": "Existing VOC seed42 three-stage cache; strict full-pixel alignment, two fixed temporal pairs, fixed two-label recovery, five correspondence shuffles, frozen MC/MM and ordinary ensembles; D_rel gate before validation description",
+      "completed_at_utc": "2026-10-23T14:15:45.147119+00:00",
+      "actual_wall_seconds": 415.74374621734023,
+      "gate": "not passed; registered new probes skipped",
+      "new_fits": 0,
+      "new_teacher_trained": false,
+      "record": "records/historical_competition_20261023/complete/COMPLETE.json",
+      "report": "docs/HISTORICAL_COMPETITION_RESULTS_20261023.md",
+      "interpretation_limits": [
+        "One old-BN trajectory with shared middle checkpoint",
+        "Previously inspected D_rel/validation development data",
+        "Fixed two-label candidate gate is sufficient resource screen, not necessary test of all temporal reliability information",
+        "Frozen ranking differences descriptive; no new conditional probe or training gain established"
+      ]
     }
   ],
-  "updated_at_utc": "2026-10-23T01:48:11.026120+00:00"
+  "updated_at_utc": "2026-10-23T14:24:06.472141+00:00"
 }

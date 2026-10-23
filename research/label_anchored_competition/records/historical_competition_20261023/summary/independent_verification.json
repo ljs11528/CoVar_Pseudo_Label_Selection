@@ -1,0 +1,14 @@
+{
+  "transport_files_verified": 40,
+  "candidate_rows": 324,
+  "interval_rows": 162,
+  "maximum_aggregate_difference": 0.0,
+  "maximum_interval_difference": 0.0,
+  "temporal_partition_rows": 28458,
+  "fold_mass_reconciliations": 162,
+  "both_roles_full_alignment": true,
+  "state": "passed",
+  "source_commit": "6be5ec0e73ce865af3346184e094037292baef1e",
+  "new_fits": 0,
+  "independent_bootstrap": "direct array indexing, same registered image draws"
+}

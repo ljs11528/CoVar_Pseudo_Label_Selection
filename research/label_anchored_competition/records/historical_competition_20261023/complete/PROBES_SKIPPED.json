@@ -1,0 +1,6 @@
+{
+  "reason": "stop_fixed_two_label_history_candidate; no new probes",
+  "new_fits": 0,
+  "screen_gate_sha256": "c7ca16353a8775301b49c6fc6d84ace8029c0f7421bf5508d124a49c2bf088e5",
+  "teacher_updates": 0
+}

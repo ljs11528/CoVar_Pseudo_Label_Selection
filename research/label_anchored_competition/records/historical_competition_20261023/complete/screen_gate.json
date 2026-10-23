@@ -1,0 +1,166 @@
+{
+  "passed": false,
+  "checks": [
+    {
+      "check": "late_positive_interval_now",
+      "passed": false,
+      "pair": "middle_to_late",
+      "role": "D_rel",
+      "scope": "high_mc",
+      "method": "history",
+      "comparator": "now",
+      "metric": "error_recovery",
+      "estimator": "pooled_image_mass_ratio",
+      "delta": 0.004474448565707778,
+      "confidence": 0.9875,
+      "ci_low": -0.029955014705743514,
+      "ci_high": 0.04074407399919556,
+      "valid_replicates": 2000,
+      "image_pool": 132,
+      "sufficient_bootstrap": true
+    },
+    {
+      "check": "middle_positive_point_now",
+      "passed": true,
+      "delta": 0.037716453860992316
+    },
+    {
+      "check": "late_positive_interval_arithmetic",
+      "passed": false,
+      "pair": "middle_to_late",
+      "role": "D_rel",
+      "scope": "high_mc",
+      "method": "history",
+      "comparator": "arithmetic",
+      "metric": "error_recovery",
+      "estimator": "pooled_image_mass_ratio",
+      "delta": -0.004557782929134779,
+      "confidence": 0.9875,
+      "ci_low": -0.029140515322177627,
+      "ci_high": 0.02012803421104761,
+      "valid_replicates": 2000,
+      "image_pool": 132,
+      "sufficient_bootstrap": true
+    },
+    {
+      "check": "middle_positive_point_arithmetic",
+      "passed": true,
+      "delta": 0.004097866149071483
+    },
+    {
+      "check": "late_positive_interval_geometric",
+      "passed": false,
+      "pair": "middle_to_late",
+      "role": "D_rel",
+      "scope": "high_mc",
+      "method": "history",
+      "comparator": "geometric",
+      "metric": "error_recovery",
+      "estimator": "pooled_image_mass_ratio",
+      "delta": -0.005875628904986385,
+      "confidence": 0.9875,
+      "ci_low": -0.03435440810179125,
+      "ci_high": 0.020492271505367955,
+      "valid_replicates": 2000,
+      "image_pool": 132,
+      "sufficient_bootstrap": true
+    },
+    {
+      "check": "middle_positive_point_geometric",
+      "passed": true,
+      "delta": 0.003338238265267801
+    },
+    {
+      "check": "late_positive_interval_sham_mean",
+      "passed": true,
+      "pair": "middle_to_late",
+      "role": "D_rel",
+      "scope": "high_mc",
+      "method": "history",
+      "comparator": "sham_mean",
+      "metric": "error_recovery",
+      "estimator": "pooled_image_mass_ratio",
+      "delta": 0.718431664419402,
+      "confidence": 0.9875,
+      "ci_low": 0.5528728342961893,
+      "ci_high": 0.8555914524252232,
+      "valid_replicates": 2000,
+      "image_pool": 132,
+      "sufficient_bootstrap": true
+    },
+    {
+      "check": "middle_positive_point_sham_mean",
+      "passed": true,
+      "delta": 0.7260865517771659
+    },
+    {
+      "check": "late_minimum_practical_gain",
+      "passed": false,
+      "delta": 0.004474448565707778
+    },
+    {
+      "check": "late_point_beats_sham401",
+      "passed": true,
+      "delta": 0.7170851138934754
+    },
+    {
+      "check": "late_point_beats_sham402",
+      "passed": true,
+      "delta": 0.7229229728774773
+    },
+    {
+      "check": "late_point_beats_sham403",
+      "passed": true,
+      "delta": 0.7191169753935102
+    },
+    {
+      "check": "late_point_beats_sham404",
+      "passed": true,
+      "delta": 0.718106822125658
+    },
+    {
+      "check": "late_point_beats_sham405",
+      "passed": true,
+      "delta": 0.714926437806889
+    },
+    {
+      "check": "early_to_middle_all_recovery_nonnegative",
+      "passed": true,
+      "delta": 0.01978644452913869
+    },
+    {
+      "check": "early_to_middle_support",
+      "passed": true,
+      "error_images": 121,
+      "correct_images": 132,
+      "error_pixels": 3034,
+      "correct_pixels": 115654
+    },
+    {
+      "check": "middle_to_late_all_recovery_nonnegative",
+      "passed": false,
+      "delta": -0.018588696259599025
+    },
+    {
+      "check": "middle_to_late_support",
+      "passed": true,
+      "error_images": 121,
+      "correct_images": 132,
+      "error_pixels": 3491,
+      "correct_pixels": 117591
+    }
+  ],
+  "decision": "stop_fixed_two_label_history_candidate; no new probes",
+  "new_probe_fitting_allowed": false,
+  "teacher_training_allowed": false,
+  "validation_used": false,
+  "interpretation": "sufficient resource screen, not a proof that historical features cannot rank errors when the same candidate is retained",
+  "frozen_at_utc": "2026-10-23T14:09:31.444845+00:00",
+  "signature": {
+    "source_commit": "6be5ec0e73ce865af3346184e094037292baef1e",
+    "protocol_sha256": "4677f64c6c2da7ebc75d60cf6558e708c9e6f94a56ecc8d00adb7d8c93560120",
+    "synthetic": false,
+    "no_new_model_fitting": true,
+    "no_teacher_updates": true
+  }
+}

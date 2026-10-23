@@ -1,0 +1,17 @@
+{
+  "role": "D_rel",
+  "current_stage": "late",
+  "previous_source": "93cb036e56c8c522e1d02f2a8a68ae1b4e667193",
+  "source_receipt_sha256": "a9010ccba7b6022e4a838b9ed90aa6184e9177bf969fe0cc20ed19d0a080fcba",
+  "files": {
+    "folds.json": "82ccd22b0dff0a7de92002b51727c0ef1c094f31100b5137ab0e5af5e11ae89a",
+    "outer_models.json": "7deb8ca50f005cbf78869f9c33d31798a631ca0f5bf287741aace97ae1b5a907",
+    "D_rel_pool.npz": "a08d91338da1b72ed27feffee18bc3f70e602c3afff612379b67602b884fb862",
+    "D_rel_predictions.npz": "20b6e6526f510ebef0d92c84d678d4acbbad5ffd91a8f060e73b90823a67e14c"
+  },
+  "max_abs_difference": {
+    "MC": 0.0,
+    "MM": 7.201350626928615e-12
+  },
+  "new_fits": 0
+}

@@ -1,0 +1,17 @@
+pair,role,scope,method,comparator,metric,estimator,delta,confidence,ci_low,ci_high,valid_replicates,image_pool,sufficient_bootstrap
+early_to_middle,D_rel,all,history,now,error_recovery,pooled_image_mass_ratio,0.01978644452913869,0.95,-0.04838213895241893,0.08476160628830075,2000,132,True
+early_to_middle,D_rel,all,history,arithmetic,error_recovery,pooled_image_mass_ratio,-0.00491480878780004,0.95,-0.023011295393443026,0.014732496663526034,2000,132,True
+early_to_middle,D_rel,all,history,geometric,error_recovery,pooled_image_mass_ratio,-0.009892555623003951,0.95,-0.046663813581081674,0.022624122089122938,2000,132,True
+early_to_middle,D_rel,all,history,sham_mean,error_recovery,pooled_image_mass_ratio,0.7442841337264587,0.95,0.6706255690034499,0.8201417006893224,2000,132,True
+early_to_middle,D_rel,high_mc,history,now,error_recovery,pooled_image_mass_ratio,0.037716453860992316,0.95,-0.04097377935274642,0.1059789172152446,2000,132,True
+early_to_middle,D_rel,high_mc,history,arithmetic,error_recovery,pooled_image_mass_ratio,0.004097866149071483,0.95,-0.021175359620810012,0.03476150194977173,2000,132,True
+early_to_middle,D_rel,high_mc,history,geometric,error_recovery,pooled_image_mass_ratio,0.003338238265267801,0.95,-0.043617719645780324,0.04578087902924643,2000,132,True
+early_to_middle,D_rel,high_mc,history,sham_mean,error_recovery,pooled_image_mass_ratio,0.7260865517771659,0.95,0.6021933871446321,0.8357440184311862,2000,132,True
+middle_to_late,D_rel,all,history,now,error_recovery,pooled_image_mass_ratio,-0.018588696259599025,0.95,-0.05896749882055125,0.010742678950290307,2000,132,True
+middle_to_late,D_rel,all,history,arithmetic,error_recovery,pooled_image_mass_ratio,-0.010760476455897172,0.95,-0.035685157116934894,0.004475939560247699,2000,132,True
+middle_to_late,D_rel,all,history,geometric,error_recovery,pooled_image_mass_ratio,-0.007287147117199799,0.95,-0.025933851662404507,0.0054820910880686,2000,132,True
+middle_to_late,D_rel,all,history,sham_mean,error_recovery,pooled_image_mass_ratio,0.7447811062796574,0.95,0.6566386854058028,0.8316772194070862,2000,132,True
+middle_to_late,D_rel,high_mc,history,now,error_recovery,pooled_image_mass_ratio,0.004474448565707778,0.9875,-0.029955014705743514,0.04074407399919556,2000,132,True
+middle_to_late,D_rel,high_mc,history,arithmetic,error_recovery,pooled_image_mass_ratio,-0.004557782929134779,0.9875,-0.029140515322177627,0.02012803421104761,2000,132,True
+middle_to_late,D_rel,high_mc,history,geometric,error_recovery,pooled_image_mass_ratio,-0.005875628904986385,0.9875,-0.03435440810179125,0.020492271505367955,2000,132,True
+middle_to_late,D_rel,high_mc,history,sham_mean,error_recovery,pooled_image_mass_ratio,0.718431664419402,0.9875,0.5528728342961893,0.8555914524252232,2000,132,True

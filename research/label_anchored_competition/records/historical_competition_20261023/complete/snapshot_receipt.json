@@ -1,0 +1,317 @@
+{
+  "captured_at_utc": "2026-10-23T14:16:33.007662+00:00",
+  "root": "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/audits/historical_competition_20261023/runs_6be5ec0e",
+  "files": {
+    "COMPLETE.json": {
+      "bytes": 6552,
+      "sha256": "1c03070e9bb3829165a4f77987733ece1bd3eb7c0e623a49b162c9f4904d5cf1"
+    },
+    "D_rel_alignment.json": {
+      "bytes": 184271,
+      "sha256": "b85c6188f069a2f47f5149377c5772fb1fe760b863fc78ed2ccc9ded117d7fd4"
+    },
+    "PROBES_SKIPPED.json": {
+      "bytes": 205,
+      "sha256": "28b033e43932382a83170f4fbbd6f55fe8e775a9702867ea5e5bbc8066d038ee"
+    },
+    "early_to_middle/D_rel_baseline_replay.json": {
+      "bytes": 689,
+      "sha256": "a0ac53fe76a8697c42c05c291268e34d2f3b1168231ca677388a29206837edb0"
+    },
+    "early_to_middle/D_rel_candidate_recovery.csv": {
+      "bytes": 31459,
+      "sha256": "976bc2c8ab40d6695cb26f24ef8d66ccb9ef888c1b0aa27350fe67b029f91bd6"
+    },
+    "early_to_middle/D_rel_candidate_recovery_folds.csv": {
+      "bytes": 90457,
+      "sha256": "5e9aa7758533963c81d3c3c9c17c41e407cb08fda31f78670fbe2d676a04e775"
+    },
+    "early_to_middle/D_rel_conditional_recovery.csv": {
+      "bytes": 109110,
+      "sha256": "2fd2ac3ca719e6e467179c3d87cb887a679097b8bd6c8ad8c460fac7d8f34901"
+    },
+    "early_to_middle/D_rel_image_sufficient.csv": {
+      "bytes": 556853,
+      "sha256": "cc27db2e5897851fdead53e9dca70193ed8e91a20150e7a44a695f6acc84420b"
+    },
+    "early_to_middle/D_rel_permutation.json": {
+      "bytes": 213,
+      "sha256": "92f430f6c95d5b595eb5ec39ed7f4fce84713fcfe6ed362cc1457aef2a31e665"
+    },
+    "early_to_middle/D_rel_ranking.csv": {
+      "bytes": 105973,
+      "sha256": "2c0c03576e98a3378f5cdc1d4a1ecab2f93e4582f22485c298ecb0676744498f"
+    },
+    "early_to_middle/D_rel_recovery_intervals.csv": {
+      "bytes": 13565,
+      "sha256": "0c8bb908b5cb6d1b55268ae9fcdecfb15d2fbadc8967519b37be534e1bc6d1e4"
+    },
+    "early_to_middle/D_rel_risk_coverage.csv": {
+      "bytes": 629614,
+      "sha256": "d9c8221e72dda2388328b4e9ffc37b672091519413a331bb26ca61242d33e1bc"
+    },
+    "early_to_middle/validation_baseline_replay.json": {
+      "bytes": 612,
+      "sha256": "4159c78878622a1ab8869ae17fecd9a788ea73026c4a0e2612cd514fe4ba3cdb"
+    },
+    "early_to_middle/validation_candidate_recovery.csv": {
+      "bytes": 33042,
+      "sha256": "4fdcbcb4c18b8addfe2b6bdc31f34c1dd31a554663a8b1b93eff6ceacef660e1"
+    },
+    "early_to_middle/validation_conditional_recovery.csv": {
+      "bytes": 117154,
+      "sha256": "afeef39ee25b4ec47047fb3a72c071f0e3b9e6487aa2ecc154c0326c45f9ba9c"
+    },
+    "early_to_middle/validation_image_sufficient.csv": {
+      "bytes": 6270601,
+      "sha256": "88efa8045d9b2a56e2d3ebb70e298a5894e76fc3c0cb1d823e2a26f07223ecdc"
+    },
+    "early_to_middle/validation_permutation.json": {
+      "bytes": 213,
+      "sha256": "99ad64bfc07d69f2f2fd21bdbe161d02d975e1118cbf034a62061f178d76804d"
+    },
+    "early_to_middle/validation_ranking.csv": {
+      "bytes": 23174,
+      "sha256": "a414b708e8605f8711a0173b230c6f3433f14328cb37bbcc569c11ddd44af430"
+    },
+    "early_to_middle/validation_risk_coverage.csv": {
+      "bytes": 144783,
+      "sha256": "2bb3052ff1edda6d44f6fc5dbd5a4f7b2fbd6cf18755826b908bd8953ffdb593"
+    },
+    "effective_protocol.json": {
+      "bytes": 7578,
+      "sha256": "bebefc73cd06974945da2d0ccb5f749c860e9d4e7a01fa476a1ab9f3ceeeebdd"
+    },
+    "launch_6be5ec0e.json": {
+      "bytes": 1225,
+      "sha256": "a276620092d8be73ba1d8cc25d470b16cbcc745992900ff8dbd404b71fc8e694"
+    },
+    "middle_to_late/D_rel_baseline_replay.json": {
+      "bytes": 687,
+      "sha256": "f03ec76fd906f42ee0fbe8c092efba83cb5d2c874d4982fae9a19b203aeed3d4"
+    },
+    "middle_to_late/D_rel_candidate_recovery.csv": {
+      "bytes": 31037,
+      "sha256": "af93d720232745afcdef5a67358247f33010d3c9e34956971612e1dfb6b780b1"
+    },
+    "middle_to_late/D_rel_candidate_recovery_folds.csv": {
+      "bytes": 89563,
+      "sha256": "4ebafe13c710f50903af3d0ecb2b1e3608336fbf057e7da87868229f3c11e7aa"
+    },
+    "middle_to_late/D_rel_conditional_recovery.csv": {
+      "bytes": 108647,
+      "sha256": "d2351b42a86a49a2311da21b0180e1cbae6fe26ed941bfd3cb17624649bf2052"
+    },
+    "middle_to_late/D_rel_image_sufficient.csv": {
+      "bytes": 543771,
+      "sha256": "dffc81e65b2b2a8ecdf1c81f31fc7a64fb277c202adac87da6d5046421100872"
+    },
+    "middle_to_late/D_rel_permutation.json": {
+      "bytes": 213,
+      "sha256": "92f430f6c95d5b595eb5ec39ed7f4fce84713fcfe6ed362cc1457aef2a31e665"
+    },
+    "middle_to_late/D_rel_ranking.csv": {
+      "bytes": 105808,
+      "sha256": "378e7b6a63956f73393f949dca81a8b395866207ec76236ebbbd4f385b909f1b"
+    },
+    "middle_to_late/D_rel_recovery_intervals.csv": {
+      "bytes": 13518,
+      "sha256": "bcc9822c458c0807780cd7b4bfb0539584a85b531b5118d3aaf1068085199b34"
+    },
+    "middle_to_late/D_rel_risk_coverage.csv": {
+      "bytes": 629847,
+      "sha256": "de98deabc86d822c32bf7917d63b3fb3a72a7a296d9642e47832ef461edfc727"
+    },
+    "middle_to_late/validation_baseline_replay.json": {
+      "bytes": 610,
+      "sha256": "b9607ff294c2f3d3964daa881a288c210d342e441d4266859ff79522052f83e7"
+    },
+    "middle_to_late/validation_candidate_recovery.csv": {
+      "bytes": 32690,
+      "sha256": "02a6363fbb1aa06a2efcaab92144f7c70595282bd78a319817740183f1c9e8db"
+    },
+    "middle_to_late/validation_conditional_recovery.csv": {
+      "bytes": 115810,
+      "sha256": "a464ff57befb2f45298fde8514129752baeb2deba5c7cc2635688ec7ab270434"
+    },
+    "middle_to_late/validation_image_sufficient.csv": {
+      "bytes": 6131339,
+      "sha256": "402373b3f3a0ed6498ffc63bf2c38a9079d04079a81e544321e5fe3e0386a8e9"
+    },
+    "middle_to_late/validation_permutation.json": {
+      "bytes": 213,
+      "sha256": "92f430f6c95d5b595eb5ec39ed7f4fce84713fcfe6ed362cc1457aef2a31e665"
+    },
+    "middle_to_late/validation_ranking.csv": {
+      "bytes": 22871,
+      "sha256": "3f91ab7c170bddc6e4afdab74522588e27d4e5015b81b73df2e8414f0c5d10cd"
+    },
+    "middle_to_late/validation_risk_coverage.csv": {
+      "bytes": 143171,
+      "sha256": "f58ab98a6e6cca0d2ed1e8af61acdd494113bce0edc0b9bc607dcd4f142cd160"
+    },
+    "screen_gate.json": {
+      "bytes": 4627,
+      "sha256": "c7ca16353a8775301b49c6fc6d84ace8029c0f7421bf5508d124a49c2bf088e5"
+    },
+    "server_smoke_6be5ec0e.json": {
+      "bytes": 1077,
+      "sha256": "f59977038bd5a5c65385e929b880f1ccd25a458b0bca3c41f24e94d4bbd3b424"
+    },
+    "validation_alignment.json": {
+      "bytes": 2045837,
+      "sha256": "715ac5249b59aa0402c34f01fad8fbe137dd834fbf459681664f5d41c2261097"
+    }
+  },
+  "verified_remote_files": {
+    "D_rel_alignment.json": {
+      "bytes": 184271,
+      "sha256": "b85c6188f069a2f47f5149377c5772fb1fe760b863fc78ed2ccc9ded117d7fd4"
+    },
+    "PROBES_SKIPPED.json": {
+      "bytes": 205,
+      "sha256": "28b033e43932382a83170f4fbbd6f55fe8e775a9702867ea5e5bbc8066d038ee"
+    },
+    "early_to_middle/D_rel_baseline_replay.json": {
+      "bytes": 689,
+      "sha256": "a0ac53fe76a8697c42c05c291268e34d2f3b1168231ca677388a29206837edb0"
+    },
+    "early_to_middle/D_rel_candidate_recovery.csv": {
+      "bytes": 31459,
+      "sha256": "976bc2c8ab40d6695cb26f24ef8d66ccb9ef888c1b0aa27350fe67b029f91bd6"
+    },
+    "early_to_middle/D_rel_candidate_recovery_folds.csv": {
+      "bytes": 90457,
+      "sha256": "5e9aa7758533963c81d3c3c9c17c41e407cb08fda31f78670fbe2d676a04e775"
+    },
+    "early_to_middle/D_rel_conditional_recovery.csv": {
+      "bytes": 109110,
+      "sha256": "2fd2ac3ca719e6e467179c3d87cb887a679097b8bd6c8ad8c460fac7d8f34901"
+    },
+    "early_to_middle/D_rel_image_sufficient.csv": {
+      "bytes": 556853,
+      "sha256": "cc27db2e5897851fdead53e9dca70193ed8e91a20150e7a44a695f6acc84420b"
+    },
+    "early_to_middle/D_rel_permutation.json": {
+      "bytes": 213,
+      "sha256": "92f430f6c95d5b595eb5ec39ed7f4fce84713fcfe6ed362cc1457aef2a31e665"
+    },
+    "early_to_middle/D_rel_ranking.csv": {
+      "bytes": 105973,
+      "sha256": "2c0c03576e98a3378f5cdc1d4a1ecab2f93e4582f22485c298ecb0676744498f"
+    },
+    "early_to_middle/D_rel_recovery_intervals.csv": {
+      "bytes": 13565,
+      "sha256": "0c8bb908b5cb6d1b55268ae9fcdecfb15d2fbadc8967519b37be534e1bc6d1e4"
+    },
+    "early_to_middle/D_rel_risk_coverage.csv": {
+      "bytes": 629614,
+      "sha256": "d9c8221e72dda2388328b4e9ffc37b672091519413a331bb26ca61242d33e1bc"
+    },
+    "early_to_middle/validation_baseline_replay.json": {
+      "bytes": 612,
+      "sha256": "4159c78878622a1ab8869ae17fecd9a788ea73026c4a0e2612cd514fe4ba3cdb"
+    },
+    "early_to_middle/validation_candidate_recovery.csv": {
+      "bytes": 33042,
+      "sha256": "4fdcbcb4c18b8addfe2b6bdc31f34c1dd31a554663a8b1b93eff6ceacef660e1"
+    },
+    "early_to_middle/validation_conditional_recovery.csv": {
+      "bytes": 117154,
+      "sha256": "afeef39ee25b4ec47047fb3a72c071f0e3b9e6487aa2ecc154c0326c45f9ba9c"
+    },
+    "early_to_middle/validation_image_sufficient.csv": {
+      "bytes": 6270601,
+      "sha256": "88efa8045d9b2a56e2d3ebb70e298a5894e76fc3c0cb1d823e2a26f07223ecdc"
+    },
+    "early_to_middle/validation_permutation.json": {
+      "bytes": 213,
+      "sha256": "99ad64bfc07d69f2f2fd21bdbe161d02d975e1118cbf034a62061f178d76804d"
+    },
+    "early_to_middle/validation_ranking.csv": {
+      "bytes": 23174,
+      "sha256": "a414b708e8605f8711a0173b230c6f3433f14328cb37bbcc569c11ddd44af430"
+    },
+    "early_to_middle/validation_risk_coverage.csv": {
+      "bytes": 144783,
+      "sha256": "2bb3052ff1edda6d44f6fc5dbd5a4f7b2fbd6cf18755826b908bd8953ffdb593"
+    },
+    "effective_protocol.json": {
+      "bytes": 7578,
+      "sha256": "bebefc73cd06974945da2d0ccb5f749c860e9d4e7a01fa476a1ab9f3ceeeebdd"
+    },
+    "middle_to_late/D_rel_baseline_replay.json": {
+      "bytes": 687,
+      "sha256": "f03ec76fd906f42ee0fbe8c092efba83cb5d2c874d4982fae9a19b203aeed3d4"
+    },
+    "middle_to_late/D_rel_candidate_recovery.csv": {
+      "bytes": 31037,
+      "sha256": "af93d720232745afcdef5a67358247f33010d3c9e34956971612e1dfb6b780b1"
+    },
+    "middle_to_late/D_rel_candidate_recovery_folds.csv": {
+      "bytes": 89563,
+      "sha256": "4ebafe13c710f50903af3d0ecb2b1e3608336fbf057e7da87868229f3c11e7aa"
+    },
+    "middle_to_late/D_rel_conditional_recovery.csv": {
+      "bytes": 108647,
+      "sha256": "d2351b42a86a49a2311da21b0180e1cbae6fe26ed941bfd3cb17624649bf2052"
+    },
+    "middle_to_late/D_rel_image_sufficient.csv": {
+      "bytes": 543771,
+      "sha256": "dffc81e65b2b2a8ecdf1c81f31fc7a64fb277c202adac87da6d5046421100872"
+    },
+    "middle_to_late/D_rel_permutation.json": {
+      "bytes": 213,
+      "sha256": "92f430f6c95d5b595eb5ec39ed7f4fce84713fcfe6ed362cc1457aef2a31e665"
+    },
+    "middle_to_late/D_rel_ranking.csv": {
+      "bytes": 105808,
+      "sha256": "378e7b6a63956f73393f949dca81a8b395866207ec76236ebbbd4f385b909f1b"
+    },
+    "middle_to_late/D_rel_recovery_intervals.csv": {
+      "bytes": 13518,
+      "sha256": "bcc9822c458c0807780cd7b4bfb0539584a85b531b5118d3aaf1068085199b34"
+    },
+    "middle_to_late/D_rel_risk_coverage.csv": {
+      "bytes": 629847,
+      "sha256": "de98deabc86d822c32bf7917d63b3fb3a72a7a296d9642e47832ef461edfc727"
+    },
+    "middle_to_late/validation_baseline_replay.json": {
+      "bytes": 610,
+      "sha256": "b9607ff294c2f3d3964daa881a288c210d342e441d4266859ff79522052f83e7"
+    },
+    "middle_to_late/validation_candidate_recovery.csv": {
+      "bytes": 32690,
+      "sha256": "02a6363fbb1aa06a2efcaab92144f7c70595282bd78a319817740183f1c9e8db"
+    },
+    "middle_to_late/validation_conditional_recovery.csv": {
+      "bytes": 115810,
+      "sha256": "a464ff57befb2f45298fde8514129752baeb2deba5c7cc2635688ec7ab270434"
+    },
+    "middle_to_late/validation_image_sufficient.csv": {
+      "bytes": 6131339,
+      "sha256": "402373b3f3a0ed6498ffc63bf2c38a9079d04079a81e544321e5fe3e0386a8e9"
+    },
+    "middle_to_late/validation_permutation.json": {
+      "bytes": 213,
+      "sha256": "92f430f6c95d5b595eb5ec39ed7f4fce84713fcfe6ed362cc1457aef2a31e665"
+    },
+    "middle_to_late/validation_ranking.csv": {
+      "bytes": 22871,
+      "sha256": "3f91ab7c170bddc6e4afdab74522588e27d4e5015b81b73df2e8414f0c5d10cd"
+    },
+    "middle_to_late/validation_risk_coverage.csv": {
+      "bytes": 143171,
+      "sha256": "f58ab98a6e6cca0d2ed1e8af61acdd494113bce0edc0b9bc607dcd4f142cd160"
+    },
+    "screen_gate.json": {
+      "bytes": 4627,
+      "sha256": "c7ca16353a8775301b49c6fc6d84ace8029c0f7421bf5508d124a49c2bf088e5"
+    },
+    "validation_alignment.json": {
+      "bytes": 2045837,
+      "sha256": "715ac5249b59aa0402c34f01fad8fbe137dd834fbf459681664f5d41c2261097"
+    }
+  },
+  "scope": "all completion files verified; only aggregate CSV/JSON transported; pixel arrays remain remote"
+}

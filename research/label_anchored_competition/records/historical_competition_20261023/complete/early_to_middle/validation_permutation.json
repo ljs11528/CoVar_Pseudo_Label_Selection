@@ -1,0 +1,13 @@
+{
+  "seeds": [
+    401,
+    402,
+    403,
+    404,
+    405
+  ],
+  "maximum_invariant_difference": 1.3322676295501878e-15,
+  "argmax_agreement_preserved": true,
+  "identity_keyed": true,
+  "no_new_fitting": true
+}

@@ -1,0 +1,30 @@
+{
+  "state": "passed",
+  "source_commit": "6be5ec0e73ce865af3346184e094037292baef1e",
+  "synthetic": true,
+  "unit_tests": 7,
+  "new_fits": 0,
+  "teacher_updates": 0,
+  "logs": [
+    {
+      "path": "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/audits/historical_competition_20261023/smoke_6be5ec0e_0.log",
+      "sha256": "8853e6c4d5ee5262923d06ceefbab7897166111887ac50c1dd1ed3ce0f6662a0",
+      "exit_code": 0
+    },
+    {
+      "path": "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/audits/historical_competition_20261023/smoke_6be5ec0e_1.log",
+      "sha256": "63c0538538dad58a222d3bfa3ca82496b4a586343ee3f9ed4e65c6b4e40884c7",
+      "exit_code": 0
+    }
+  ],
+  "smoke": {
+    "state": "passed",
+    "synthetic": true,
+    "new_fits": 0,
+    "screen_failed_as_constructed": true,
+    "real_protocol_unchanged": true,
+    "output_files": 37,
+    "receipt_sha256": "d74ca49c217b469a9660dda11c34a6a68c50a0bdcc214750f10e006271ce7d5b"
+  },
+  "completed_at_utc": "2026-10-23T14:08:11.207913+00:00"
+}

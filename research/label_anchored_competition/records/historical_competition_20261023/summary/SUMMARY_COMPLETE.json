@@ -1,0 +1,42 @@
+{
+  "state": "complete",
+  "input_receipt_sha256": "aa88fc6a1286daf408375208a7a6e5aee7458da29af7cf61a23188e4a502bd4b",
+  "files": {
+    "alignment_summary.csv": {
+      "bytes": 180,
+      "sha256": "86810229e349e410b56c3da3ba8576e62affa13a224eeb3edf279c3a93fda473"
+    },
+    "candidate_summary.csv": {
+      "bytes": 57079,
+      "sha256": "8173b53c3f96a5e4ca2d0ee627bcd8595fa2225d5434cc9c38473a1f61e88619"
+    },
+    "frozen_high_mc_risk_coverage.png": {
+      "bytes": 114720,
+      "sha256": "645706aa6b72b5bc53b01f616e9c8c78391a39975760d4e98b39a7f23238b95d"
+    },
+    "high_mc_candidate_recovery.png": {
+      "bytes": 74984,
+      "sha256": "6bf43baf5486c95110ec4c0a545d78d2669ece305d4fed7582cccea81191ca6b"
+    },
+    "independent_verification.json": {
+      "bytes": 454,
+      "sha256": "55a9cc4473db440849ad2838fde3bdbe5d7b62e1b7d5c140c2d772e079c81c0f"
+    },
+    "ranking_summary.csv": {
+      "bytes": 19023,
+      "sha256": "2463d00876241f4f1be4f0cd369f1550ec4403ee55abe0319105269112e7c3bc"
+    },
+    "recovery_primary_intervals.csv": {
+      "bytes": 2780,
+      "sha256": "6481ad678c08b78df0fc12ec6ebc272cc8c0422b0a177e27d192ad9ae09abfe6"
+    },
+    "summary.json": {
+      "bytes": 1476,
+      "sha256": "e385ecb923e1fa8ba257de9427c2a7c14bdd066ed631e4aad62cb428a3af8a88"
+    },
+    "temporal_transitions.csv": {
+      "bytes": 3996,
+      "sha256": "fb3fdd7d4b5d472c063cc87553b2847e58fecfed6369e68807f576729e6ff080"
+    }
+  }
+}

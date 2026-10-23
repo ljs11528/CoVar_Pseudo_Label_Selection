@@ -1,0 +1,16 @@
+{
+  "role": "validation",
+  "current_stage": "late",
+  "previous_source": "93cb036e56c8c522e1d02f2a8a68ae1b4e667193",
+  "source_receipt_sha256": "a9010ccba7b6022e4a838b9ed90aa6184e9177bf969fe0cc20ed19d0a080fcba",
+  "files": {
+    "models.json": "2d630da6676ec02b543e9b97b53fb070abe6cce99f6d45e8298763320036e698",
+    "validation_pool.npz": "8408d8925edaff35b0cc1734e78bc7e7f50e932971c53b5d94120ca09b13e621",
+    "validation_predictions.npz": "fd4889b0683dbad1d545eaf191670f1e94ef07736b9c7926a79563ad3c721c47"
+  },
+  "max_abs_difference": {
+    "MC": 0.0,
+    "MM": 3.291589223408664e-12
+  },
+  "new_fits": 0
+}

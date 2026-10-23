@@ -1,0 +1,48 @@
+{
+  "source_commit": "6be5ec0e73ce865af3346184e094037292baef1e",
+  "elapsed_seconds": 415.74374621734023,
+  "gate_passed": false,
+  "failed_checks": [
+    "late_positive_interval_now",
+    "late_positive_interval_arithmetic",
+    "late_positive_interval_geometric",
+    "late_minimum_practical_gain",
+    "middle_to_late_all_recovery_nonnegative"
+  ],
+  "decision": "stop_fixed_two_label_history_candidate; no new probes",
+  "no_new_fits": true,
+  "teacher_updates": 0,
+  "validation_is_previously_inspected": true,
+  "alignment": [
+    {
+      "role": "D_rel",
+      "images": 132,
+      "shards_verified": 396,
+      "full_pixel_positions": 540672,
+      "analyzed_pixel_positions": 135168,
+      "all_full_pixel_arrays_equal": true
+    },
+    {
+      "role": "validation",
+      "images": 1449,
+      "shards_verified": 4347,
+      "full_pixel_positions": 5935104,
+      "analyzed_pixel_positions": 1483776,
+      "all_full_pixel_arrays_equal": true
+    }
+  ],
+  "independent_verification": {
+    "transport_files_verified": 40,
+    "candidate_rows": 324,
+    "interval_rows": 162,
+    "maximum_aggregate_difference": 0.0,
+    "maximum_interval_difference": 0.0,
+    "temporal_partition_rows": 28458,
+    "fold_mass_reconciliations": 162,
+    "both_roles_full_alignment": true,
+    "state": "passed",
+    "source_commit": "6be5ec0e73ce865af3346184e094037292baef1e",
+    "new_fits": 0,
+    "independent_bootstrap": "direct array indexing, same registered image draws"
+  }
+}

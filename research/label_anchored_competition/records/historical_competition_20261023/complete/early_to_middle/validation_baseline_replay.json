@@ -1,0 +1,16 @@
+{
+  "role": "validation",
+  "current_stage": "middle",
+  "previous_source": "93cb036e56c8c522e1d02f2a8a68ae1b4e667193",
+  "source_receipt_sha256": "17d4048b4c2dd5218a201cd600e4e4cca8c71a98b4552f12cf5c054bebace739",
+  "files": {
+    "models.json": "c94002650a8e6a5119308156d140f0b95933ed3e50c07ebebb7fd19ed189ce38",
+    "validation_pool.npz": "91c4ea3e8d397f3b75dcd7e86c2344e90fc95b3a59f8853ddbb84d33e608fd62",
+    "validation_predictions.npz": "4114151a5864a7a3519435fc806039651d6e81531d15d2d75300ae7bcece245e"
+  },
+  "max_abs_difference": {
+    "MC": 0.0,
+    "MM": 7.243983191074221e-12
+  },
+  "new_fits": 0
+}

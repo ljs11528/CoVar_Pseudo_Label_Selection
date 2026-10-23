@@ -1,0 +1,17 @@
+{
+  "role": "D_rel",
+  "current_stage": "middle",
+  "previous_source": "93cb036e56c8c522e1d02f2a8a68ae1b4e667193",
+  "source_receipt_sha256": "17d4048b4c2dd5218a201cd600e4e4cca8c71a98b4552f12cf5c054bebace739",
+  "files": {
+    "folds.json": "82ccd22b0dff0a7de92002b51727c0ef1c094f31100b5137ab0e5af5e11ae89a",
+    "outer_models.json": "a1ef692cc50afc70bd6aaad0cc3a71f022530c6081a8516613ebe7c3d86cf46c",
+    "D_rel_pool.npz": "ecd40133193e5dab17eabb84aa33cde11d110537377ad629ba86f87b63dd6375",
+    "D_rel_predictions.npz": "2e08644d1879a89f99c11d5401a10fad4969c5c1ee2671de3546048f02c3bac2"
+  },
+  "max_abs_difference": {
+    "MC": 0.0,
+    "MM": 6.659561790911539e-12
+  },
+  "new_fits": 0
+}
