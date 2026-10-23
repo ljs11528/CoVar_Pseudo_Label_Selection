@@ -1,0 +1,64 @@
+{
+  "started_at_utc": "2026-10-22T23:53:32.934454+00:00",
+  "source_commit": "ce6b19e5140d6a141c51ea22b1b3364d6201e50a",
+  "jobs": [
+    {
+      "stage": "early",
+      "gpu": 0,
+      "pid": 1133,
+      "output": "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/audits/bounded_score_20261023/runs_ce6b19e5/seed42_early",
+      "log": "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/audits/bounded_score_20261023/seed42_early_ce6b19e5.log",
+      "command": [
+        "/opt/conda/bin/python",
+        "-u",
+        "-m",
+        "research.label_anchored_competition.run_score_audit",
+        "--export",
+        "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/experiments/frozen_seed42_early_7c4c5c09",
+        "--output",
+        "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/audits/bounded_score_20261023/runs_ce6b19e5/seed42_early",
+        "--device",
+        "cuda:0"
+      ]
+    },
+    {
+      "stage": "middle",
+      "gpu": 1,
+      "pid": 1134,
+      "output": "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/audits/bounded_score_20261023/runs_ce6b19e5/seed42_middle",
+      "log": "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/audits/bounded_score_20261023/seed42_middle_ce6b19e5.log",
+      "command": [
+        "/opt/conda/bin/python",
+        "-u",
+        "-m",
+        "research.label_anchored_competition.run_score_audit",
+        "--export",
+        "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/experiments/frozen_seed42_middle_7c4c5c09",
+        "--output",
+        "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/audits/bounded_score_20261023/runs_ce6b19e5/seed42_middle",
+        "--device",
+        "cuda:0"
+      ]
+    },
+    {
+      "stage": "late",
+      "gpu": 2,
+      "pid": 1135,
+      "output": "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/audits/bounded_score_20261023/runs_ce6b19e5/seed42_late",
+      "log": "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/audits/bounded_score_20261023/seed42_late_ce6b19e5.log",
+      "command": [
+        "/opt/conda/bin/python",
+        "-u",
+        "-m",
+        "research.label_anchored_competition.run_score_audit",
+        "--export",
+        "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/experiments/frozen_seed42_late_7c4c5c09",
+        "--output",
+        "/share/home/tm1156348881820000/a1156346300/covar_2026/cvpr2027_label_anchor_20261020/audits/bounded_score_20261023/runs_ce6b19e5/seed42_late",
+        "--device",
+        "cuda:0"
+      ]
+    }
+  ],
+  "scope": "Fixed existing-cache probes; duplicate basis fix; no teacher training; D_rel-only selection"
+}

@@ -1,0 +1,45 @@
+{
+  "stage": "middle",
+  "source_sha256": "c0f2554e23adfd4e18b337f8c4273f8c899f83e7b77dd5e8b9e0e89ba1b25238",
+  "scope": "Post-hoc read-only diagnostic; no new fitting, selection or gate changes",
+  "replay": [
+    {
+      "fold": 0,
+      "seed": 2027,
+      "max_abs_diff": 0.0
+    },
+    {
+      "fold": 0,
+      "seed": 2028,
+      "max_abs_diff": 0.0
+    },
+    {
+      "fold": 1,
+      "seed": 2027,
+      "max_abs_diff": 0.0
+    },
+    {
+      "fold": 1,
+      "seed": 2028,
+      "max_abs_diff": 0.0
+    },
+    {
+      "fold": 2,
+      "seed": 2027,
+      "max_abs_diff": 0.0
+    },
+    {
+      "fold": 2,
+      "seed": 2028,
+      "max_abs_diff": 0.0
+    }
+  ],
+  "original_run_signature": {
+    "stage": "middle",
+    "source_commit": "ce6b19e5140d6a141c51ea22b1b3364d6201e50a",
+    "protocol_sha256": "99a55d07e1bea0d73cbb1ddc87cc071af080361180c702acd3e299c72b966bbe",
+    "export_manifest_sha256": "da8052e8d7a97bfb62c7f47fd20ab80d76bbfa4c1766cfda7f43eb8ffef521d9",
+    "old_bn_checkpoint": true
+  },
+  "interpretation": "Positive correctness-logit coefficient rewards larger e at fixed MC; negative zero gradient favors a positive correction locally."
+}

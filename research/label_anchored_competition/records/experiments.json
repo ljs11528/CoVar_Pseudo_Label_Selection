@@ -170,7 +170,32 @@
       "scope": "Flush pending BN before state_dict capture, record policy, reject silent old-policy training resume;31 local tests passed",
       "record": "records/selfcheck_bn_serialization_20261023.json",
       "corrected_full_teacher_trained": false
+    },
+    {
+      "experiment_id": "P1-BOUNDED-SCORE-AUDIT-20261023",
+      "status": "complete",
+      "source_commit": "ce6b19e5140d6a141c51ea22b1b3364d6201e50a",
+      "protocol_commit": "52111ff7",
+      "protocol_sha256": "99a55d07e1bea0d73cbb1ddc87cc071af080361180c702acd3e299c72b966bbe",
+      "scope": "Three existing-cache stages; nested image CV on D_rel; exact MC fallback; two budgets and sampler seeds; validation development description only",
+      "started_at_utc": "2026-10-22T23:53:32.934454+00:00",
+      "completed_at_utc": "2026-10-23T00:14:30.200460+00:00",
+      "stage_wall_seconds": {
+        "early": 1184.794047017116,
+        "middle": 1240.6306751389056,
+        "late": 1254.7632010211237
+      },
+      "gate": "not passed; no BN confirmation teacher or matrix",
+      "new_teacher_trained": false,
+      "record": "records/bounded_score_audit_20261023/summary/gate.json",
+      "report": "docs/BOUNDED_SCORE_AUDIT_RESULTS_20261023.md",
+      "interpretation_limits": [
+        "Post-hoc one-trajectory development",
+        "Pooled OOF differs substantially from within-fold ranking",
+        "Sparse evidence collapses fixed additive hinges to linear",
+        "Final late e selects zero under all fixed budgets/seeds"
+      ]
     }
   ],
-  "updated_at_utc": "2026-10-22T23:15:58.361604+00:00"
+  "updated_at_utc": "2026-10-23T01:48:11.026120+00:00"
 }

@@ -1,0 +1,20 @@
+{
+  "state": "aborted_implementation",
+  "date_utc": "2026-10-22T23:51:50.212917+00:00",
+  "reason": "Duplicate normalized basis columns were not removed; minimum hinges can duplicate linear terms. Fixed before effect results were inspected. No scientific gate inference from this incomplete attempt.",
+  "prior_status": {
+    "state": "running",
+    "phase": "outer_candidates",
+    "seed": 2027,
+    "outer": 2,
+    "signature": {
+      "stage": "early",
+      "source_commit": "1db8146c77ebcededbe7d0b1e0cd928324f36b41",
+      "protocol_sha256": "99a55d07e1bea0d73cbb1ddc87cc071af080361180c702acd3e299c72b966bbe",
+      "export_manifest_sha256": "149030a3a94c5e5e021ca4c8fad972bbdd354217dceb8982727d77cddc307f6c",
+      "old_bn_checkpoint": true
+    },
+    "elapsed_seconds": 421.5142182931304,
+    "updated_at_utc": "2026-10-22T23:51:33.721063+00:00"
+  }
+}

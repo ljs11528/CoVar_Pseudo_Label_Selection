@@ -1,0 +1,8 @@
+{
+  "state": "passed",
+  "scope": "synthetic device/import/numerical smoke only",
+  "device": "cuda:0",
+  "torch": "2.2.2",
+  "numpy": "1.26.4",
+  "gpu_cpu_metric_max_abs_diff": 3.3306690738754696e-16
+}

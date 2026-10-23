@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-23 Asia/Shanghai",
+  "completed_source": "ce6b19e5140d6a141c51ea22b1b3364d6201e50a",
+  "local_regression_tests_passed": 41,
+  "completed_remote_artifacts_hash_verified": 54,
+  "transported_small_artifacts": 56,
+  "additional_posthoc_artifacts": 9,
+  "real_cache_shards_verified": 4743,
+  "oof_saved_model_replays": 18,
+  "oof_replay_max_abs_difference": 0.0,
+  "linear_additive_equivalence_check": {
+    "scope": "All inner and outer candidate heldout NLL curves, both sampler seeds, all registered curve updates",
+    "features": ["e", "uniform"],
+    "stages": ["early", "middle", "late"],
+    "paired_curve_points_per_feature_per_stage": 168,
+    "max_absolute_difference": 0.0,
+    "interpretation": "Registered quantile hinges collapsed to the linear basis; this is a limitation of the bounded candidate family, not evidence that every nonlinear use of e fails."
+  },
+  "summary_manifest_hash_check": "passed",
+  "report_local_links": "all resolve",
+  "figures_visually_inspected": ["summary/ranking_overview.png", "summary/oof_curves.png"],
+  "gate_passed": false,
+  "gate_uses_validation": false,
+  "new_teacher_started": false,
+  "scope": "Read-only verification and reporting; no post-hoc model selection or gate change."
+}

@@ -135,6 +135,9 @@ def figures(output,rows,spec):
     for i,form in enumerate(('linear','additive')):
         for j,stage in enumerate(spec['stages']):
             ax=axs[i,j]
+            baseline=next(float(r['nll']) for r in rows['ranking_primary'] if r['stage']==stage
+                          and r['role']=='D_rel' and r['scope']=='all' and r['feature_set']=='MC')
+            ax.axhline(baseline,color=colors['MC'],ls='--',lw=1,label='MC / zero')
             for name in spec['feature_sets']:
                 r=sorted((r for r in rows['oof_curves'] if r['stage']==stage and r['form']==form and int(r['seed'])==2027),key=lambda r:int(r['update']))
                 r=[a for a in r if a['method']==name]

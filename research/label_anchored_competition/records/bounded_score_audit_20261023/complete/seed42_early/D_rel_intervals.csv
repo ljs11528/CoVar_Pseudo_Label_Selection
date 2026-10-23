@@ -1,0 +1,11 @@
+scope,method,comparator,delta_error_ap,confidence,ci_low,ci_high,valid_replicates,adequate_support,unit
+all,controls_e,controls,-0.002737334769602362,0.95,-0.011182992497909595,0.005068305657288697,2000,True,paired full D_rel images; conditional on fitted nested OOF predictions
+all,e,prototype,0.014049246407635163,0.95,0.0068767641775658184,0.02090761284902709,2000,True,paired full D_rel images; conditional on fitted nested OOF predictions
+all,e,product,-0.0009788887997178586,0.95,-0.005975828420861376,0.0038114236882683225,2000,True,paired full D_rel images; conditional on fitted nested OOF predictions
+all,e,uniform,0.01409611414140427,0.95,0.005218831116541972,0.022756892964074914,2000,True,paired full D_rel images; conditional on fitted nested OOF predictions
+all,e,MC,0.017195903421911574,0.95,-0.013864375677903872,0.04978487450234306,2000,True,paired full D_rel images; conditional on fitted nested OOF predictions
+conflict,controls_e,controls,0.0018718160021067853,0.9875,-0.017489526059094318,0.026980514609558554,2000,True,paired full D_rel images; conditional on fitted nested OOF predictions
+conflict,e,prototype,0.018530159221419207,0.9875,0.0053804193286405184,0.03240522861935011,2000,True,paired full D_rel images; conditional on fitted nested OOF predictions
+conflict,e,product,0.005771704889532436,0.9875,-0.0091344401782393,0.018274879018912317,2000,True,paired full D_rel images; conditional on fitted nested OOF predictions
+conflict,e,uniform,0.04047645087097318,0.9875,0.006169754325930971,0.07742238940196355,2000,True,paired full D_rel images; conditional on fitted nested OOF predictions
+conflict,e,MC,0.009677854902350957,0.95,-0.017900979237979106,0.040162972371291954,2000,True,paired full D_rel images; conditional on fitted nested OOF predictions

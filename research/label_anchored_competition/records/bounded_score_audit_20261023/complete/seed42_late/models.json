@@ -1,0 +1,559 @@
+{
+  "s2027_u500_prototype": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "linear",
+    "basis": {
+      "mean": [
+        -0.2318006886259242
+      ],
+      "scale": [
+        0.2420762025505782
+      ],
+      "columns": [
+        {
+          "column": 0,
+          "knot": null,
+          "mean": -2.7356695122721118e-17,
+          "scale": 1.0
+        }
+      ],
+      "form": "linear"
+    },
+    "coefficients": [
+      0.2453208714723587
+    ],
+    "feature_set": "prototype",
+    "budget": 500,
+    "seed": 2027,
+    "fitting_role": "D_rel"
+  },
+  "s2027_u2000_prototype": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "linear",
+    "basis": {
+      "mean": [
+        -0.2318006886259242
+      ],
+      "scale": [
+        0.2420762025505782
+      ],
+      "columns": [
+        {
+          "column": 0,
+          "knot": null,
+          "mean": -2.7356695122721118e-17,
+          "scale": 1.0
+        }
+      ],
+      "form": "linear"
+    },
+    "coefficients": [
+      0.22368544340133667
+    ],
+    "feature_set": "prototype",
+    "budget": 2000,
+    "seed": 2027,
+    "fitting_role": "D_rel"
+  },
+  "s2027_u500_product": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "linear",
+    "basis": {
+      "mean": [
+        -0.3057959869857269
+      ],
+      "scale": [
+        0.2602111192685403
+      ],
+      "columns": [
+        {
+          "column": 0,
+          "knot": null,
+          "mean": -1.1937466962641944e-16,
+          "scale": 1.0
+        }
+      ],
+      "form": "linear"
+    },
+    "coefficients": [
+      0.2537170350551605
+    ],
+    "feature_set": "product",
+    "budget": 500,
+    "seed": 2027,
+    "fitting_role": "D_rel"
+  },
+  "s2027_u2000_product": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "linear",
+    "basis": {
+      "mean": [
+        -0.3057959869857269
+      ],
+      "scale": [
+        0.2602111192685403
+      ],
+      "columns": [
+        {
+          "column": 0,
+          "knot": null,
+          "mean": -1.1937466962641944e-16,
+          "scale": 1.0
+        }
+      ],
+      "form": "linear"
+    },
+    "coefficients": [
+      0.2355605959892273
+    ],
+    "feature_set": "product",
+    "budget": 2000,
+    "seed": 2027,
+    "fitting_role": "D_rel"
+  },
+  "s2027_u500_uniform": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "zero",
+    "feature_set": "uniform",
+    "budget": 500,
+    "seed": 2027,
+    "fitting_role": "D_rel"
+  },
+  "s2027_u2000_uniform": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "zero",
+    "feature_set": "uniform",
+    "budget": 2000,
+    "seed": 2027,
+    "fitting_role": "D_rel"
+  },
+  "s2027_u500_e": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "zero",
+    "feature_set": "e",
+    "budget": 500,
+    "seed": 2027,
+    "fitting_role": "D_rel"
+  },
+  "s2027_u2000_e": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "zero",
+    "feature_set": "e",
+    "budget": 2000,
+    "seed": 2027,
+    "fitting_role": "D_rel"
+  },
+  "s2027_u500_controls": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "zero",
+    "feature_set": "controls",
+    "budget": 500,
+    "seed": 2027,
+    "fitting_role": "D_rel"
+  },
+  "s2027_u2000_controls": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "zero",
+    "feature_set": "controls",
+    "budget": 2000,
+    "seed": 2027,
+    "fitting_role": "D_rel"
+  },
+  "s2027_u500_controls_e": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "zero",
+    "feature_set": "controls_e",
+    "budget": 500,
+    "seed": 2027,
+    "fitting_role": "D_rel"
+  },
+  "s2027_u2000_controls_e": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "zero",
+    "feature_set": "controls_e",
+    "budget": 2000,
+    "seed": 2027,
+    "fitting_role": "D_rel"
+  },
+  "s2028_u500_prototype": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "linear",
+    "basis": {
+      "mean": [
+        -0.2318006886259242
+      ],
+      "scale": [
+        0.2420762025505782
+      ],
+      "columns": [
+        {
+          "column": 0,
+          "knot": null,
+          "mean": -2.7356695122721118e-17,
+          "scale": 1.0
+        }
+      ],
+      "form": "linear"
+    },
+    "coefficients": [
+      0.2333146333694458
+    ],
+    "feature_set": "prototype",
+    "budget": 500,
+    "seed": 2028,
+    "fitting_role": "D_rel"
+  },
+  "s2028_u2000_prototype": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "linear",
+    "basis": {
+      "mean": [
+        -0.2318006886259242
+      ],
+      "scale": [
+        0.2420762025505782
+      ],
+      "columns": [
+        {
+          "column": 0,
+          "knot": null,
+          "mean": -2.7356695122721118e-17,
+          "scale": 1.0
+        }
+      ],
+      "form": "linear"
+    },
+    "coefficients": [
+      0.2405271977186203
+    ],
+    "feature_set": "prototype",
+    "budget": 2000,
+    "seed": 2028,
+    "fitting_role": "D_rel"
+  },
+  "s2028_u500_product": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "linear",
+    "basis": {
+      "mean": [
+        -0.3057959869857269
+      ],
+      "scale": [
+        0.2602111192685403
+      ],
+      "columns": [
+        {
+          "column": 0,
+          "knot": null,
+          "mean": -1.1937466962641944e-16,
+          "scale": 1.0
+        }
+      ],
+      "form": "linear"
+    },
+    "coefficients": [
+      0.24175557494163513
+    ],
+    "feature_set": "product",
+    "budget": 500,
+    "seed": 2028,
+    "fitting_role": "D_rel"
+  },
+  "s2028_u2000_product": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "linear",
+    "basis": {
+      "mean": [
+        -0.3057959869857269
+      ],
+      "scale": [
+        0.2602111192685403
+      ],
+      "columns": [
+        {
+          "column": 0,
+          "knot": null,
+          "mean": -1.1937466962641944e-16,
+          "scale": 1.0
+        }
+      ],
+      "form": "linear"
+    },
+    "coefficients": [
+      0.24949777126312256
+    ],
+    "feature_set": "product",
+    "budget": 2000,
+    "seed": 2028,
+    "fitting_role": "D_rel"
+  },
+  "s2028_u500_uniform": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "zero",
+    "feature_set": "uniform",
+    "budget": 500,
+    "seed": 2028,
+    "fitting_role": "D_rel"
+  },
+  "s2028_u2000_uniform": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "zero",
+    "feature_set": "uniform",
+    "budget": 2000,
+    "seed": 2028,
+    "fitting_role": "D_rel"
+  },
+  "s2028_u500_e": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "zero",
+    "feature_set": "e",
+    "budget": 500,
+    "seed": 2028,
+    "fitting_role": "D_rel"
+  },
+  "s2028_u2000_e": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "zero",
+    "feature_set": "e",
+    "budget": 2000,
+    "seed": 2028,
+    "fitting_role": "D_rel"
+  },
+  "s2028_u500_controls": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "zero",
+    "feature_set": "controls",
+    "budget": 500,
+    "seed": 2028,
+    "fitting_role": "D_rel"
+  },
+  "s2028_u2000_controls": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "zero",
+    "feature_set": "controls",
+    "budget": 2000,
+    "seed": 2028,
+    "fitting_role": "D_rel"
+  },
+  "s2028_u500_controls_e": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "zero",
+    "feature_set": "controls_e",
+    "budget": 500,
+    "seed": 2028,
+    "fitting_role": "D_rel"
+  },
+  "s2028_u2000_controls_e": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "zero",
+    "feature_set": "controls_e",
+    "budget": 2000,
+    "seed": 2028,
+    "fitting_role": "D_rel"
+  },
+  "MC": {
+    "mc": {
+      "mean": 8.032069087470578,
+      "scale": 3.3036056800792863,
+      "a": 1.876911076761501,
+      "b": 4.092064023504769,
+      "iterations": 5,
+      "objective": 0.1574973188944766,
+      "converged": true
+    },
+    "form": "zero",
+    "fitting_role": "D_rel"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "source_commits": [
+    "ce6b19e5140d6a141c51ea22b1b3364d6201e50a"
+  ],
+  "protocol_sha256": "99a55d07e1bea0d73cbb1ddc87cc071af080361180c702acd3e299c72b966bbe",
+  "completed_stages": [
+    "early",
+    "middle",
+    "late"
+  ],
+  "elapsed_seconds_by_stage": {
+    "early": 1184.794047017116,
+    "middle": 1240.6306751389056,
+    "late": 1254.7632010211237
+  },
+  "gate": false,
+  "validation_role": "previously inspected development description only",
+  "number_of_primary_ranking_rows": 168,
+  "limitation": "One old-BN teacher trajectory; sampler seeds are not independent teachers"
+}

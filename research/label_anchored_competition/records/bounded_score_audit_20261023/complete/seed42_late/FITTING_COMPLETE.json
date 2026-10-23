@@ -1,0 +1,11 @@
+{
+  "signature": {
+    "stage": "late",
+    "source_commit": "ce6b19e5140d6a141c51ea22b1b3364d6201e50a",
+    "protocol_sha256": "99a55d07e1bea0d73cbb1ddc87cc071af080361180c702acd3e299c72b966bbe",
+    "export_manifest_sha256": "0d8169252904e8c56c0fcc016ba130f67a0963a1663b071c7c43d3027b266b8d",
+    "old_bn_checkpoint": true
+  },
+  "role": "D_rel only",
+  "models_sha256": "8da0b3d594d7abe609179af8f0bdf95d9fa4a8c504166584c2108b947ae1b7bd"
+}

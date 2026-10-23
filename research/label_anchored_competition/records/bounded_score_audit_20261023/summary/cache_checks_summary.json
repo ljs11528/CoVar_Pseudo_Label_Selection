@@ -1,0 +1,197 @@
+[
+  {
+    "stage": "early",
+    "roles": {
+      "D_rel": {
+        "cache_shards_verified": 132,
+        "prototype_similarity_max_abs_diff": 6.556510925292969e-07,
+        "independent_e_max_abs_diff": 1.3010618993281042e-07,
+        "normalized_feature_max_error": 3.5762786865234375e-07,
+        "role": "D_rel",
+        "prototype_support_images": [
+          1191,
+          65,
+          60,
+          71,
+          51,
+          86,
+          43,
+          113,
+          109,
+          130,
+          23,
+          66,
+          132,
+          50,
+          55,
+          466,
+          69,
+          32,
+          66,
+          57,
+          66
+        ]
+      },
+      "validation": {
+        "cache_shards_verified": 1449,
+        "prototype_similarity_max_abs_diff": 7.748603820800781e-07,
+        "independent_e_max_abs_diff": 1.623565674124805e-07,
+        "normalized_feature_max_error": 4.172325134277344e-07,
+        "role": "validation",
+        "prototype_support_images": [
+          1191,
+          65,
+          60,
+          71,
+          51,
+          86,
+          43,
+          113,
+          109,
+          130,
+          23,
+          66,
+          132,
+          50,
+          55,
+          466,
+          69,
+          32,
+          66,
+          57,
+          66
+        ]
+      }
+    }
+  },
+  {
+    "stage": "middle",
+    "roles": {
+      "D_rel": {
+        "cache_shards_verified": 132,
+        "prototype_similarity_max_abs_diff": 7.748603820800781e-07,
+        "independent_e_max_abs_diff": 1.2654406961187803e-07,
+        "normalized_feature_max_error": 4.172325134277344e-07,
+        "role": "D_rel",
+        "prototype_support_images": [
+          1191,
+          65,
+          60,
+          71,
+          51,
+          86,
+          43,
+          113,
+          109,
+          130,
+          23,
+          66,
+          132,
+          50,
+          55,
+          466,
+          69,
+          32,
+          66,
+          57,
+          66
+        ]
+      },
+      "validation": {
+        "cache_shards_verified": 1449,
+        "prototype_similarity_max_abs_diff": 7.748603820800781e-07,
+        "independent_e_max_abs_diff": 1.4224400957107974e-07,
+        "normalized_feature_max_error": 4.76837158203125e-07,
+        "role": "validation",
+        "prototype_support_images": [
+          1191,
+          65,
+          60,
+          71,
+          51,
+          86,
+          43,
+          113,
+          109,
+          130,
+          23,
+          66,
+          132,
+          50,
+          55,
+          466,
+          69,
+          32,
+          66,
+          57,
+          66
+        ]
+      }
+    }
+  },
+  {
+    "stage": "late",
+    "roles": {
+      "D_rel": {
+        "cache_shards_verified": 132,
+        "prototype_similarity_max_abs_diff": 7.748603820800781e-07,
+        "independent_e_max_abs_diff": 1.1897888707590454e-07,
+        "normalized_feature_max_error": 4.172325134277344e-07,
+        "role": "D_rel",
+        "prototype_support_images": [
+          1191,
+          65,
+          60,
+          71,
+          51,
+          86,
+          43,
+          113,
+          109,
+          130,
+          23,
+          66,
+          132,
+          50,
+          55,
+          466,
+          69,
+          32,
+          66,
+          57,
+          66
+        ]
+      },
+      "validation": {
+        "cache_shards_verified": 1449,
+        "prototype_similarity_max_abs_diff": 7.748603820800781e-07,
+        "independent_e_max_abs_diff": 1.654597254763246e-07,
+        "normalized_feature_max_error": 4.76837158203125e-07,
+        "role": "validation",
+        "prototype_support_images": [
+          1191,
+          65,
+          60,
+          71,
+          51,
+          86,
+          43,
+          113,
+          109,
+          130,
+          23,
+          66,
+          132,
+          50,
+          55,
+          466,
+          69,
+          32,
+          66,
+          57,
+          66
+        ]
+      }
+    }
+  }
+]

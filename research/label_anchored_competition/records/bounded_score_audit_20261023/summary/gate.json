@@ -1,0 +1,466 @@
+{
+  "eligible_for_one_bn_confirmation_teacher": false,
+  "uses_validation": false,
+  "decision": "stop expansion of this residual-weighted formula; no confirmation teacher authorized by this gate",
+  "checks": [
+    {
+      "condition": "late_conflict_controls_e_minus_controls_lower_bound",
+      "passed": false,
+      "details": {
+        "stage": "late",
+        "role": "D_rel",
+        "scope": "conflict",
+        "method": "controls_e",
+        "comparator": "controls",
+        "delta_error_ap": "0.009333238046881409",
+        "confidence": "0.9875",
+        "ci_low": "-0.00403285685688222",
+        "ci_high": "0.021759525163480717",
+        "valid_replicates": "2000",
+        "adequate_support": "True",
+        "unit": "paired full D_rel images; conditional on fitted nested OOF predictions"
+      }
+    },
+    {
+      "condition": "late_conflict_e_minus_prototype_lower_bound",
+      "passed": true,
+      "details": {
+        "stage": "late",
+        "role": "D_rel",
+        "scope": "conflict",
+        "method": "e",
+        "comparator": "prototype",
+        "delta_error_ap": "0.02375373605418052",
+        "confidence": "0.9875",
+        "ci_low": "0.006020296782950183",
+        "ci_high": "0.046969521788129825",
+        "valid_replicates": "2000",
+        "adequate_support": "True",
+        "unit": "paired full D_rel images; conditional on fitted nested OOF predictions"
+      }
+    },
+    {
+      "condition": "late_conflict_e_minus_product_lower_bound",
+      "passed": false,
+      "details": {
+        "stage": "late",
+        "role": "D_rel",
+        "scope": "conflict",
+        "method": "e",
+        "comparator": "product",
+        "delta_error_ap": "0.01745903211524874",
+        "confidence": "0.9875",
+        "ci_low": "-0.0001705963067443096",
+        "ci_high": "0.03935294352653931",
+        "valid_replicates": "2000",
+        "adequate_support": "True",
+        "unit": "paired full D_rel images; conditional on fitted nested OOF predictions"
+      }
+    },
+    {
+      "condition": "late_conflict_e_minus_uniform_lower_bound",
+      "passed": false,
+      "details": {
+        "stage": "late",
+        "role": "D_rel",
+        "scope": "conflict",
+        "method": "e",
+        "comparator": "uniform",
+        "delta_error_ap": "0.014676559269940048",
+        "confidence": "0.9875",
+        "ci_low": "-0.012031443967872441",
+        "ci_high": "0.051626072135578426",
+        "valid_replicates": "2000",
+        "adequate_support": "True",
+        "unit": "paired full D_rel images; conditional on fitted nested OOF predictions"
+      }
+    },
+    {
+      "condition": "late_conflict_e_minus_MC_lower_bound",
+      "passed": false,
+      "details": {
+        "stage": "late",
+        "role": "D_rel",
+        "scope": "conflict",
+        "method": "e",
+        "comparator": "MC",
+        "delta_error_ap": "-0.05526691754103119",
+        "confidence": "0.95",
+        "ci_low": "-0.08102293712202438",
+        "ci_high": "-0.017282451397046886",
+        "valid_replicates": "2000",
+        "adequate_support": "True",
+        "unit": "paired full D_rel images; conditional on fitted nested OOF predictions"
+      }
+    },
+    {
+      "condition": "two_of_three_stages_controls_e_minus_controls",
+      "passed": true,
+      "details": {
+        "positive_stages": 3
+      }
+    },
+    {
+      "condition": "all_fixed_budgets_and_seeds_controls_e_minus_controls",
+      "passed": true,
+      "details": [
+        {
+          "stage": "late",
+          "role": "D_rel",
+          "scope": "conflict",
+          "seed": 2027,
+          "budget": 500,
+          "method": "controls_e",
+          "comparator": "controls",
+          "delta_error_ap": 0.021403992022543505,
+          "delta_auroc": 0.008913825610152415,
+          "delta_nll": -0.0076298933315105955,
+          "delta_precision_at_0_9": 0.002672644183944639
+        },
+        {
+          "stage": "late",
+          "role": "D_rel",
+          "scope": "conflict",
+          "seed": 2027,
+          "budget": 2000,
+          "method": "controls_e",
+          "comparator": "controls",
+          "delta_error_ap": 0.009333238046881409,
+          "delta_auroc": 0.0029650326811727634,
+          "delta_nll": -0.001730461198847122,
+          "delta_precision_at_0_9": 0.0016054931240251369
+        },
+        {
+          "stage": "late",
+          "role": "D_rel",
+          "scope": "conflict",
+          "seed": 2028,
+          "budget": 500,
+          "method": "controls_e",
+          "comparator": "controls",
+          "delta_error_ap": 0.023400961560944067,
+          "delta_auroc": 0.00977527653510779,
+          "delta_nll": -0.008712346033392604,
+          "delta_precision_at_0_9": 0.0032136168492074013
+        },
+        {
+          "stage": "late",
+          "role": "D_rel",
+          "scope": "conflict",
+          "seed": 2028,
+          "budget": 2000,
+          "method": "controls_e",
+          "comparator": "controls",
+          "delta_error_ap": 0.009624617585555717,
+          "delta_auroc": 0.0030183357386445175,
+          "delta_nll": -0.0016530767123323908,
+          "delta_precision_at_0_9": 0.001811218094125433
+        }
+      ]
+    },
+    {
+      "condition": "two_of_three_stages_e_minus_prototype",
+      "passed": true,
+      "details": {
+        "positive_stages": 3
+      }
+    },
+    {
+      "condition": "all_fixed_budgets_and_seeds_e_minus_prototype",
+      "passed": true,
+      "details": [
+        {
+          "stage": "late",
+          "role": "D_rel",
+          "scope": "conflict",
+          "seed": 2027,
+          "budget": 500,
+          "method": "e",
+          "comparator": "prototype",
+          "delta_error_ap": 0.0067309799324482555,
+          "delta_auroc": -0.005428912214153425,
+          "delta_nll": 0.003185721635466432,
+          "delta_precision_at_0_9": -0.0026265391845968766
+        },
+        {
+          "stage": "late",
+          "role": "D_rel",
+          "scope": "conflict",
+          "seed": 2027,
+          "budget": 2000,
+          "method": "e",
+          "comparator": "prototype",
+          "delta_error_ap": 0.02375373605418052,
+          "delta_auroc": -0.0006649244665881682,
+          "delta_nll": -0.0010361704618401246,
+          "delta_precision_at_0_9": -0.0005972831730427508
+        },
+        {
+          "stage": "late",
+          "role": "D_rel",
+          "scope": "conflict",
+          "seed": 2028,
+          "budget": 500,
+          "method": "e",
+          "comparator": "prototype",
+          "delta_error_ap": 0.03974474006529061,
+          "delta_auroc": 0.0009118213278057619,
+          "delta_nll": -0.0032080766211666223,
+          "delta_precision_at_0_9": 0.00043603785124901595
+        },
+        {
+          "stage": "late",
+          "role": "D_rel",
+          "scope": "conflict",
+          "seed": 2028,
+          "budget": 2000,
+          "method": "e",
+          "comparator": "prototype",
+          "delta_error_ap": 0.03574975236291161,
+          "delta_auroc": -0.00020308453326811637,
+          "delta_nll": -0.002279405568520021,
+          "delta_precision_at_0_9": 0.0002498672616381148
+        }
+      ]
+    },
+    {
+      "condition": "two_of_three_stages_e_minus_product",
+      "passed": true,
+      "details": {
+        "positive_stages": 3
+      }
+    },
+    {
+      "condition": "all_fixed_budgets_and_seeds_e_minus_product",
+      "passed": false,
+      "details": [
+        {
+          "stage": "late",
+          "role": "D_rel",
+          "scope": "conflict",
+          "seed": 2027,
+          "budget": 500,
+          "method": "e",
+          "comparator": "product",
+          "delta_error_ap": -0.00744837550004529,
+          "delta_auroc": -0.008904696473631346,
+          "delta_nll": 0.005774446514425047,
+          "delta_precision_at_0_9": -0.005006614306034773
+        },
+        {
+          "stage": "late",
+          "role": "D_rel",
+          "scope": "conflict",
+          "seed": 2027,
+          "budget": 2000,
+          "method": "e",
+          "comparator": "product",
+          "delta_error_ap": 0.01745903211524874,
+          "delta_auroc": -0.002770546881219915,
+          "delta_nll": 0.0006727993993917436,
+          "delta_precision_at_0_9": -0.0016689925214005141
+        },
+        {
+          "stage": "late",
+          "role": "D_rel",
+          "scope": "conflict",
+          "seed": 2028,
+          "budget": 500,
+          "method": "e",
+          "comparator": "product",
+          "delta_error_ap": 0.028681491024271366,
+          "delta_auroc": -0.0014154586050699747,
+          "delta_nll": -0.00146819023072986,
+          "delta_precision_at_0_9": -0.0010326243686425984
+        },
+        {
+          "stage": "late",
+          "role": "D_rel",
+          "scope": "conflict",
+          "seed": 2028,
+          "budget": 2000,
+          "method": "e",
+          "comparator": "product",
+          "delta_error_ap": 0.031138403326325004,
+          "delta_auroc": -0.0009639767868131477,
+          "delta_nll": -0.0018383098240852824,
+          "delta_precision_at_0_9": -0.0011657593425203894
+        }
+      ]
+    },
+    {
+      "condition": "two_of_three_stages_e_minus_uniform",
+      "passed": true,
+      "details": {
+        "positive_stages": 3
+      }
+    },
+    {
+      "condition": "all_fixed_budgets_and_seeds_e_minus_uniform",
+      "passed": true,
+      "details": [
+        {
+          "stage": "late",
+          "role": "D_rel",
+          "scope": "conflict",
+          "seed": 2027,
+          "budget": 500,
+          "method": "e",
+          "comparator": "uniform",
+          "delta_error_ap": 0.014004309548531213,
+          "delta_auroc": 0.022718536226026154,
+          "delta_nll": -0.011361086560563116,
+          "delta_precision_at_0_9": -0.001170115247549841
+        },
+        {
+          "stage": "late",
+          "role": "D_rel",
+          "scope": "conflict",
+          "seed": 2027,
+          "budget": 2000,
+          "method": "e",
+          "comparator": "uniform",
+          "delta_error_ap": 0.014676559269940048,
+          "delta_auroc": 0.024512958583226552,
+          "delta_nll": -0.012395354837716865,
+          "delta_precision_at_0_9": -0.001102937979374774
+        },
+        {
+          "stage": "late",
+          "role": "D_rel",
+          "scope": "conflict",
+          "seed": 2028,
+          "budget": 500,
+          "method": "e",
+          "comparator": "uniform",
+          "delta_error_ap": 0.044644448568079975,
+          "delta_auroc": 0.031132598077969864,
+          "delta_nll": -0.01843060373615446,
+          "delta_precision_at_0_9": 0.0014333294689341525
+        },
+        {
+          "stage": "late",
+          "role": "D_rel",
+          "scope": "conflict",
+          "seed": 2028,
+          "budget": 2000,
+          "method": "e",
+          "comparator": "uniform",
+          "delta_error_ap": 0.04349300024435648,
+          "delta_auroc": 0.029200348978948965,
+          "delta_nll": -0.017594193787672963,
+          "delta_precision_at_0_9": 0.0014392607358175713
+        }
+      ]
+    },
+    {
+      "condition": "no_clear_global_harm_early_e_minus_MC",
+      "passed": true,
+      "details": {
+        "stage": "early",
+        "role": "D_rel",
+        "scope": "all",
+        "method": "e",
+        "comparator": "MC",
+        "delta_error_ap": "0.017195903421911574",
+        "confidence": "0.95",
+        "ci_low": "-0.013864375677903872",
+        "ci_high": "0.04978487450234306",
+        "valid_replicates": "2000",
+        "adequate_support": "True",
+        "unit": "paired full D_rel images; conditional on fitted nested OOF predictions"
+      }
+    },
+    {
+      "condition": "no_clear_global_harm_early_controls_e_minus_controls",
+      "passed": true,
+      "details": {
+        "stage": "early",
+        "role": "D_rel",
+        "scope": "all",
+        "method": "controls_e",
+        "comparator": "controls",
+        "delta_error_ap": "-0.002737334769602362",
+        "confidence": "0.95",
+        "ci_low": "-0.011182992497909595",
+        "ci_high": "0.005068305657288697",
+        "valid_replicates": "2000",
+        "adequate_support": "True",
+        "unit": "paired full D_rel images; conditional on fitted nested OOF predictions"
+      }
+    },
+    {
+      "condition": "no_clear_global_harm_middle_e_minus_MC",
+      "passed": true,
+      "details": {
+        "stage": "middle",
+        "role": "D_rel",
+        "scope": "all",
+        "method": "e",
+        "comparator": "MC",
+        "delta_error_ap": "0.03208868439480694",
+        "confidence": "0.95",
+        "ci_low": "-0.0057136042107818015",
+        "ci_high": "0.07361342074388484",
+        "valid_replicates": "2000",
+        "adequate_support": "True",
+        "unit": "paired full D_rel images; conditional on fitted nested OOF predictions"
+      }
+    },
+    {
+      "condition": "no_clear_global_harm_middle_controls_e_minus_controls",
+      "passed": true,
+      "details": {
+        "stage": "middle",
+        "role": "D_rel",
+        "scope": "all",
+        "method": "controls_e",
+        "comparator": "controls",
+        "delta_error_ap": "0.008471976084275634",
+        "confidence": "0.95",
+        "ci_low": "0.0009756402699557961",
+        "ci_high": "0.015187856938323918",
+        "valid_replicates": "2000",
+        "adequate_support": "True",
+        "unit": "paired full D_rel images; conditional on fitted nested OOF predictions"
+      }
+    },
+    {
+      "condition": "no_clear_global_harm_late_e_minus_MC",
+      "passed": true,
+      "details": {
+        "stage": "late",
+        "role": "D_rel",
+        "scope": "all",
+        "method": "e",
+        "comparator": "MC",
+        "delta_error_ap": "-0.006472533354144494",
+        "confidence": "0.95",
+        "ci_low": "-0.03479983843264879",
+        "ci_high": "0.0229280129374977",
+        "valid_replicates": "2000",
+        "adequate_support": "True",
+        "unit": "paired full D_rel images; conditional on fitted nested OOF predictions"
+      }
+    },
+    {
+      "condition": "no_clear_global_harm_late_controls_e_minus_controls",
+      "passed": true,
+      "details": {
+        "stage": "late",
+        "role": "D_rel",
+        "scope": "all",
+        "method": "controls_e",
+        "comparator": "controls",
+        "delta_error_ap": "-0.001410719505017477",
+        "confidence": "0.95",
+        "ci_low": "-0.0081611054306974",
+        "ci_high": "0.006516398676152774",
+        "valid_replicates": "2000",
+        "adequate_support": "True",
+        "unit": "paired full D_rel images; conditional on fitted nested OOF predictions"
+      }
+    }
+  ],
+  "limitations": "Post-hoc development on one existing old-BN seed42 trajectory; not a P2 or generalization gate"
+}
