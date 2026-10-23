@@ -13,6 +13,8 @@ Research branch for the 2026-10-20 change of direction. This is a candidate mech
 - [Bounded anchor-objection trust plan (Chinese)](docs/ANCHOR_TRUST_AUDIT_PLAN_20261023.md)
 - [Fixed anchor-trust protocol](anchor_trust_protocol.json)
 - [Completed anchor-trust audit and stopping decision (Chinese)](docs/ANCHOR_TRUST_AUDIT_RESULTS_20261023.md)
+- [Historical competitor cache-screen plan and stopping conditions (Chinese)](docs/HISTORICAL_COMPETITION_PLAN_20261023.md)
+- [Fixed historical competitor protocol](history_protocol.json)
 
 The first implementation keeps the classifier pseudo-label unchanged. It tests whether residual class probabilities aligned with label-supported prototype evidence add useful information beyond ordinary uncertainty, prototype disagreement, and probability–prototype fusion.
 

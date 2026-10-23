@@ -1,0 +1,283 @@
+{
+  "study_id": "historical_competition_20261023",
+  "status": "locked before cross-stage outcomes; bounded development on previously inspected caches",
+  "parent_commit": "cab3ae486b164483592123d6326de54d1b9a84d4",
+  "input_exports": {
+    "early": "frozen_seed42_early_7c4c5c09",
+    "middle": "frozen_seed42_middle_7c4c5c09",
+    "late": "frozen_seed42_late_7c4c5c09"
+  },
+  "teacher_seed": 42,
+  "teacher_policy": "old BN snapshot; parameters and buffers remain untouched",
+  "role_counts": {
+    "D_rel": 132,
+    "validation": 1449
+  },
+  "classes": 21,
+  "cap": 1024,
+  "pairs": [
+    {
+      "name": "early_to_middle",
+      "past": "early",
+      "current": "middle"
+    },
+    {
+      "name": "middle_to_late",
+      "past": "middle",
+      "current": "late"
+    }
+  ],
+  "alignment": {
+    "strict": true,
+    "full_cached_pixel_arrays_before_cap": true,
+    "fields": [
+      "image_id",
+      "role",
+      "original_size",
+      "valid_pixel_count",
+      "pixel_indices",
+      "yx",
+      "GT",
+      "boundary"
+    ],
+    "per_stage_correctness": true,
+    "sha256_all_input_shards": true,
+    "no_drop_or_interpolation": true
+  },
+  "candidate_sets": {
+    "size": 2,
+    "retained_label": "current argmax a",
+    "now": "argmax current logits excluding a",
+    "history": "argmax past logits excluding a",
+    "arithmetic": "argmax (p_current+p_past)/2 excluding a",
+    "geometric": "argmax (logp_current+logp_past)/2 excluding a",
+    "tie_rule": "lowest class index"
+  },
+  "permutation": {
+    "seeds": [
+      401,
+      402,
+      403,
+      404,
+      405
+    ],
+    "namespace": "historical_competition_20261023",
+    "mapping": "identity-keyed per-pixel bijection of past non-a logits; current logits and past a logit fixed",
+    "invariants": [
+      "past probability multiset",
+      "past MC",
+      "past entropy",
+      "past p(a)",
+      "past argmax agrees with current a",
+      "all current features"
+    ],
+    "no_ensemble_of_sham_predictions": true,
+    "probe_refit_if_eligible": true
+  },
+  "folds": {
+    "outer": 3,
+    "inner": 3,
+    "namespace": "bounded_score_audit_20261023",
+    "reuse_previous_image_assignment": true
+  },
+  "screen": {
+    "candidate": "history",
+    "primary_scope": "high_mc",
+    "high_mc": 0.95,
+    "primary_metric": "error_recovery",
+    "definition": "sum IPW 1[current wrong and candidate alternative equals GT] / sum IPW 1[current wrong]",
+    "estimator": "ratio of pooled image masses; no fitted scores involved",
+    "comparators": [
+      "now",
+      "arithmetic",
+      "geometric",
+      "sham_mean"
+    ],
+    "primary_pair": "middle_to_late",
+    "bootstrap_replicates": 2000,
+    "bootstrap_seed": 230104,
+    "primary_confidence": 0.9875,
+    "secondary_confidence": 0.95,
+    "min_late_gain_over_now": 0.01,
+    "require_late_all_primary_ci_lower_positive": true,
+    "require_middle_all_primary_point_positive": true,
+    "require_late_beats_each_shuffle": true,
+    "require_all_scope_history_vs_now_nonnegative_both_pairs": true,
+    "minimum_support": {
+      "error_images": 20,
+      "correct_images": 20,
+      "error_pixels": 100,
+      "correct_pixels": 100
+    },
+    "gate_uses_D_rel_only": true,
+    "failure_decision": "stop_fixed_two_label_history_candidate; no new probes",
+    "failure_scope": "sufficient resource screen, not a proof that historical features cannot rank errors when the same candidate is retained"
+  },
+  "ranking": {
+    "reuse_saved_MC_MM": true,
+    "saved_audit": "audits/anchor_trust_20261023/runs_93cb036e",
+    "source_commit": "93cb036e56c8c522e1d02f2a8a68ae1b4e667193",
+    "methods": [
+      "raw_MC",
+      "raw_margin",
+      "raw_entropy",
+      "MC",
+      "MM",
+      "arithmetic_current_a",
+      "geometric_current_a",
+      "past_current_a",
+      "past_b_vs_a"
+    ],
+    "error_target": "current teacher error; no label replacement",
+    "estimator": "equal mean within image folds for D_rel; pooled secondary; full validation descriptive",
+    "coverages": [
+      0.5,
+      0.7,
+      0.9,
+      0.95
+    ],
+    "precision_targets": [
+      0.95,
+      0.98
+    ]
+  },
+  "strata": {
+    "mc_edges": [
+      0,
+      0.8,
+      0.95,
+      0.995,
+      1.00000001
+    ],
+    "margin_edges": [
+      0,
+      0.05,
+      0.2,
+      0.5,
+      1.00000001
+    ],
+    "classes": 21,
+    "boundary": [
+      0,
+      1
+    ],
+    "retain_empty_and_unsupported": true
+  },
+  "probe_if_screen_passes": {
+    "scope": "both pairs; D_rel nested image CV only; all fits freeze before validation reads",
+    "baseline": "MC monotone plus linear/additive MC-margin with zero fallback, same established basis",
+    "static_control": "linear entropy correction on fixed MM_additive",
+    "H0": [
+      "past_MC",
+      "past_entropy",
+      "past_p_a",
+      "past_label_changed",
+      "arithmetic_logit_p_a",
+      "geometric_logit_p_a"
+    ],
+    "H1_additions": [
+      "past_logit_b_minus_a",
+      "history_alternative_equals_current_b",
+      "current_b_in_past_top2"
+    ],
+    "candidate_order": [
+      "MC",
+      "MM_linear",
+      "MM_additive",
+      "static_entropy",
+      "H0",
+      "H1"
+    ],
+    "families": {
+      "MM": [
+        "MC",
+        "MM_linear",
+        "MM_additive"
+      ],
+      "static": [
+        "MC",
+        "MM_linear",
+        "MM_additive",
+        "static_entropy"
+      ],
+      "H0": [
+        "MC",
+        "MM_linear",
+        "MM_additive",
+        "static_entropy",
+        "H0"
+      ],
+      "H1": [
+        "MC",
+        "MM_linear",
+        "MM_additive",
+        "static_entropy",
+        "H0",
+        "H1"
+      ]
+    },
+    "fitting": "all pixels; centered/scaled linear corrections; FP64 full-batch Newton; parent MM_additive; no optimizer seed search",
+    "optimizer": {
+      "l2": 0.001,
+      "max_iterations": 100,
+      "gradient_tolerance": 1e-7,
+      "line_search_steps": 40,
+      "intercept_penalized": true
+    },
+    "mc_calibrator": {
+      "l2": 0.0001,
+      "max_iterations": 100,
+      "projected_gradient_tolerance": 1e-7
+    },
+    "knots": [
+      0.25,
+      0.5,
+      0.75
+    ],
+    "selection": "inner OOF all-pixel IPW NLL; simpler wins improvements <=1e-5",
+    "selection_tolerance": 0.00001,
+    "shams": "recompute arithmetic/geometric and history features; independently refit H0/H1 and fallback with identical folds",
+    "primary_contrasts": [
+      [
+        "H1",
+        "MM"
+      ],
+      [
+        "H1",
+        "static"
+      ],
+      [
+        "H1",
+        "H0"
+      ],
+      [
+        "H1",
+        "sham_mean"
+      ]
+    ],
+    "primary_scope": "high_mc",
+    "primary_metric": "error_ap",
+    "primary_confidence": 0.9875,
+    "gate": "late all four CI lower >0; late H1-MM >=0.01; both pairs all four point deltas >0; both-pair overall H1-MM 95% lower >-0.005; late H1 no worse than H0/MM and raw arithmetic/geometric at high-MC AP, P90, C95; support adequate",
+    "decision_if_pass": "eligible to propose new independent confirmation, never auto-train teacher"
+  },
+  "execution": {
+    "max_screen_hours": 2,
+    "max_probe_hours": 4,
+    "read_order": [
+      "all D_rel alignment and screen",
+      "freeze screen_gate.json",
+      "conditional D_rel fitting and probe gate",
+      "validation description"
+    ],
+    "no_teacher_or_student_updates": true,
+    "no_future_checkpoint_features": true,
+    "no_additional_sampling_caps": true
+  },
+  "outputs": {
+    "aggregate_only_to_git": true,
+    "retain_per_image_screen_sufficient_statistics": true,
+    "retain_all_shuffles": true,
+    "no_pixel_arrays_to_git": true
+  }
+}
